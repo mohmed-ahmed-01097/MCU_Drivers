@@ -1,10 +1,10 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : GPIO_cfg.h
-/* Author      : MAAM
-/* Version     : v00
-/* date        : Mar 23, 2023
+/* File Name   : GPIO_cfg.h													  */
+/* Author      : MAAM														  */
+/* Version     : v00														  */
+/* date        : Mar 23, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
@@ -15,6 +15,52 @@
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
+
+typedef enum {
+	AMIT_LCD0 = (u8)0u,
+	AMIT_LCD1,
+	AMIT_LCD2,
+	AMIT_LCD3,
+	AMIT_LCD4,
+	AMIT_LCD5,
+	AMIT_LCD6,
+	AMIT_LCD7,
+}GPIO_tuenuAMIT_PORTA;
+
+typedef enum {
+	AMIT_B0 = (u8)0u,
+	AMIT_LCD_RS,
+	AMIT_LCD_RW,
+	AMIT_LCD_EN,
+	AMIT_B4,
+	AMIT_B5,
+	AMIT_B6,
+	AMIT_B7
+}GPIO_tuenuAMIT_PORTB;
+
+typedef enum {
+	AMIT_C0 = (u8)0u,
+	AMIT_C1,
+	AMIT_7Seg_COM0,
+	AMIT_7Seg_COM1,
+	AMIT_7Seg_A,
+	AMIT_7Seg_B,
+	AMIT_7Seg_C,
+	AMIT_7Seg_D,
+}GPIO_tuenuAMIT_PORTC;
+
+typedef enum {
+	AMIT_PUSH0 = (u8)0u,
+	AMIT_PUSH1,
+	AMIT_PUSH2,
+	AMIT_RELAY0,
+	AMIT_RELAY1,
+	AMIT_LED0,
+	AMIT_LED1,
+	AMIT_LED2,
+
+	AMIT_BUZZER = (u8)4u
+}GPIO_tuenuAMIT_PORTD;
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
@@ -31,7 +77,7 @@
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
-
+void vidMyDelay_ms(u16 u16DelayNum);
 
 #endif /* SWC_GPIO_GPIO_CFG_H_ */
 /*************************** E N D (GPIO_cfg.h) ******************************/

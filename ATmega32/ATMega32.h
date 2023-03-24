@@ -1,7 +1,7 @@
 #ifndef ATMAEGA32_H
 #define ATMAEGA32_H
 
-#include "..\Standerd Librarys\LBTY_CFG\LBTY_CFG.h"
+#include "MCAL\SWC_BSW\LBTY_int.h"
 
 /*************************************************************************/
 #define __IO    volatile
@@ -688,7 +688,7 @@ $02F 				<instr> xxx
 #define TCCR1A          *(volatile u8*)0x4FU
 
 /** Special Function I/O Register **/
-#define S_SFIOR         ((volatile u8*)0x50U)
+#define S_SFIOR         ((SFIOR_type*)0x50U)
 #define SFIOR           *(volatile u8*)0x50U
 
 /** On-chip Debug Register **/

@@ -23,6 +23,14 @@ typedef int64_t		s64;
 typedef float       f32;
 typedef double      f64;
 
+typedef u8*			pu8 ;
+typedef u16*		pu16;
+typedef u32*		pu32;
+
+typedef s8*			ps8 ;
+typedef s16*		ps16;
+typedef s32*		ps32;
+
 /** Data Types Limitation **/
 #define MAX_U8		0xFFU
 #define MAX_S8		0x7F

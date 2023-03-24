@@ -1,15 +1,16 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : GPIO_prg.c
-/* Author      : MAAM
-/* Version     : v00
-/* date        : Mar 23, 2023
+/* File Name   : GPIO_priv.h												  */
+/* Author      : MAAM														  */
+/* Version     : v00														  */
+/* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-#include "ATMega32.h"
-#include "GPIO.h"
+
+#ifndef GPIO_PRIV_H_
+#define GPIO_PRIV_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -18,6 +19,20 @@
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
+
+#define GPIO_PORT_NUM			8u
+
+#define GPIOA_DDR_INIT_DEF		PORT_OUTPUT
+#define GPIOA_PORT_INIT_DEF		PORT_Low
+
+#define GPIOB_DDR_INIT_DEF		PORT_OUTPUT
+#define GPIOB_PORT_INIT_DEF		PORT_Low
+
+#define GPIOC_DDR_INIT_DEF		PORT_OUTPUT
+#define GPIOC_PORT_INIT_DEF		PORT_Low
+
+#define GPIOD_DDR_INIT_DEF		PORT_OUTPUT
+#define GPIOD_PORT_INIT_DEF		PORT_Low
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -31,15 +46,6 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
-void GPIO_Init(GPIOx_type * GPIOx){
-    GPIOx->m_DDR.sBits.m_B0 = OUTPUT;
-    GPIOx->m_PORT.sBits.m_B0 = High;
-}
 
-void main(void){
-    S_GPIOA->m_DDR.u_Reg = 0xffu;
-    S_GPIOA->m_PORT.sBits.m_B0 = High;
-}
-
-
-/*************************** E N D (GPIO_prg.c) ******************************/
+#endif /* GPIO_PRIV_H_ */
+/*************************** E N D (GPIO_priv.h) ******************************/
