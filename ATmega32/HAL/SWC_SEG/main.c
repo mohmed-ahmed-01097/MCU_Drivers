@@ -44,6 +44,7 @@ int main(void){
 
     SEG_vidInit();
 
+<<<<<<< HEAD
 	for(u16 i = 50 ; i-- ; ){
 		SEG_vidDisplayNum(1234);
 	}
@@ -57,6 +58,21 @@ int main(void){
 		SEG_vidDisplayNum(3456);
 	}
 	for(u16 i = 50 ; i-- ; ){
+=======
+	for(u16 i = 50 ; --i ; ){
+		SEG_vidDisplayNum(1234);
+	}
+	for(u16 i = 50 ; --i ; ){
+		SEG_vidDisplayNum(5678);
+	}
+	for(u16 i = 50 ; --i ; ){
+		SEG_vidDisplayNum(9012);
+	}
+	for(u16 i = 50 ; --i ; ){
+		SEG_vidDisplayNum(3456);
+	}
+	for(u16 i = 50 ; --i ; ){
+>>>>>>> 6f5ce5a5b4301b3d2358894a5f7817cec7df04cb
 		SEG_vidDisplayNum(7890);
 	}
 
@@ -67,7 +83,11 @@ int main(void){
 
    	while(1){
 
+<<<<<<< HEAD
     	for(u16 i = 50 ; i-- ; ){
+=======
+    	for(u16 i = 50 ; --i ; ){
+>>>>>>> 6f5ce5a5b4301b3d2358894a5f7817cec7df04cb
     		SEG_vidDisplayNum(u8Value);
     	}
     	u8Value++;
