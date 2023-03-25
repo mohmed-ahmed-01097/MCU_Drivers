@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "LBTY_CFG.h"
 
-void main(void){
+#ifdef	SWC_BSW
+int main(void){
 
 	printf("The size of u8  is %d bytes\n", sizeof(u8)) ;
 	printf("The size of u16 is %d bytes\n", sizeof(u16));
@@ -17,4 +18,7 @@ void main(void){
 	printf("\n\r");
 	printf("The size of f32 is %d bytes\n", sizeof(f32));
 	printf("The size of f64 is %d bytes\n", sizeof(f64));
+
+	return 0;
 }
+#endif

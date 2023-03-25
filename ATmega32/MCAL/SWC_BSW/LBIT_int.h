@@ -26,8 +26,12 @@
 #define CLR_BIT(REG, bit) 							((REG) &= ~(1u<<bit))
 #define TOG_BIT(REG, bit) 							((REG) ^=  (1u<<bit))
 
-#define SET_REG(REG) 								((REG)  = ~(0u))
-#define CLR_REG(REG) 								((REG)  =  (0u))
+#define SET_MASK(REG, MASK) 						((REG) |=  (MASK))
+#define CLR_MASK(REG, MASK) 						((REG) &= ~(MASK))
+#define TOG_MASK(REG, MASK) 						((REG) ^=  (MASK))
+
+#define SET_REG(REG) 								((REG) |= ~(0u))
+#define CLR_REG(REG) 								((REG) &=  (0u))
 #define TOG_REG(REG) 								((REG) ^= ~(0u))
 
 #define GET_BIT(REG, bit) 							(((REG) & (0x01u<<(bit)))>>(bit))
