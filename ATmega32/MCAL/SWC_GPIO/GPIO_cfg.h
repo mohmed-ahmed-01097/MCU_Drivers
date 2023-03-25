@@ -115,21 +115,21 @@ typedef enum {
 	Eta32_BUZZER,
 	Eta32_RELAY0,
 
-	Eta32_Keyboard_Row3 = (u8)2u,
-	Eta32_Keyboard_Row2,
-	Eta32_Keyboard_Row1,
-	Eta32_Keyboard_Row0
+	Eta32_Keypad_Row3 = (u8)2u,
+	Eta32_Keypad_Row2,
+	Eta32_Keypad_Row1,
+	Eta32_Keypad_Row0
 }GPIO_tuenuEta32_PORTC;
 
 typedef enum {
 	Eta32_UART_RX = (u8)0u,
 	Eta32_UART_TX,
 	Eta32_IR_Receiver,
-	Eta32_Keyboard_col3,
+	Eta32_Keypad_col3,
 	Eta32_Analog_Out,
-	Eta32_Keyboard_col2,
-	Eta32_Keyboard_col1,
-	Eta32_Keyboard_col0
+	Eta32_Keypad_col2,
+	Eta32_Keypad_col1,
+	Eta32_Keypad_col0
 }GPIO_tuenuEta32_PORTD;
 #else
 

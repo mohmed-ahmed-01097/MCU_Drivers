@@ -213,8 +213,7 @@ void SEG_vidDispalyDigit(u8 u8DigitValue, u8 u8PortCom, u8 u8PinCom){
 #ifdef	SEG_DECODER
 	u8 u8PortValue_LOC = 0;
 	GPIO_u8GetPortValue(SEG_PORT_DATA, &u8PortValue_LOC);
-	GPIO_u8SetMaskValue(SEG_PORT_DATA, (0xFu << SEG_A), (u8DigitValue << SEG_A));
-	for(u8 i = SEG_PINS ; --i ; ){
+	for(u8 i = SEG_PINS ; i-- ; ){
 		GPIO_u8SetPinValue 	(SEG_PORT_DATA, pu8SegDecoderPort[i], GET_BIT(u8DigitValue, i));
 	}
 #else
