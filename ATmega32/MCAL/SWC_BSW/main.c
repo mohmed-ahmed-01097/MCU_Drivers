@@ -122,34 +122,34 @@ int main(void){
 
 	printf("######################################################\n\r");
 	printf("A = %#04X\t", u8Reg0);
-	SET_REG(u8Reg0, 0);
-	printf("SET_REG(%02i)\tA = %#X\n", 0, u8Reg0);
+	SET_BYTE(u8Reg0, 0);
+	printf("SET_BYTE(%02i)\tA = %#X\n", 0, u8Reg0);
 
 	printf("A = %#04X\t", u8Reg0);
-	CLR_REG(u8Reg0, 3);
-	printf("CLR_REG(%02i)\tA = %#X\n", 3, u8Reg0);
+	CLR_BYTE(u8Reg0, 3);
+	printf("CLR_BYTE(%02i)\tA = %#X\n", 3, u8Reg0);
 
 	printf("B = %#04X\t", u8Reg1);
-	TOG_REG(u8Reg1, 1);
-	printf("TOG_REG(%02i)\tB = %#X\n", 1, u8Reg1);
+	TOG_BYTE(u8Reg1, 1);
+	printf("TOG_BYTE(%02i)\tB = %#X\n", 1, u8Reg1);
 	printf("B = %#04X\t", u8Reg1);
-	TOG_REG(u8Reg1, 1);
-	printf("TOG_REG(%02i)\tB = %#X\n", 1, u8Reg1);
+	TOG_BYTE(u8Reg1, 1);
+	printf("TOG_BYTE(%02i)\tB = %#X\n", 1, u8Reg1);
 	printf("//////////////////////////////////////////////////////\n\r");
 	printf("C = %#04X\t", u16Reg);
-	SET_REG(u16Reg, 3);
-	printf("SET_REG(%02i)\tC = %#X\n", 3, u16Reg);
+	SET_BYTE(u16Reg, 3);
+	printf("SET_BYTE(%02i)\tC = %#X\n", 3, u16Reg);
 
 	printf("C = %#04X\t", u16Reg);
-	CLR_REG(u16Reg, 7);
-	printf("CLR_REG(%02i)\tC = %#X\n", 7, u16Reg);
+	CLR_BYTE(u16Reg, 7);
+	printf("CLR_BYTE(%02i)\tC = %#X\n", 7, u16Reg);
 
 	printf("C = %#04X\t", u16Reg);
-	TOG_REG(u16Reg, 3);
-	printf("TOG_REG(%02i)\tC = %#X\n", 3, u16Reg);
+	TOG_BYTE(u16Reg, 3);
+	printf("TOG_BYTE(%02i)\tC = %#X\n", 3, u16Reg);
 	printf("C = %#04X\t", u16Reg);
-	TOG_REG(u16Reg, 7);
-	printf("TOG_REG(%02i)\tC = %#X\n", 7, u16Reg);
+	TOG_BYTE(u16Reg, 7);
+	printf("TOG_BYTE(%02i)\tC = %#X\n", 7, u16Reg);
 	printf("######################################################\n\r");
 
 	printf("######################################################\n\r");

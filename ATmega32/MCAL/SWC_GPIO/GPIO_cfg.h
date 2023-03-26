@@ -135,6 +135,54 @@ typedef enum {
 
 #endif
 
+typedef enum {
+	GPIO_ADC0 = (u8)0u,
+	GPIO_ADC1,
+	GPIO_ADC2,
+	GPIO_ADC3,
+	GPIO_ADC4,
+	GPIO_ADC5,
+	GPIO_ADC6,
+	GPIO_ADC7
+}GPIO_tuenuGPIO_PORTA;
+
+typedef enum {
+	GPIO_TMR_EXT0_IN = (u8)0u,
+	GPIO_TMR_EXT1_IN,
+	GPIO_INT2,
+	GPIO_TMR_OC0,
+	GPIO_SPI_SS,
+	GPIO_SPI_MOSI,
+	GPIO_SPI_MISO,
+	GPIO_SPI_SCK,
+
+	GPIO_USART_XCK = GPIO_TMR_EXT0_IN,
+	GPIO_AIN0 = GPIO_INT2,
+	GPIO_AIN1 = GPIO_TMR_OC0,
+}GPIO_tuenuGPIO_PORTB;
+
+typedef enum {
+	GPIO_I2C_SCL = (u8)0u,
+	GPIO_I2C_SDA,
+	GPIO_JTAG_TCK,
+	GPIO_JTAG_TMS,
+	GPIO_JTAG_TDO,
+	GPIO_JTAG_TDI,
+	GPIO_TMR_OSC1,
+	GPIO_TMR_OSC2
+}GPIO_tuenuGPIO_PORTC;
+
+typedef enum {
+	GPIO_UART_RX = (u8)0u,
+	GPIO_UART_TX,
+	GPIO_INT0,
+	GPIO_INT1,
+	GPIO_TMR_OC1B,
+	GPIO_TMR_OC1A,
+	GPIO_TMR_ICP1,
+	GPIO_TMR_OC2
+}GPIO_tuenuGPIO_PORTD;
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */

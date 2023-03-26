@@ -72,11 +72,16 @@ typedef enum{
 /*************************************************************************/
 
 typedef enum{
-  INT_Low_Level = 0u,
-  INT_Logic_Change = 1u,
-  INT_Falling_Edge = 2u,
-  INT_Rising_Edge = 3u
-}ISC_type;      // Interrupt Sense Control
+    INT_Low_Level = (u8)0u,
+	INT_Logic_Change,
+	INT_Falling_Edge,
+	INT_Rising_Edge,
+
+	INT2_Falling_Edge = (u8)0u,
+	INT2_Rising_Edge
+}INT_tenuSenseControl;      // Interrupt Sense Control
+
+/*************************************************************************/
 
 typedef union{
     u8 u_Reg;

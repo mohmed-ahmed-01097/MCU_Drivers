@@ -26,13 +26,14 @@
 #define CLR_BIT(REG, bit) 							((REG) &= ~(1u<<(bit)))
 #define TOG_BIT(REG, bit) 							((REG) ^=  (1u<<(bit)))
 
-#define SET_REG(REG, bit) 							((REG) |=  (0xFFu<<(bit)))
-#define CLR_REG(REG, bit) 							((REG) &= ~(0xFFu<<(bit)))
-#define TOG_REG(REG, bit) 							((REG) ^=  (0xFFu<<(bit)))
+#define SET_BYTE(REG, bit) 							((REG) |=  (0xFFu<<(bit)))
+#define CLR_BYTE(REG, bit) 							((REG) &= ~(0xFFu<<(bit)))
+#define TOG_BYTE(REG, bit) 							((REG) ^=  (0xFFu<<(bit)))
 
 #define SET_MASK(REG, MASK) 						((REG) |=  (MASK))
 #define CLR_MASK(REG, MASK) 						((REG) &= ~(MASK))
 #define TOG_MASK(REG, MASK) 						((REG) ^=  (MASK))
+#define GET_MASK(REG, MASK) 						((REG) &   (MASK))
 
 #define GET_BIT(REG, bit) 							(((REG)>>(bit)) & 0x01u)
 #define GET_NIB(REG, bit) 							(((REG)>>(bit)) & 0x0Fu)

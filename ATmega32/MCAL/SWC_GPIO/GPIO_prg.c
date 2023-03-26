@@ -76,8 +76,8 @@ void GPIO_voidInit(void){
 	#warning "there is some pin's in Port D direction is input so it will need to be set to the default value!"
 #endif
 
-#if PULL_UP
-	S_SFIOR->sBits.m_PUD  = LBTY_SET;
+#if PULL_UP_DISABLE
+	S_SFIOR->sBits.m_PUD  = LBTY_SET;		// PUD: Pull-up disable
 #endif
 
 	GPIO_u8SetPortDirection(A, GPIOA_DDR_INIT_DEF);
