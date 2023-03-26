@@ -111,42 +111,42 @@ typedef enum {
 /** Union Byte bit by bit **/
 typedef union {
   struct {
-    u8 u8b0 :1; 	// lsb (least significant bit)
-    u8 u8b1 :1;
-    u8 u8b2 :1;
-    u8 u8b3 :1;
-    u8 u8b4 :1;
-    u8 u8b5 :1;
-    u8 u8b6 :1;
-    u8 u8b7 :1;
-  } strBit;
-  u8 u8Byte;
+    u8 m_u8b0 :1;		// LSB
+    u8 m_u8b1 :1;
+    u8 m_u8b2 :1;
+    u8 m_u8b3 :1;
+    u8 m_u8b4 :1;
+    u8 m_u8b5 :1;
+    u8 m_u8b6 :1;
+    u8 m_u8b7 :1;		// MSB
+  } sBits;
+  u8 u_u8Byte;
 } LBTY_tuniPort8;
 
 typedef union {
   struct  {
-    u8 u8b0  :1; /* !comment : lsb (least significant bit)*/
-    u8 u8b1  :1; /* !comment : BIT 1*/
-    u8 u8b2  :1; /* !comment : BIT 2*/
-    u8 u8b3  :1; /* !comment : BIT 3*/
-    u8 u8b4  :1; /* !comment : BIT 4*/
-    u8 u8b5  :1; /* !comment : BIT 5*/
-    u8 u8b6  :1; /* !comment : BIT 6*/
-    u8 u8b7  :1; /* !comment : BIT 7*/
-    u8 u8b8  :1; /* !comment : BIT 8*/
-    u8 u8b9  :1; /* !comment : BIT 9*/
-    u8 u8b10 :1; /* !comment : BIT 10*/
-    u8 u8b11 :1; /* !comment : BIT 11*/
-    u8 u8b12 :1; /* !comment : BIT 12*/
-    u8 u8b13 :1; /* !comment : BIT 13*/
-    u8 u8b14 :1; /* !comment : BIT 14*/
-    u8 u8b15 :1; /* !comment : msb (most significant bit)*/
-  } strBit; /* !comment : for bit  access*/
+    u8 m_u8b0  :1;		// LSB
+    u8 m_u8b1  :1;
+    u8 m_u8b2  :1;
+    u8 m_u8b3  :1;
+    u8 m_u8b4  :1;
+    u8 m_u8b5  :1;
+    u8 m_u8b6  :1;
+    u8 m_u8b7  :1;
+    u8 m_u8b8  :1;
+    u8 m_u8b9  :1;
+    u8 m_u8b10 :1;
+    u8 m_u8b11 :1;
+    u8 m_u8b12 :1;
+    u8 m_u8b13 :1;
+    u8 m_u8b14 :1;
+    u8 m_u8b15 :1;		// MSB
+  } sBits;
   struct {
-    u8 u8low; /* !comment : Least significant byte*/
-    u8 u8high; /* !comment : Most significant byte*/
-  } strByte; /* !comment : for byte access*/
-  u16 u16Word; /* !comment : for word access*/
+    u8 m_u8low;
+    u8 m_u8high;
+  } sBytes;
+  u16 u_u16Word;
 } LBTY_tuniPort16;
 
 /* ************************************************************************** */

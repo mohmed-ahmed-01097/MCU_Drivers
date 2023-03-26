@@ -22,25 +22,25 @@
 /* ************************************************************************** */
 
 /** Bitwise Operation **/
-#define SET_BIT(REG, bit) 							((REG) |=  (1u<<bit))
-#define CLR_BIT(REG, bit) 							((REG) &= ~(1u<<bit))
-#define TOG_BIT(REG, bit) 							((REG) ^=  (1u<<bit))
+#define SET_BIT(REG, bit) 							((REG) |=  (1u<<(bit)))
+#define CLR_BIT(REG, bit) 							((REG) &= ~(1u<<(bit)))
+#define TOG_BIT(REG, bit) 							((REG) ^=  (1u<<(bit)))
+
+#define SET_REG(REG, bit) 							((REG) |=  (0xFFu<<(bit)))
+#define CLR_REG(REG, bit) 							((REG) &= ~(0xFFu<<(bit)))
+#define TOG_REG(REG, bit) 							((REG) ^=  (0xFFu<<(bit)))
 
 #define SET_MASK(REG, MASK) 						((REG) |=  (MASK))
 #define CLR_MASK(REG, MASK) 						((REG) &= ~(MASK))
 #define TOG_MASK(REG, MASK) 						((REG) ^=  (MASK))
 
-#define SET_REG(REG) 								((REG) |= ~(0u))
-#define CLR_REG(REG) 								((REG) &=  (0u))
-#define TOG_REG(REG) 								((REG) ^= ~(0u))
-
-#define GET_BIT(REG, bit) 							(((REG) & (0x01u<<(bit)))>>(bit))
-#define GET_NIB(REG, bit) 							(((REG) & (0x0Fu<<(bit)))>>(bit))
-#define GET_BYTE(REG, bit) 							(((REG) & (0xFFu<<(bit)))>>(bit))
+#define GET_BIT(REG, bit) 							(((REG)>>(bit)) & 0x01u)
+#define GET_NIB(REG, bit) 							(((REG)>>(bit)) & 0x0Fu)
+#define GET_BYTE(REG, bit) 							(((REG)>>(bit)) & 0xFFu)
 
 #define ASSIGN_BIT(REG, bit, value) 				((REG) = ((REG) & ~(0x01u<<(bit)))	| (((value) & 0x01u)<<(bit)))
 #define ASSIGN_NIB(REG, bit, value) 				((REG) = ((REG) & ~(0x0Fu<<(bit))) 	| (((value) & 0x0Fu)<<(bit)))
-#define ASSIGN_BYTE(REG, bit, value) 				((REG) = ((REG) &  (0x00u<<(bit))) 	| (((value) & 0xFFu)<<(bit)))
+#define ASSIGN_BYTE(REG, bit, value) 				((REG) = ((REG) & ~(0xFFu<<(bit))) 	| (((value) & 0xFFu)<<(bit)))
 
 /*
 #define ASSIGN_BIT(REG,bit,value)					do{										\
