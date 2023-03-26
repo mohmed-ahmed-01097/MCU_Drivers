@@ -13,11 +13,11 @@
 #include "LBIT_int.h"
 #include "DELAY.h"
 
-#include "KEYPAD_int.h"
-#include "KEYPAD_cfg.h"
-
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
+
+#include "KPAD_cfg.h"
+#include "KPAD_int.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -30,8 +30,8 @@
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-const u8 pu8RowPins[] = {KP_ROW0, KP_ROW1, KP_ROW2, KP_ROW3};
-const u8 pu8ColPins[] = {KP_COL0, KP_COL1, KP_COL2, KP_COL3};
+const u8 pu8ROW_PINs_GLB[] = {KPAD_ROW0, KPAD_ROW1, KPAD_ROW2, KPAD_ROW3};
+const u8 pu8COL_PINs_GLB[] = {KPAD_COL0, KPAD_COL1, KPAD_COL2, KPAD_COL3};
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -45,13 +45,19 @@ const u8 pu8ColPins[] = {KP_COL0, KP_COL1, KP_COL2, KP_COL3};
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void KP_vidInit(void){
+void KPAD_vidInit(void){
+#ifdef KPAD_ROW_DIR_OUTPUT
+	GPIO_u8SetMaskDirection	(KPAD_ROW_PORT, KPAD_ROW_MASK, PORT_OUTPUT);
+	GPIO_u8SetMaskValue		(KPAD_ROW_PORT, KPAD_ROW_MASK, PORT_High);
 
-	GPIO_u8SetMaskDirection	(KP_ROW_PORT, KP_ROW_MASK, PORT_OUTPUT);
-	GPIO_u8SetMaskValue		(KP_ROW_PORT, KP_ROW_MASK, PORT_High);
+	GPIO_u8SetMaskDirection	(KPAD_COL_PORT, KPAD_COL_MASK, PORT_INPUT);
+#endif
+#ifdef KPAD_COL_DIR_OUTPUT
+	GPIO_u8SetMaskDirection	(KPAD_COL_PORT, KPAD_COL_MASK, PORT_OUTPUT);
+	GPIO_u8SetMaskValue		(KPAD_COL_PORT, KPAD_COL_MASK, PORT_High);
 
-	GPIO_u8SetMaskDirection	(KP_COL_PORT, KP_COL_MASK, PORT_INPUT);
-
+	GPIO_u8SetMaskDirection	(KPAD_ROW_PORT, KPAD_ROW_MASK, PORT_INPUT);
+#endif
 }
 
 /* ************************************************************************** */
@@ -59,24 +65,37 @@ void KP_vidInit(void){
 /* Input       :	void													  */
 /* Return      :	u8														  */
 /* ************************************************************************** */
-u8 KP_u8GetPressNum(void){
+u8 KPAD_u8GetKeyNum(void){
 	u8 u8RetValue = LBTY_u8MAX;
 
-	for(u8 i = 0 ; i<KP_ROW_NUM ; i++){
-		GPIO_u8SetPinValue(KP_ROW_PORT, pu8RowPins[i], PIN_Low);
-
-		for(u8 j = 0 ; j<KP_COL_NUM ; j++){
-			GPIO_u8GetPinValue(KP_COL_PORT, pu8ColPins[j], &u8RetValue);
-			if(u8RetValue){
+	for(u8 i = 0 ; i<KPAD_ROW_NUM ; i++){
+#ifdef KPAD_ROW_DIR_OUTPUT
+		GPIO_u8SetPinValue(KPAD_ROW_PORT, pu8ROW_PINs_GLB[i], PIN_Low);
+#endif
+#ifdef KPAD_COL_DIR_OUTPUT
+		GPIO_u8SetPinValue(KPAD_COL_PORT, pu8COL_PINs_GLB[i], PIN_Low);
+#endif
+		for(u8 j = 0 ; j<KPAD_COL_NUM ; j++){
+#ifdef KPAD_ROW_DIR_OUTPUT
+			GPIO_u8GetPinValue(KPAD_COL_PORT, pu8COL_PINs_GLB[j], &u8RetValue);
+#endif
+#ifdef KPAD_COL_DIR_OUTPUT
+			GPIO_u8GetPinValue(KPAD_ROW_PORT, pu8ROW_PINs_GLB[j], &u8RetValue);
+#endif
+			if(u8RetValue == KPAD_KEY_RELEASED){
 				u8RetValue = LBTY_u8MAX;
 				continue;
 			}else{
-				u8RetValue = j + (i * KP_COL_NUM);
+				u8RetValue = j + (i * KPAD_MAX_COL);
 				break;
 			}
 		}
-
-		GPIO_u8SetPinValue(KP_ROW_PORT, pu8RowPins[i], PIN_High);
+#ifdef KPAD_ROW_DIR_OUTPUT
+		GPIO_u8SetPinValue(KPAD_ROW_PORT, pu8ROW_PINs_GLB[i], PIN_High);
+#endif
+#ifdef KPAD_COL_DIR_OUTPUT
+		GPIO_u8SetPinValue(KPAD_COL_PORT, pu8COL_PINs_GLB[i], PIN_High);
+#endif
 		if(u8RetValue == LBTY_u8MAX){
 			continue;
 		}else{
@@ -91,59 +110,59 @@ u8 KP_u8GetPressNum(void){
 /* Input       :	void													  */
 /* Return      :	u8														  */
 /* ************************************************************************** */
-u8 KP_u8GetInputChar(void){
+u8 KPAD_u8GetInputChar(void){
 	u8 u8RetValue = LBTY_u8MAX;
-	switch(KP_u8GetPressNum()){
+	switch(KPAD_u8GetKeyNum()){
 		case 0:
-			u8RetValue = KP_KEY00;
+			u8RetValue = KPAD_KEY00;
 			break;
 		case 1:
-			u8RetValue = KP_KEY01;
+			u8RetValue = KPAD_KEY01;
 			break;
 		case 2:
-			u8RetValue = KP_KEY02;
+			u8RetValue = KPAD_KEY02;
 			break;
 		case 3:
-			u8RetValue = KP_KEY03;
+			u8RetValue = KPAD_KEY03;
 			break;
 
 		case 4:
-			u8RetValue = KP_KEY10;
+			u8RetValue = KPAD_KEY10;
 			break;
 		case 5:
-			u8RetValue = KP_KEY11;
+			u8RetValue = KPAD_KEY11;
 			break;
 		case 6:
-			u8RetValue = KP_KEY12;
+			u8RetValue = KPAD_KEY12;
 			break;
 		case 7:
-			u8RetValue = KP_KEY13;
+			u8RetValue = KPAD_KEY13;
 			break;
 
 		case 8:
-			u8RetValue = KP_KEY20;
+			u8RetValue = KPAD_KEY20;
 			break;
 		case 9:
-			u8RetValue = KP_KEY21;
+			u8RetValue = KPAD_KEY21;
 			break;
 		case 10:
-			u8RetValue = KP_KEY22;
+			u8RetValue = KPAD_KEY22;
 			break;
 		case 11:
-			u8RetValue = KP_KEY23;
+			u8RetValue = KPAD_KEY23;
 			break;
 
 		case 12:
-			u8RetValue = KP_KEY30;
+			u8RetValue = KPAD_KEY30;
 			break;
 		case 13:
-			u8RetValue = KP_KEY31;
+			u8RetValue = KPAD_KEY31;
 			break;
 		case 14:
-			u8RetValue = KP_KEY32;
+			u8RetValue = KPAD_KEY32;
 			break;
 		case 15:
-			u8RetValue = KP_KEY33;
+			u8RetValue = KPAD_KEY33;
 			break;
 	}
 

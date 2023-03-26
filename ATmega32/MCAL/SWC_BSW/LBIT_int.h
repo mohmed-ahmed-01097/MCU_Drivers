@@ -40,12 +40,21 @@
 
 #define ASSIGN_BIT(REG, bit, value) 				((REG) = ((REG) & ~(0x01u<<(bit)))	| (((value) & 0x01u)<<(bit)))
 #define ASSIGN_NIB(REG, bit, value) 				((REG) = ((REG) & ~(0x0Fu<<(bit))) 	| (((value) & 0x0Fu)<<(bit)))
-#define ASSIGN_BYTE(REG, value) 					((REG) = ((REG) &  (0x00u       )) 	|  ((value) & 0xFFu)		)
+#define ASSIGN_BYTE(REG, bit, value) 				((REG) = ((REG) &  (0x00u<<(bit))) 	| (((value) & 0xFFu)<<(bit)))
 
-#define CON_u8Bits(b0, b1, b2, b3, b4, b5, b6, b7)											\
+/*
+#define ASSIGN_BIT(REG,bit,value)					do{										\
+                                             	 	 REG &= ~(0x01u<<bit);					\
+                                             	 	 REG |=  ((value & 0x01u)<<bit);		\
+                                            		}while(0)
+*/
+
+/*           bits together in an u8 register          */
+#define CON_u8Bits(b7, b6, b5, b4, b3, b2, b1, b0)											\
 													(0b##b7##b6##b5##b4##b3##b2##b1##b0)
 
-#define CON_u16Bits(b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15)	\
+/*           bits together in an u16 register         */
+#define CON_u16Bits(b15, b14, b13, b12, b11, b10, b9, b8, b7, b6, b5, b4, b3, b2, b1, b0)	\
 													(0b##b15##b14##b13##b12##b11##b10##b9##b8##b7##b6##b5##b4##b3##b2##b1##b0)
 
 /* ************************************************************************** */

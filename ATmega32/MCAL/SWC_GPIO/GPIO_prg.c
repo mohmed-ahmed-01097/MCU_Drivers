@@ -109,12 +109,14 @@ LBTY_tenuErrorStatus GPIO_u8SetPinDirection(GPIO_PortNum_type u8PortNum, u8 u8Pi
 	if(GPIO == LBTY_NULL){
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
+		u8RetErrorState = LBTY_OK;
 		if(u8PinDir == PIN_OUTPUT){
 			SET_BIT(GPIO->m_DDR.u_Reg, u8PinNum);
-		}else{
+		}else if(u8PinDir == PIN_INPUT){
 			CLR_BIT(GPIO->m_DDR.u_Reg, u8PinNum);
+		}else{
+			u8RetErrorState = LBTY_NOK;
 		}
-		u8RetErrorState = LBTY_OK;
 	}
 
 	return u8RetErrorState;
@@ -135,13 +137,16 @@ LBTY_tenuErrorStatus GPIO_u8SetRangeDirection(GPIO_PortNum_type u8PortNum,
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
 		for(u8 i = (u8EndPin - u8StartPin) ; i-- ; u8StartPin++){
+			u8RetErrorState = LBTY_OK;
 			if(u8PinDir == PIN_OUTPUT){
 				SET_BIT(GPIO->m_DDR.u_Reg, u8StartPin);
-			}else{
+			}else if(u8PinDir == PIN_INPUT){
 				CLR_BIT(GPIO->m_DDR.u_Reg, u8StartPin);
+			}else{
+				u8RetErrorState = LBTY_NOK;
+				break;
 			}
 		}
-		u8RetErrorState = LBTY_OK;
 	}
 
 	return u8RetErrorState;
@@ -203,12 +208,14 @@ LBTY_tenuErrorStatus GPIO_u8SetPinValue(GPIO_PortNum_type u8PortNum, u8 u8PinNum
 	if(GPIO == LBTY_NULL){
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
+		u8RetErrorState = LBTY_OK;
 		if(u8PinValue == PIN_High){
 			SET_BIT(GPIO->m_PORT.u_Reg, u8PinNum);
-		}else{
+		}else if(u8PinValue == PIN_Low){
 			CLR_BIT(GPIO->m_PORT.u_Reg, u8PinNum);
+		}else{
+			u8RetErrorState = LBTY_NOK;
 		}
-		u8RetErrorState = LBTY_OK;
 	}
 
 	return u8RetErrorState;
@@ -228,14 +235,16 @@ LBTY_tenuErrorStatus GPIO_u8SetRangeValue(GPIO_PortNum_type u8PortNum,
 	if(GPIO == LBTY_NULL){
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
-		for(u8 i = (u8EndPin - u8StartPin) ; i-- ; u8StartPin++){;
+		for(u8 i = (u8EndPin - u8StartPin) ; i-- ; u8StartPin++){
+			u8RetErrorState = LBTY_OK;
 			if(u8PinValue == PIN_High){
 				SET_BIT(GPIO->m_PORT.u_Reg, u8StartPin);
-			}else{
+			}else if(u8PinValue == PIN_Low){
 				CLR_BIT(GPIO->m_PORT.u_Reg, u8StartPin);
+			}else{
+				u8RetErrorState = LBTY_NOK;
 			}
 		}
-		u8RetErrorState = LBTY_OK;
 	}
 
 	return u8RetErrorState;
@@ -299,7 +308,7 @@ LBTY_tenuErrorStatus GPIO_u8GetPinValue(GPIO_PortNum_type u8PortNum,
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
 		*pu8Value = LBTY_u8ZERO;
-		*pu8Value = (u8)GET_BIT(GPIO->m_PIN.u_Reg, u8PinNum);
+		*pu8Value = (u8)GET_BIT(GPIO->m_PIN.u_Reg, u8PinNum) ? PIN_High : PIN_Low;
 		u8RetErrorState = LBTY_OK;
 	}
 
