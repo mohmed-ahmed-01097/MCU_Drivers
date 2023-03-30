@@ -17,6 +17,7 @@
 #include "GPIO_cfg.h"
 
 #include "INT_int.h"
+#include "INT_cfg.h"
 #include "INT_priv.h"
 
 /* ************************************************************************** */
@@ -35,6 +36,10 @@
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
 
+static void (*INT0_pvidCallback)(void);
+static void (*INT1_pvidCallback)(void);
+static void (*INT2_pvidCallback)(void);
+
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
@@ -48,19 +53,19 @@ void INT_vidInit(u8 u8INT_Num){
 	switch(u8INT_Num){
 		case INT0:
 			GPIO_u8SetPinDirection(INT0_PORT, INT0_PIN, PIN_INPUT);
-			INT_vidChangeSenseControl(u8INT_Num, INT0_SC);
+			INT_vidSetSenseControl(u8INT_Num, INT0_SC);
 			INT_vidEnable(u8INT_Num);
 			INT_vidResetFlag(u8INT_Num);
 			break;
 		case INT1:
 			GPIO_u8SetPinDirection(INT1_PORT, INT1_PIN, PIN_INPUT);
-			INT_vidChangeSenseControl(u8INT_Num, INT1_SC);
+			INT_vidSetSenseControl(u8INT_Num, INT1_SC);
 			INT_vidEnable(u8INT_Num);
 			INT_vidResetFlag(u8INT_Num);
 			break;
 		case INT2:
 			GPIO_u8SetPinDirection(INT2_PORT, INT2_PIN, PIN_INPUT);
-			INT_vidChangeSenseControl(u8INT_Num, INT2_SC);
+			INT_vidSetSenseControl(u8INT_Num, INT2_SC);
 			INT_vidEnable(u8INT_Num);
 			INT_vidResetFlag(u8INT_Num);
 			break;
@@ -74,7 +79,7 @@ void INT_vidInit(u8 u8INT_Num){
 /* Input       :	u8INT_Num, u8INT_SC										  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void INT_vidChangeSenseControl(u8 u8INT_Num, INT_tenuSenseControl u8INT_SC){
+void INT_vidSetSenseControl(u8 u8INT_Num, INT_tenuSenseControl u8INT_SC){
 	switch(u8INT_Num){
 		case INT0:			S_MCUCR->sBits.m_ISC0  = u8INT_SC;			break;
 		case INT1:			S_MCUCR->sBits.m_ISC1  = u8INT_SC;			break;
@@ -85,7 +90,7 @@ void INT_vidChangeSenseControl(u8 u8INT_Num, INT_tenuSenseControl u8INT_SC){
 
 /* ************************************************************************** */
 /* Description :  	Enable the INT		 									  */
-/* Input       :	u8INT_Num, u8INT_SC										  */
+/* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
 void INT_vidEnable(u8 u8INT_Num){
@@ -99,7 +104,7 @@ void INT_vidEnable(u8 u8INT_Num){
 
 /* ************************************************************************** */
 /* Description :  	Disable the INT		 									  */
-/* Input       :	u8INT_Num, u8INT_SC										  */
+/* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
 void INT_vidDisable(u8 u8INT_Num){
@@ -113,7 +118,7 @@ void INT_vidDisable(u8 u8INT_Num){
 
 /* ************************************************************************** */
 /* Description :  	Set the INT Flag	 									  */
-/* Input       :	u8INT_Num, u8INT_SC										  */
+/* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
 void INT_vidSetFlag(u8 u8INT_Num){
@@ -127,7 +132,7 @@ void INT_vidSetFlag(u8 u8INT_Num){
 
 /* ************************************************************************** */
 /* Description :  	Reset the INT Flag	 									  */
-/* Input       :	u8INT_Num, u8INT_SC										  */
+/* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
 void INT_vidResetFlag(u8 u8INT_Num){
@@ -138,4 +143,49 @@ void INT_vidResetFlag(u8 u8INT_Num){
 		default:			break;
 	}
 }
+
+/* ************************************************************************** */
+/* Description :  	Interrupt Callback	 									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void INT_vidSetCallBack(u8 u8INT_Num, void (*pvidCallback)(void)){
+	switch(u8INT_Num){
+		case INT0:			INT0_pvidCallback = pvidCallback;			break;
+		case INT1:			INT1_pvidCallback = pvidCallback;			break;
+		case INT2:			INT2_pvidCallback = pvidCallback;			break;
+		default:			break;
+	}
+}
+
+/* ************************************************************************** */
+/* Description :  	EXT_INT0 Interrupt	 									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void __vector_1 (void) __attribute__((signal));
+void __vector_1 (void){
+	INT0_pvidCallback();
+}
+
+/* ************************************************************************** */
+/* Description :  	EXT_INT1 Interrupt	 									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void __vector_2 (void) __attribute__((signal));
+void __vector_2 (void){
+	INT1_pvidCallback();
+}
+
+/* ************************************************************************** */
+/* Description :  	EXT_INT2 Interrupt	 									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void __vector_3 (void) __attribute__((signal));
+void __vector_3 (void){
+	INT2_pvidCallback();
+}
+
 /*************************** E N D (INT_prg.c) ******************************/

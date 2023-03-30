@@ -16,13 +16,23 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+//typedef enum{
+//    INT_Low_Level = (u8)0u,
+//	INT_Logic_Change,
+//	INT_Falling_Edge,
+//	INT_Rising_Edge,
+//
+//	INT2_Falling_Edge = (u8)0u,
+//	INT2_Rising_Edge
+//}INT_tenuSenseControl;      // Interrupt Sense Control
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
 #define INT0_PORT		D
 #define INT0_PIN		GPIO_INT0
-#define INT0_SC			INT_Low_Level
+#define INT0_SC			INT_Rising_Edge
 
 #define INT1_PORT		D
 #define INT1_PIN		GPIO_INT1
