@@ -176,8 +176,13 @@ typedef union{
 /*************************************************************************/
 
 typedef struct{
-    __IO u16          m_ADC : 10;
-    __IO u16                : 6;
+#if ADC_ADJUSTMENT
+    __I  u16                : 6;
+    __I  u16          m_ADC : 10;
+#else
+    __I  u16          m_ADC : 10;
+    __I  u16                : 6;
+#endif
     __IO ADCSRA_type  m_ADCSRA;
     __IO ADMUX_type   m_ADMUX;
     __IO ACSR_type    m_ACSR;
@@ -541,6 +546,22 @@ typedef union{
 
 /*************************************************************************/
 
+typedef union{
+    __IO u8 u_Reg;
+    struct {
+        u8 m_C : 1;        // Carry Flag
+        u8 m_Z : 1;        // Zero Flag
+        u8 m_N : 1;        // Negative Flag
+        u8 m_V : 1;        // Two’s Complement Overflow Flag
+        u8 m_S : 1;        // Sign Bit
+        u8 m_H : 1;        // Half Carry Flag
+        u8 m_T : 1;        // Bit Copy Storage
+        u8 m_I : 1;        // Global Interrupt Enable
+    }sBits;
+}SREG_type;   // General Interrupt Control Register
+
+/*************************************************************************/
+
 /** Interrupt Vectors **/
 /**************************************************************************
 * Vector No.	Program Address 	Source 		Interrupt Definition
@@ -740,6 +761,7 @@ $02F 				<instr> xxx
 #define SPH             *(volatile u8*)0x5EU
 
 /** Status Register **/
+#define S_SREG          ((SREG_type*)0x5FU)
 #define SREG            *(volatile u8*)0x5FU
 
 /*************************************************************************/

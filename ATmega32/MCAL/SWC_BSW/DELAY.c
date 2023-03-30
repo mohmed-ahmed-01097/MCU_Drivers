@@ -39,7 +39,7 @@
 /* ************************************************************************** */
 void vidMyDelay_ms(u16 u16DelayNum){
 	while(--u16DelayNum){
-        for(u32 i = 235 ; i-- ; );
+        for(u32 i = DELAY_FOR_LOOP ; i-- ; );
 	}
     //for(u32 i = 235294 ; i-- ; );
 }

@@ -35,6 +35,10 @@
 #define TOG_MASK(REG, MASK) 						((REG) ^=  (MASK))
 #define GET_MASK(REG, MASK) 						((REG) &   (MASK))
 
+#define SET_REG(REG) 								((REG)  = ~(0u))
+#define CLR_REG(REG) 								((REG)  =  (0u))
+#define TOG_REG(REG) 								((REG) ^= ~(0u))
+
 #define GET_BIT(REG, bit) 							(((REG)>>(bit)) & 0x01u)
 #define GET_NIB(REG, bit) 							(((REG)>>(bit)) & 0x0Fu)
 #define GET_BYTE(REG, bit) 							(((REG)>>(bit)) & 0xFFu)
