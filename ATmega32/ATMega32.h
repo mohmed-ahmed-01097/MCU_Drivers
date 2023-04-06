@@ -349,11 +349,11 @@ typedef union{
 typedef union{
     __IO u8 u_Reg;
     struct {
-        u8 m_TCR2UB : 1;        // Timer/Counter Control Register2 Update Busy
-        u8 m_OCR2UB : 1;        // Output Compare Register2 Update Busy
-        u8 m_TCN2UB : 1;        // Timer/Counter2 Update Busy
-        u8 m_AS2    : 1;        // Asynchronous Timer/Counter2
-        u8          : 4;
+        __I  u8 m_TCR2UB : 1;        // Timer/Counter Control Register2 Update Busy
+        __I  u8 m_OCR2UB : 1;        // Output Compare Register2 Update Busy
+        __I  u8 m_TCN2UB : 1;        // Timer/Counter2 Update Busy
+        __IO u8 m_AS2    : 1;        // Asynchronous Timer/Counter2
+        __IO u8          : 4;
     }sBits;
 }ASSR_type;   // Asynchronous Status Register
 
@@ -400,7 +400,8 @@ typedef union{
     struct {
         u8 m_WGM10: 1;        // Waveform Generation Mode
         u8 m_WGM11: 1;        // Waveform Generation Mode
-        u8 m_FOC1 : 2;        // Force Output Compare
+        u8 m_FOC1B: 1;        // Force Output Compare
+        u8 m_FOC1A: 1;        // Force Output Compare
         u8 m_COM1B: 2;        // Compare Match Output Mode
         u8 m_COM1A: 2;        // Compare Match Output Mode
     }sBits;
@@ -408,15 +409,39 @@ typedef union{
 
 /*************************************************************************/
 
+typedef union{
+    u16 u16Reg;
+    struct {
+    	BYTE_type m_u8Low;
+    	BYTE_type m_u8High;
+    }sBytes;
+    struct {
+        u8 m_B0 : 1;
+        u8 m_B1 : 1;
+        u8 m_B2 : 1;
+        u8 m_B3 : 1;
+        u8 m_B4 : 1;
+        u8 m_B5 : 1;
+        u8 m_B6 : 1;
+        u8 m_B7 : 1;
+        u8 m_B8 : 1;
+        u8 m_B9 : 1;
+        u8 m_B10: 1;
+        u8 m_B11: 1;
+        u8 m_B12: 1;
+        u8 m_B13: 1;
+        u8 m_B14: 1;
+        u8 m_B15: 1;
+    }sBits;
+}Word_type;
+
+/*************************************************************************/
+
 typedef struct{
-    __IO u8          m_ICR1L;    // Input Capture Register
-    __IO u8          m_ICR1H;    // Input Capture Register
-    __IO u8          m_OCR1BL;   // Output Compare Register
-    __IO u8          m_OCR1BH;   // Output Compare Register
-    __IO u8          m_OCR1AL;   // Output Compare Register
-    __IO u8          m_OCR1AH;   // Output Compare Register
-    __IO u8          m_TCNT1L;   // Output Compare Register
-    __IO u8          m_TCNT1H;   // Output Compare Register
+    __IO Word_type   m_ICR1;	 // Output Compare Register
+    __IO Word_type   m_OCR1B;	 // Output Compare Register
+    __IO Word_type   m_OCR1A;	 // Output Compare Register
+    __IO Word_type   m_TCNT1;	 // Output Compare Register
     __IO TCCR1B_type m_TCCR1B;   // Timer/Counter Control Register
     __IO TCCR1A_type m_TCCR1A;   // Timer/Counter Control Register
 }GPTMR1_type;    // General Purpose Input Output Registers
@@ -496,7 +521,8 @@ typedef union{
         u8 m_TOV0 : 1;        // Timer/Counter1 Overflow Flag
         u8 m_OCF0 : 1;        // Timer/Counter1 Output Compare Match Flag
         u8 m_TOV1 : 1;        // Timer/Counter1 Overflow Flag
-        u8 m_OCF1 : 2;        // Timer/Counter1 Output Compare Match Flag
+        u8 m_OCF1B: 1;        // Timer/Counter1 Output Compare Match Flag
+        u8 m_OCF1A: 1;        // Timer/Counter1 Output Compare Match Flag
         u8 m_ICF1 : 1;        // Timer/Counter1, Input Capture Flag
         u8 m_TOV2 : 1;        // Timer/Counter2 Overflow Flag
         u8 m_OCF2 : 1;        // Timer/Counter2 Output Compare Match Flag
@@ -511,7 +537,8 @@ typedef union{
         u8 m_TOIE0 : 1;        // Timer/Counter1 Overflow Interrupt Enable
         u8 m_OCIE0 : 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
         u8 m_TOIE1 : 1;        // Timer/Counter1 Overflow Interrupt Enable
-        u8 m_OCIE1 : 2;        // Timer/Counter1 Output Compare Match Interrupt Enable
+        u8 m_OCIE1B: 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
+        u8 m_OCIE1A: 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
         u8 m_TICIE1: 1;        // Timer/Counter1, Input Capture Interrupt Enable
         u8 m_TOIE2 : 1;        // Timer/Counter2 Overflow Interrupt Enable
         u8 m_OCIE2 : 1;        // Timer/Counter2 Output Compare Match Interrupt Enable
