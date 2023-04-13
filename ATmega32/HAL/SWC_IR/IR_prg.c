@@ -1,33 +1,56 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : DELAY.h												  */
+/* File Name   : IR_prg.c												  */
 /* Author      : MAAM														  */
 /* Version     : v00														  */
-/* date        : Mar 25, 2023												  */
+/* date        : Apr 11, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
+#include "ATMega32.h"
 
-#ifndef DELAY_H_
-#define DELAY_H_
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "TMR_int.h"
+#include "TMR_cfg.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+/*
+Sensor: TSOP1738 IR receiver module must be connected to INT0 Pin.
+		This is PIN16 in ATmega16 and ATmega32.
+
+		   -----
+		  |  _  |
+		  | | | |
+		  | | | |
+		  -------
+		  | |  |
+		  | |  |
+		  | |  |
+	  (5V)(GND)(PD2)
+
+	**********************
+	*TSOP 1738 Front View*
+	**********************
+	Resource Usage:		-Timer0		-INT0 (PD2)
+ */
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
-#define DELAY_MCU_FOCS_8MHZ			185
-#define DELAY_MCU_FOCS_16MHZ		370
-#define DELAY_MCU_FOCS_20MHZ		462 	// 462.5
+#define IR_CMD_MAX_LENGTH			8u
+#define IR_CMD_QUEUE_LENGTH			8u
 
-#define DELAY_FOR_LOOP				DELAY_MCU_FOCS_8MHZ
-
-#define ERROR_RATIO					43
-#define DELAY_MS(x)					for(u32 u32Delay = ((F_CPU/1000u)*x/ERROR_RATIO) ; u32Delay-- ; )	__asm("NOP");
+#define IR_NONE_CMD					LBTY_u8MAX
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -42,12 +65,16 @@
 /* ************************************************************************** */
 
 
-/* ************************************************************************** */
-/* Description :    Delay function for milliseconde							  */
-/* Input       :	u8PortNum, u8PinNum										  */
-/* Return      :	LBTY_tenuErrorStatus									  */
-/* ************************************************************************** */
-void vidMyDelay_ms(u16 u16DelayNum);
+void IR_Reset(void){
 
-#endif /* DELAY_H_ */
-/*************************** E N D (DELAY.h) ******************************/
+}
+
+void RemoteInit(void){
+
+}
+
+LBTY_tenuErrorStatus GetRemoteCmd(u8* pu8CMD){
+
+}
+
+/*************************** E N D (IR_prg.c) ******************************/
