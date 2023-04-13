@@ -86,14 +86,14 @@ typedef enum{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_TWIE : 1;   // TWI Interrupt Enable
-        u8        : 1;
-        u8 m_TWEN : 1;   // TWI Enable Bit
-        u8 m_TWWC : 1;   // TWI Write Collision Flag
-        u8 m_TWSTO: 1;   // TWI STOP Condition Bit
-        u8 m_TWSTA: 1;   // TWI START Condition Bit
-        u8 m_TWEA : 1;   // TWI Enable Acknowledge Bit
-        u8 m_TWINT: 1;   // TWI Interrupt Flag
+    	__IO u8 m_TWIE : 1;   // TWI Interrupt Enable
+    	__IO u8        : 1;
+    	__IO u8 m_TWEN : 1;   // TWI Enable Bit
+    	__I  u8 m_TWWC : 1;   // TWI Write Collision Flag
+    	__IO u8 m_TWSTO: 1;   // TWI STOP Condition Bit
+    	__IO u8 m_TWSTA: 1;   // TWI START Condition Bit
+    	__IO u8 m_TWEA : 1;   // TWI Enable Acknowledge Bit
+    	__IO u8 m_TWINT: 1;   // TWI Interrupt Flag "0 -> set" "1 -> reset"
     }sBits;
 }TWCR_type; // TWI Control Register
 
@@ -102,13 +102,9 @@ typedef union{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_TWPS : 2;   // TWI Prescaler Bits
-        u8        : 1;
-        u8 m_TWS3 : 1;   // TWI Status
-        u8 m_TWP4 : 1;   // TWI Status
-        u8 m_TWP5 : 1;   // TWI Status
-        u8 m_TWP6 : 1;   // TWI Status
-        u8 m_TWP7 : 1;   // TWI Status
+    	__IO u8 m_TWPS : 2;   // TWI Prescaler Bits
+        __IO u8        : 1;
+        __I  u8 m_TWS  : 5;   // TWI Status
     }sBits;
 }TWSR_type; // TWI Status Register
 
@@ -117,8 +113,8 @@ typedef union{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_TWPS : 1;   // TWI General Call Recognition Enable Bit
-        u8 m_TWA  : 7;   // TWI Slave Address
+        u8 m_TWGCE : 1;   // TWI General Call Recognition Enable Bit
+        u8 m_TWA   : 7;   // TWI Slave Address
     }sBits;
 }TWAR_type; // TWI Address Register
 
