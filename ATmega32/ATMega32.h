@@ -113,8 +113,8 @@ typedef union{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_TWGCE : 1;   // TWI General Call Recognition Enable Bit
-        u8 m_TWA   : 7;   // TWI Slave Address
+    	__IO u8 m_TWGCE : 1;   // TWI General Call Recognition Enable Bit
+        __IO u8 m_TWA   : 7;   // TWI Slave Address
     }sBits;
 }TWAR_type; // TWI Address Register
 
@@ -134,12 +134,12 @@ typedef struct{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_ADPS : 3;   // ADC Prescaler Select Bits
-        u8 m_ADIE : 1;   // ADC Interrupt Enable
-        u8 m_ADIF : 1;   // ADC Interrupt Flag
-        u8 m_ADATE: 1;   // ADC Auto Trigger Enable
-        u8 m_ADSC : 1;   // ADC Start Conversion
-        u8 m_ADEN : 1;   // ADC Enable
+    	__IO u8 m_ADPS : 3;   // ADC Prescaler Select Bits
+    	__IO u8 m_ADIE : 1;   // ADC Interrupt Enable
+    	__IO u8 m_ADIF : 1;   // ADC Interrupt Flag
+    	__IO u8 m_ADATE: 1;   // ADC Auto Trigger Enable
+    	__IO u8 m_ADSC : 1;   // ADC Start Conversion
+    	__IO u8 m_ADEN : 1;   // ADC Enable
     }sBits;
 }ADCSRA_type; // ADC Control and Status Register A
 
@@ -148,9 +148,9 @@ typedef union{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_MUX  : 5;   // Analog Channel and Gain Selection Bits
-        u8 m_ADLAR: 1;   // ADC Left Adjust Result
-        u8 m_REFS : 2;   // Reference Selection Bits
+    	__IO u8 m_MUX  : 5;   // Analog Channel and Gain Selection Bits
+    	__IO u8 m_ADLAR: 1;   // ADC Left Adjust Result
+    	__IO u8 m_REFS : 2;   // Reference Selection Bits
     }sBits;
 }ADMUX_type; // ADC Multiplexer Selection Register
 
@@ -159,13 +159,13 @@ typedef union{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_ACIS : 2;   // Analog Comparator Interrupt Mode Select
-        u8 m_ACIC : 1;   // Analog Comparator Input Capture Enable
-        u8 m_ACIE : 1;   // Analog Comparator Interrupt Enable
-        u8 m_ACI  : 1;   // Analog Comparator Interrupt Flag
-        u8 m_ACO  : 1;   // Analog Comparator Output
-        u8 m_ACBG : 1;   // Analog Comparator Bandgap Select
-        u8 m_ACD  : 1;   // Analog Comparator Disable
+    	__IO u8 m_ACIS : 2;   // Analog Comparator Interrupt Mode Select
+    	__IO u8 m_ACIC : 1;   // Analog Comparator Input Capture Enable
+    	__IO u8 m_ACIE : 1;   // Analog Comparator Interrupt Enable
+    	__IO u8 m_ACI  : 1;   // Analog Comparator Interrupt Flag
+        __I  u8 m_ACO  : 1;   // Analog Comparator Output
+        __IO u8 m_ACBG : 1;   // Analog Comparator Bandgap Select
+        __IO u8 m_ACD  : 1;   // Analog Comparator Disable
     }sBits;
 }ACSR_type; // Analog Comparator Control and Status
 
@@ -189,18 +189,18 @@ typedef struct{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_UCPOL: 1;   // Clock Polarity
-        u8 m_UCSZ0: 1;   // Character Size
-        u8 m_UCSZ1: 1;   // Character Size
-        u8 m_USBS : 1;   // Stop Bit Select
-        u8 m_UPM  : 2;   // Parity Mode
-        u8 m_UMSEL: 1;   // USART Mode Select
-        u8 m_URSEL: 1;   // Register Select
+    	__IO u8 m_UCPOL: 1;   // Clock Polarity
+        __IO u8 m_UCSZ0: 1;   // Character Size
+        __IO u8 m_UCSZ1: 1;   // Character Size
+        __IO u8 m_USBS : 1;   // Stop Bit Select
+        __IO u8 m_UPM  : 2;   // Parity Mode
+        __IO u8 m_UMSEL: 1;   // USART Mode Select
+        __IO u8 m_URSEL: 1;   // Register Select
     }sUCSRC;
     struct {
-        u8 m_UBRR : 4;   // USART Baud Rate High
-        u8        : 3;
-        u8 m_URSEL: 1;   // Register Select
+    	__IO u8 m_UBRR : 4;   // USART Baud Rate High
+    	__IO u8        : 3;
+    	__IO u8 m_URSEL: 1;   // Register Select
     }sUBRRH;
 }UCSRC_type; // USART Control and Status Register
 
@@ -209,14 +209,14 @@ typedef union{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_TXB8 : 1;   // Transmit Data Bit 8
-        u8 m_RXB8 : 1;   // Receive Data Bit 8
-        u8 m_UCSZ2: 1;   // Character Size
-        u8 m_TXEN : 1;   // Transmitter Enable
-        u8 m_RXEN : 1;   // Receiver Enable
-        u8 m_UDRIE: 1;   // USART Data Register Empty Interrupt Enable
-        u8 m_TXCIE: 1;   // TX Complete Interrupt Enable
-        u8 m_RXCIE: 1;   // RX Complete Interrupt Enable
+    	__IO u8 m_TXB8 : 1;   // Transmit Data Bit 8
+    	__I  u8 m_RXB8 : 1;   // Receive Data Bit 8
+    	__IO u8 m_UCSZ2: 1;   // Character Size
+    	__IO u8 m_TXEN : 1;   // Transmitter Enable
+    	__IO u8 m_RXEN : 1;   // Receiver Enable
+    	__IO u8 m_UDRIE: 1;   // USART Data Register Empty Interrupt Enable
+    	__IO u8 m_TXCIE: 1;   // TX Complete Interrupt Enable
+    	__IO u8 m_RXCIE: 1;   // RX Complete Interrupt Enable
     }sBits;
 }UCSRB_type; // USART Control and Status Register
 
@@ -225,14 +225,14 @@ typedef union{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_MPCM: 1;   // Multi-processor Communication Mode
-        u8 m_U2X : 1;   // Double the USART Transmission Speed
-        u8 m_PE  : 1;   // Parity Error
-        u8 m_DOR : 1;   // Data OverRun
-        u8 m_FE  : 1;   // Frame Error
-        u8 m_UDRE: 1;   // USART Data Register Empty
-        u8 m_TXC : 1;   // USART Transmit Complete
-        u8 m_RXC : 1;   // USART Receive Complete
+    	__IO u8 m_MPCM: 1;   // Multi-processor Communication Mode
+        __IO u8 m_U2X : 1;   // Double the USART Transmission Speed
+        __I  u8 m_PE  : 1;   // Parity Error
+        __I  u8 m_DOR : 1;   // Data OverRun
+        __I  u8 m_FE  : 1;   // Frame Error
+        __I  u8 m_UDRE: 1;   // USART Data Register Empty
+        __IO u8 m_TXC : 1;   // USART Transmit Complete
+        __I  u8 m_RXC : 1;   // USART Receive Complete
     }sBits;
 }UCSRA_type; // USART Control and Status Register
 
@@ -252,13 +252,13 @@ typedef struct{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_SPR : 2;   // SPI Clock Rate Select 1 and 0
-        u8 m_CPHA: 1;   // Clock Phase
-        u8 m_CPOL: 1;   // Clock Polarity
-        u8 m_MSTR: 1;   // Master/Slave Select
-        u8 m_DORD: 1;   // Data Order
-        u8 m_SPE : 1;   // SPI Enable
-        u8 m_SPIE: 1;   // SPI Interrupt Enable
+    	__IO u8 m_SPR : 2;   // SPI Clock Rate Select 1 and 0
+    	__IO u8 m_CPHA: 1;   // Clock Phase
+    	__IO u8 m_CPOL: 1;   // Clock Polarity
+    	__IO u8 m_MSTR: 1;   // Master/Slave Select
+    	__IO u8 m_DORD: 1;   // Data Order
+    	__IO u8 m_SPE : 1;   // SPI Enable
+    	__IO u8 m_SPIE: 1;   // SPI Interrupt Enable
     }sBits;
 }SPCR_type; // SPI Control Register
 
@@ -267,10 +267,10 @@ typedef union{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_SPI2X: 1;   // Double SPI Speed Bit
-        u8        : 5;
-        u8 m_WCOL : 1;   // Write Collision Flag
-        u8 m_SPIF : 1;   // SPI Interrupt Flag
+    	__IO u8 m_SPI2X: 1;   // Double SPI Speed Bit
+        __I  u8        : 5;
+        __I  u8 m_WCOL : 1;   // Write Collision Flag
+        __I  u8 m_SPIF : 1;   // SPI Interrupt Flag
     }sBits;
 }SPSR_type; // SPI Status Register
 
@@ -287,14 +287,14 @@ typedef struct{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_B0 : 1;
-        u8 m_B1 : 1;
-        u8 m_B2 : 1;
-        u8 m_B3 : 1;
-        u8 m_B4 : 1;
-        u8 m_B5 : 1;
-        u8 m_B6 : 1;
-        u8 m_B7 : 1;
+    	__IO u8 m_B0 : 1;
+    	__IO u8 m_B1 : 1;
+    	__IO u8 m_B2 : 1;
+    	__IO u8 m_B3 : 1;
+    	__IO u8 m_B4 : 1;
+    	__IO u8 m_B5 : 1;
+    	__IO u8 m_B6 : 1;
+    	__IO u8 m_B7 : 1;
     }sBits;
 }BYTE_type; // byte bit exchange
 
@@ -311,11 +311,11 @@ typedef struct{
 typedef union{
     u8 u_Reg;
     struct {
-        u8 m_EERE : 1;   // EEPROM Read Enable
-        u8 m_EEWE : 1;   // EEPROM Write Enable
-        u8 m_EEMWE: 1;   // EEPROM Master Write Enable
-        u8 m_EERIE: 1;   // EEPROM Ready Interrupt Enable
-        u8        : 4;
+    	__IO u8 m_EERE : 1;   // EEPROM Read Enable
+    	__IO u8 m_EEWE : 1;   // EEPROM Write Enable
+    	__IO u8 m_EEMWE: 1;   // EEPROM Master Write Enable
+    	__IO u8 m_EERIE: 1;   // EEPROM Ready Interrupt Enable
+    	__IO u8        : 4;
     }sBits;
 }EECR_type; // EEPROM Control Register
 
@@ -331,19 +331,19 @@ typedef struct{
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_WDP  : 3;        // Watchdog Timer Prescaler
-        u8 m_WDE  : 1;        // Watchdog Enable
-        u8 m_WDTOE: 1;        // Watchdog Turn-off Enable
-        u8        : 3;
+    	__IO u8 m_WDP  : 3;        // Watchdog Timer Prescaler
+    	__IO u8 m_WDE  : 1;        // Watchdog Enable
+    	__IO u8 m_WDTOE: 1;        // Watchdog Turn-off Enable
+    	__IO u8        : 3;
     }sBits;
 }WDTCR_type;   // Watchdog Control Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
         __I  u8 m_TCR2UB : 1;        // Timer/Counter Control Register2 Update Busy
         __I  u8 m_OCR2UB : 1;        // Output Compare Register2 Update Busy
@@ -356,13 +356,13 @@ typedef union{
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_CSx  : 3;        // Clock Select
-        u8 m_WGMx1: 1;        // Waveform Generation Mode
-        u8 m_COMx : 2;        // Compare Match Output Mode
-        u8 m_WGMx0: 1;        // Waveform Generation Mode
-        u8 m_FOCx : 1;        // Force Output Compare
+    	__IO u8 m_CSx  : 3;        // Clock Select
+    	__IO u8 m_WGMx1: 1;        // Waveform Generation Mode
+    	__IO u8 m_COMx : 2;        // Compare Match Output Mode
+    	__IO u8 m_WGMx0: 1;        // Waveform Generation Mode
+    	__IO u8 m_FOCx : 1;        // Force Output Compare
     }sBits;
 }TCCRx_type;   // Timer/Counter Control Register
 
@@ -378,28 +378,28 @@ typedef struct{
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_CS1  : 3;        // Clock Select
-        u8 m_WGM12: 1;        // Waveform Generation Mode
-        u8 m_WGM13: 1;        // Waveform Generation Mode
-        u8        : 1;
-        u8 m_ICES1: 1;        // Input Capture Edge Select
-        u8 m_ICNC1: 1;        // Input Capture Noise Canceler
+    	__IO u8 m_CS1  : 3;        // Clock Select
+    	__IO u8 m_WGM12: 1;        // Waveform Generation Mode
+    	__IO u8 m_WGM13: 1;        // Waveform Generation Mode
+    	__IO u8        : 1;
+    	__IO u8 m_ICES1: 1;        // Input Capture Edge Select
+    	__IO u8 m_ICNC1: 1;        // Input Capture Noise Canceler
     }sBits;
 }TCCR1B_type;   // Timer/Counter Control Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_WGM10: 1;        // Waveform Generation Mode
-        u8 m_WGM11: 1;        // Waveform Generation Mode
-        u8 m_FOC1B: 1;        // Force Output Compare
-        u8 m_FOC1A: 1;        // Force Output Compare
-        u8 m_COM1B: 2;        // Compare Match Output Mode
-        u8 m_COM1A: 2;        // Compare Match Output Mode
+    	__IO u8 m_WGM10: 1;        // Waveform Generation Mode
+    	__IO u8 m_WGM11: 1;        // Waveform Generation Mode
+    	__IO u8 m_FOC1B: 1;        // Force Output Compare
+    	__IO u8 m_FOC1A: 1;        // Force Output Compare
+    	__IO u8 m_COM1B: 2;        // Compare Match Output Mode
+    	__IO u8 m_COM1A: 2;        // Compare Match Output Mode
     }sBits;
 }TCCR1A_type;   // Timer/Counter Control Register
 
@@ -445,14 +445,14 @@ typedef struct{
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_PSR10: 1;        // Prescaler Reset Timer/Counter1 and Timer/Counter0
-        u8 m_PSR2 : 1;        // Prescaler Reset Timer/Counter2
-        u8 m_PUD  : 1;        // Pull-up disable
-        u8 m_ACME : 1;        // Analog Comparator Multiplexer Enable
-        u8        : 1;
-        u8 m_ADTS : 3;        // ADC Auto Trigger Source
+    	__IO u8 m_PSR10: 1;        // Prescaler Reset Timer/Counter1 and Timer/Counter0
+    	__IO u8 m_PSR2 : 1;        // Prescaler Reset Timer/Counter2
+    	__IO u8 m_PUD  : 1;        // Pull-up disable
+    	__IO u8 m_ACME : 1;        // Analog Comparator Multiplexer Enable
+    	__IO u8        : 1;
+    	__IO u8 m_ADTS : 3;        // ADC Auto Trigger Source
     }sBits;
 }SFIOR_type;   // Special Function I/O Register
 
@@ -468,118 +468,118 @@ typedef struct{
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_PORF : 1;        // Power-on  Reset Flag
-        u8 m_EXTRF: 1;        // External  Reset Flag
-        u8 m_BORF : 1;        // Brown-out Reset Flag
-        u8 m_WDRF : 1;        // Watchdog  Reset Flag
-        u8 m_JTRF : 1;        // JTAG      Reset Flag
-        u8        : 1;
-        u8 m_ISC2 : 1;        // Interrupt 2 Sense Control
-        u8 m_JTD  : 1;        // JTAG Interface Disable
+    	__IO u8 m_PORF : 1;        // Power-on  Reset Flag
+    	__IO u8 m_EXTRF: 1;        // External  Reset Flag
+    	__IO u8 m_BORF : 1;        // Brown-out Reset Flag
+    	__IO u8 m_WDRF : 1;        // Watchdog  Reset Flag
+    	__IO u8 m_JTRF : 1;        // JTAG      Reset Flag
+    	__IO u8        : 1;
+    	__IO u8 m_ISC2 : 1;        // Interrupt 2 Sense Control
+    	__IO u8 m_JTD  : 1;        // JTAG Interface Disable
     }sBits;
 }MCUCSR_type;   // Control and Status Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_ISC0 : 2;        // Interrupt 0 Sense Control
-        u8 m_ISC1 : 2;        // Interrupt 1 Sense Control
-        u8 m_SM   : 3;        // Sleep Mode
-        u8 m_SE   : 1;        // Sleep Enable
+    	__IO u8 m_ISC0 : 2;        // Interrupt 0 Sense Control
+    	__IO u8 m_ISC1 : 2;        // Interrupt 1 Sense Control
+    	__IO u8 m_SM   : 3;        // Sleep Mode
+    	__IO u8 m_SE   : 1;        // Sleep Enable
     }sBits;
 }MCUCR_type;   // MCU Control Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_SPMEN : 1;        // Store Program Memory Enable
-        u8 m_PGERS : 1;        // Page Erase
-        u8 m_PGWRT : 1;        // Page Write
-        u8 m_BLBSET: 1;        // Boot Lock Bit Set
-        u8 m_RWWSRE: 1;        // Read-While-Write Section Read Enable
-        u8         : 1;        //
-        u8 m_RWWSB : 1;        // Read-While-Write Section Busy
-        u8 m_SPMIE : 1;        // SPM Interrupt Enable
+    	__IO u8 m_SPMEN : 1;        // Store Program Memory Enable
+        __IO u8 m_PGERS : 1;        // Page Erase
+        __IO u8 m_PGWRT : 1;        // Page Write
+        __IO u8 m_BLBSET: 1;        // Boot Lock Bit Set
+        __IO u8 m_RWWSRE: 1;        // Read-While-Write Section Read Enable
+        __IO u8         : 1;        //
+        __I  u8 m_RWWSB : 1;        // Read-While-Write Section Busy
+        __IO u8 m_SPMIE : 1;        // SPM Interrupt Enable
     }sBits;
 }SPMCR_type;   // MCU Control Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_TOV0 : 1;        // Timer/Counter1 Overflow Flag
-        u8 m_OCF0 : 1;        // Timer/Counter1 Output Compare Match Flag
-        u8 m_TOV1 : 1;        // Timer/Counter1 Overflow Flag
-        u8 m_OCF1B: 1;        // Timer/Counter1 Output Compare Match Flag
-        u8 m_OCF1A: 1;        // Timer/Counter1 Output Compare Match Flag
-        u8 m_ICF1 : 1;        // Timer/Counter1, Input Capture Flag
-        u8 m_TOV2 : 1;        // Timer/Counter2 Overflow Flag
-        u8 m_OCF2 : 1;        // Timer/Counter2 Output Compare Match Flag
+    	__IO u8 m_TOV0 : 1;        // Timer/Counter1 Overflow Flag
+    	__IO u8 m_OCF0 : 1;        // Timer/Counter1 Output Compare Match Flag
+    	__IO u8 m_TOV1 : 1;        // Timer/Counter1 Overflow Flag
+    	__IO u8 m_OCF1B: 1;        // Timer/Counter1 Output Compare Match Flag
+    	__IO u8 m_OCF1A: 1;        // Timer/Counter1 Output Compare Match Flag
+    	__IO u8 m_ICF1 : 1;        // Timer/Counter1, Input Capture Flag
+    	__IO u8 m_TOV2 : 1;        // Timer/Counter2 Overflow Flag
+    	__IO u8 m_OCF2 : 1;        // Timer/Counter2 Output Compare Match Flag
     }sBits;
 }TIFR_type;   // Timer/Counter Interrupt Flag Register Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_TOIE0 : 1;        // Timer/Counter1 Overflow Interrupt Enable
-        u8 m_OCIE0 : 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
-        u8 m_TOIE1 : 1;        // Timer/Counter1 Overflow Interrupt Enable
-        u8 m_OCIE1B: 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
-        u8 m_OCIE1A: 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
-        u8 m_TICIE1: 1;        // Timer/Counter1, Input Capture Interrupt Enable
-        u8 m_TOIE2 : 1;        // Timer/Counter2 Overflow Interrupt Enable
-        u8 m_OCIE2 : 1;        // Timer/Counter2 Output Compare Match Interrupt Enable
+    	__IO u8 m_TOIE0 : 1;        // Timer/Counter1 Overflow Interrupt Enable
+    	__IO u8 m_OCIE0 : 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
+    	__IO u8 m_TOIE1 : 1;        // Timer/Counter1 Overflow Interrupt Enable
+    	__IO u8 m_OCIE1B: 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
+    	__IO u8 m_OCIE1A: 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
+    	__IO u8 m_TICIE1: 1;        // Timer/Counter1, Input Capture Interrupt Enable
+    	__IO u8 m_TOIE2 : 1;        // Timer/Counter2 Overflow Interrupt Enable
+    	__IO u8 m_OCIE2 : 1;        // Timer/Counter2 Output Compare Match Interrupt Enable
     }sBits;
 }TIMSK_type;   // Timer/Counter Interrupt Mask Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8        : 5;
-        u8 m_INT2F: 1;        // External Interrupt Request Flag 2
-        u8 m_INT0F: 1;        // External Interrupt Request Flag 0
-        u8 m_INT1F: 1;        // External Interrupt Request Flag 1
+    	__IO u8        : 5;
+    	__IO u8 m_INT2F: 1;        // External Interrupt Request Flag 2
+    	__IO u8 m_INT0F: 1;        // External Interrupt Request Flag 0
+    	__IO u8 m_INT1F: 1;        // External Interrupt Request Flag 1
     }sBits;
 }GIFR_type;   // General Interrupt Flag Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_IVCE : 1;        // Interrupt Vector Change Enable
-        u8 m_IVSEL: 1;        // Interrupt Vector Select
-        u8        : 3;
-        u8 m_INT2E: 1;        // External Interrupt Request Enable 2
-        u8 m_INT0E: 1;        // External Interrupt Request Enable 0
-        u8 m_INT1E: 1;        // External Interrupt Request Enable 1
+    	__IO u8 m_IVCE : 1;        // Interrupt Vector Change Enable
+    	__IO u8 m_IVSEL: 1;        // Interrupt Vector Select
+    	__IO u8        : 3;
+    	__IO u8 m_INT2E: 1;        // External Interrupt Request Enable 2
+    	__IO u8 m_INT0E: 1;        // External Interrupt Request Enable 0
+    	__IO u8 m_INT1E: 1;        // External Interrupt Request Enable 1
     }sBits;
 }GICR_type;   // General Interrupt Control Register
 
 /*************************************************************************/
 
 typedef union{
-    __IO u8 u_Reg;
+    u8 u_Reg;
     struct {
-        u8 m_C : 1;        // Carry Flag
-        u8 m_Z : 1;        // Zero Flag
-        u8 m_N : 1;        // Negative Flag
-        u8 m_V : 1;        // Two’s Complement Overflow Flag
-        u8 m_S : 1;        // Sign Bit
-        u8 m_H : 1;        // Half Carry Flag
-        u8 m_T : 1;        // Bit Copy Storage
-        u8 m_I : 1;        // Global Interrupt Enable
+    	__IO u8 m_C : 1;        // Carry Flag
+    	__IO u8 m_Z : 1;        // Zero Flag
+    	__IO u8 m_N : 1;        // Negative Flag
+    	__IO u8 m_V : 1;        // Two’s Complement Overflow Flag
+    	__IO u8 m_S : 1;        // Sign Bit
+    	__IO u8 m_H : 1;        // Half Carry Flag
+    	__IO u8 m_T : 1;        // Bit Copy Storage
+    	__IO u8 m_I : 1;        // Global Interrupt Enable
     }sBits;
 }SREG_type;   // General Interrupt Control Register
 
