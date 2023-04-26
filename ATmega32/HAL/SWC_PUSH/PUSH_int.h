@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : PUSH_int.h												  */
+/* File Name   : PUSH_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -33,11 +33,9 @@ typedef enum{
 #if 	AMIT_KIT
 #define PUSH_NUM		3u
 #elif	ETA32_KIT
-#define PUSH_NUM		0u
-#define
-#define PUSH_NUM		3u
+#define PUSH_NUM		4u
 #else
-
+#define PUSH_NUM		3u
 #endif
 
 /* ************************************************************************** */
@@ -57,7 +55,7 @@ typedef enum{
 /* Input       :	u8PushNum												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void PUSH_vidInit(u8 u8PushNum);
+extern void PUSH_vidInit(u8 u8PushNum);
 
 /* ************************************************************************** */
 /* Description :    Get the Push Button value								  */
@@ -65,7 +63,7 @@ void PUSH_vidInit(u8 u8PushNum);
 /* Input/Output:    pu8State												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus PUSH_u8GetPushState(u8 u8PushNum, u8* pu8State);
+extern LBTY_tenuErrorStatus PUSH_u8GetPushState(u8 u8PushNum, u8* pu8State);
 
 #endif /* PUSH_INT_H_ */
 /*************************** E N D (PUSH_int.h) ******************************/

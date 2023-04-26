@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c												  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
 #include "LBTY_int.h"
-#include "LBIT_int.h"
+#include "LCTY_int.h"
+
 #include "DELAY.h"
+#include "INTP.h"
+
+#include "INT_int.h"
+#include "INT_cfg.h"
 
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
 
+#include "LED_int.h"
+#include "LED_cfg.h"
+
 #include "PUSH_cfg.h"
 #include "PUSH_int.h"
-
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -41,71 +48,93 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_PUSH
+
+u8 u8INT_Flag = LBTY_RESET;
+
+void Push_ISR(void);
+
 int main(void){
 
 #ifdef AMIT_KIT
-
-    GPIO_u8SetPinDirection(D, AMIT_LED0, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (D, AMIT_LED0, PIN_Low);
-    GPIO_u8SetPinDirection(D, AMIT_LED1, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (D, AMIT_LED1, PIN_Low);
-    GPIO_u8SetPinDirection(D, AMIT_LED2, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (D, AMIT_LED2, PIN_Low);
 
 	PUSH_vidInit(PUSH0);
 	PUSH_vidInit(PUSH1);
 	PUSH_vidInit(PUSH2);
 
-	u8 u8UpState, u8DownState, u8OkState;
-   	while(1){
-   		PUSH_u8GetPushState(PUSH0, &u8UpState  );
-   		PUSH_u8GetPushState(PUSH1, &u8DownState);
-   		PUSH_u8GetPushState(PUSH2, &u8OkState  );
+    INT_vidInit(INT_AMIT_PUSH2);
+    INT_vidSetCallBack(INT_AMIT_PUSH2, Push_ISR);
 
-   		if(u8UpState){
-   			GPIO_u8SetPinValue(D, AMIT_LED0, PIN_High);
+	LED_vidInit(LED0);
+	LED_vidInit(LED1);
+	LED_vidInit(LED2);
+
+    INTP_vidEnable();
+	u8 u8UpState, u8DownState;
+   	while(1){
+
+   		if(u8INT_Flag){
+			LED_u8SetON(LED0);
+			PUSH_u8GetPushState(PUSH0, &u8UpState  );
+			PUSH_u8GetPushState(PUSH1, &u8DownState);
+
+			if(u8UpState){
+				LED_u8SetON(LED1);
+			}
+			if(u8DownState){
+				LED_u8SetON(LED2);
+			}
+			vidMyDelay_ms(500);
+			LED_u8SetOFF(LED1);
+			LED_u8SetOFF(LED2);
    		}
-   		if(u8DownState){
-   			GPIO_u8SetPinValue(D, AMIT_LED1, PIN_High);
-   		}
-   		if(u8OkState){
-   			GPIO_u8SetPinValue(D, AMIT_LED2, PIN_High);
-   		}
-	    vidMyDelay_ms(500);
-	    GPIO_u8SetPinValue(D, AMIT_LED0, PIN_Low);
-	    GPIO_u8SetPinValue(D, AMIT_LED1, PIN_Low);
-	    GPIO_u8SetPinValue(D, AMIT_LED2, PIN_Low);
+		LED_u8SetOFF(LED0);
     }
 
 #endif
 #ifdef ETA32_KIT
-    GPIO_u8SetPinDirection(B, Eta32_LED_R, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (B, Eta32_LED_R, PIN_Low);
 
-    GPIO_u8SetPinDirection(A, Eta32_LED_G, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (A, Eta32_LED_G, PIN_Low);
+	PUSH_vidInit(PUSH0);
+	PUSH_vidInit(PUSH1);
+	PUSH_vidInit(PUSH2);
+	PUSH_vidInit(PUSH3);
 
-    GPIO_u8SetPinDirection(A, Eta32_LED_B, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (A, Eta32_LED_B, PIN_Low);
+	LED_vidInit(LED0);
+	LED_vidInit(LED1);
+	LED_vidInit(LED2);
+	LED_vidInit(LED3);
 
-    GPIO_u8SetPinDirection(A, Eta32_LED_Y, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (A, Eta32_LED_Y, PIN_Low);
-
-   	u8 u8Value = 0;
-
-   	KPAD_vidInit();
-
+	u8 u8State0, u8State1, u8State2, u8State3;
    	while(1){
+   		PUSH_u8GetPushState(PUSH0, &u8State0);
+   		PUSH_u8GetPushState(PUSH1, &u8State1);
+   		PUSH_u8GetPushState(PUSH2, &u8State2);
+   		PUSH_u8GetPushState(PUSH3, &u8State3);
 
-   		u8Value = (u8)KPAD_u8GetKeyNum();
-        GPIO_u8SetPinValue	  (B, Eta32_LED_R, GET_BIT(u8Value, 0));
-        GPIO_u8SetPinValue	  (A, Eta32_LED_G, GET_BIT(u8Value, 1));
-        GPIO_u8SetPinValue	  (A, Eta32_LED_B, GET_BIT(u8Value, 2));
-        GPIO_u8SetPinValue	  (A, Eta32_LED_Y, GET_BIT(u8Value, 3));
-
+   		if(u8State0){
+   			LED_u8SetON(LED0);
+   		}
+   		if(u8State1){
+   			LED_u8SetON(LED1);
+   		}
+   		if(u8State2){
+   			LED_u8SetON(LED2);
+   		}
+   		if(u8State3){
+   			LED_u8SetON(LED3);
+   		}
+	    vidMyDelay_ms(500);
+	    LED_u8SetOFF(LED0);
+	    LED_u8SetOFF(LED1);
+	    LED_u8SetOFF(LED2);
+	    LED_u8SetOFF(LED3);
     }
+
 #endif
    	return 0;
+}
+
+void Push_ISR(void){
+	u8INT_Flag ^= LBTY_SET;
 }
 #endif
 

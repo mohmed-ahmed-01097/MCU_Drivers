@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : PUSH_cfg.c												  */
+/* File Name   : PUSH_cfg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -28,30 +28,30 @@
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-const PUSH_tstrConfiguration pu8PushConfiguration_LGB[PUSH_NUM] = {
+const PUSH_tstrConfiguration kau8PushConfiguration_LGB[PUSH_NUM] = {
 #ifdef PUSH0
-		 {PUSH0_PORT, PUSH0_PIN, PUSH_PULL_DOWN}
+		 {PUSH0_PORT, PUSH0_PIN, PUSH0_RES}
 #endif
 #ifdef PUSH1
-		,{PUSH1_PORT, PUSH1_PIN, PUSH_PULL_DOWN}
+		,{PUSH1_PORT, PUSH1_PIN, PUSH1_RES}
 #endif
 #ifdef PUSH2
-		,{PUSH2_PORT, PUSH2_PIN, PUSH_PULL_DOWN}
+		,{PUSH2_PORT, PUSH2_PIN, PUSH2_RES}
 #endif
 #ifdef PUSH3
-		,{PUSH3_PORT, PUSH3_PIN, PUSH_PULL_UP}
+		,{PUSH3_PORT, PUSH3_PIN, PUSH3_RES}
 #endif
 #ifdef PUSH4
-		,{PUSH4_PORT, PUSH4_PIN, PUSH_PULL_UP}
+		,{PUSH4_PORT, PUSH4_PIN, PUSH4_RES}
 #endif
 #ifdef PUSH5
-		,{PUSH5_PORT, PUSH5_PIN, PUSH_PULL_UP}
+		,{PUSH5_PORT, PUSH5_PIN, PUSH5_RES}
 #endif
 #ifdef PUSH6
-		,{PUSH6_PORT, PUSH6_PIN, PUSH_PULL_UP}
+		,{PUSH6_PORT, PUSH6_PIN, PUSH6_RES}
 #endif
 #ifdef PUSH7
-		,{PUSH7_PORT, PUSH7_PIN, PUSH_PULL_UP}
+		,{PUSH7_PORT, PUSH7_PIN, PUSH7_RES}
 #endif
 };
 /* ************************************************************************** */

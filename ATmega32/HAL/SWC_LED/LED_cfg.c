@@ -11,6 +11,9 @@
 
 #include "LBTY_int.h"
 
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
 #include "LED_int.h"
 #include "LED_cfg.h"
 

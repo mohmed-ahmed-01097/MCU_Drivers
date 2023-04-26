@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : KEYPAD_prg.c												  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -11,6 +11,8 @@
 
 #include "LBTY_int.h"
 #include "LBIT_int.h"
+#include "LCTY_int.h"
+
 #include "DELAY.h"
 
 #include "GPIO_int.h"
@@ -18,10 +20,16 @@
 
 #include "KPAD_cfg.h"
 #include "KPAD_int.h"
+#include "KPAD_priv.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
+
+typedef enum{
+	KPAD_RELEASED = KPAD_KEY_RES,
+	KPAD_PRESSED = !KPAD_KEY_RES
+}KPAD_tenuKeyState;
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
@@ -30,8 +38,8 @@
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-const u8 pu8ROW_PINs_GLB[] = {KPAD_ROW0, KPAD_ROW1, KPAD_ROW2, KPAD_ROW3};
-const u8 pu8COL_PINs_GLB[] = {KPAD_COL0, KPAD_COL1, KPAD_COL2, KPAD_COL3};
+extern const u8 kau8ROW_PINs_GLB[];
+extern const u8 kau8COL_PINs_GLB[];
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -68,33 +76,31 @@ void KPAD_vidInit(void){
 u8 KPAD_u8GetKeyNum(void){
 	u8 u8RetValue = LBTY_u8MAX;
 
+#ifdef KPAD_ROW_DIR_OUTPUT
 	for(u8 i = 0 ; i<KPAD_ROW_NUM ; i++){
-#ifdef KPAD_ROW_DIR_OUTPUT
-		GPIO_u8SetPinValue(KPAD_ROW_PORT, pu8ROW_PINs_GLB[i], PIN_Low);
-#endif
-#ifdef KPAD_COL_DIR_OUTPUT
-		GPIO_u8SetPinValue(KPAD_COL_PORT, pu8COL_PINs_GLB[i], PIN_Low);
-#endif
+		GPIO_u8SetPinValue(KPAD_ROW_PORT, kau8ROW_PINs_GLB[i], KPAD_PRESSED);
 		for(u8 j = 0 ; j<KPAD_COL_NUM ; j++){
-#ifdef KPAD_ROW_DIR_OUTPUT
-			GPIO_u8GetPinValue(KPAD_COL_PORT, pu8COL_PINs_GLB[j], &u8RetValue);
+			GPIO_u8GetPinValue(KPAD_COL_PORT, kau8COL_PINs_GLB[j], &u8RetValue);
 #endif
 #ifdef KPAD_COL_DIR_OUTPUT
-			GPIO_u8GetPinValue(KPAD_ROW_PORT, pu8ROW_PINs_GLB[j], &u8RetValue);
+	for(u8 i = 0 ; i<KPAD_COL_NUM ; i++){
+		GPIO_u8SetPinValue(KPAD_COL_PORT, kau8COL_PINs_GLB[i], KPAD_PRESSED);
+		for(u8 j = 0 ; j<KPAD_ROW_NUM ; j++){
+			GPIO_u8GetPinValue(KPAD_ROW_PORT, kau8ROW_PINs_GLB[j], &u8RetValue);
 #endif
-			if(u8RetValue == KPAD_KEY_RELEASED){
+			if(u8RetValue == KPAD_RELEASED){
 				u8RetValue = LBTY_u8MAX;
 				continue;
 			}else{
-				u8RetValue = j + (i * KPAD_MAX_COL);
+				u8RetValue = j + (i * KPAD_ROW_NUM);
 				break;
 			}
 		}
 #ifdef KPAD_ROW_DIR_OUTPUT
-		GPIO_u8SetPinValue(KPAD_ROW_PORT, pu8ROW_PINs_GLB[i], PIN_High);
+		GPIO_u8SetPinValue(KPAD_ROW_PORT, kau8ROW_PINs_GLB[i], KPAD_RELEASED);
 #endif
 #ifdef KPAD_COL_DIR_OUTPUT
-		GPIO_u8SetPinValue(KPAD_COL_PORT, pu8COL_PINs_GLB[i], PIN_High);
+		GPIO_u8SetPinValue(KPAD_COL_PORT, kau8COL_PINs_GLB[i], KPAD_RELEASED);
 #endif
 		if(u8RetValue == LBTY_u8MAX){
 			continue;
@@ -111,7 +117,7 @@ u8 KPAD_u8GetKeyNum(void){
 /* Return      :	u8														  */
 /* ************************************************************************** */
 u8 KPAD_u8GetInputChar(void){
-	u8 u8RetValue = LBTY_u8MAX;
+	u8 u8RetValue = LBTY_u8ZERO;
 	switch(KPAD_u8GetKeyNum()){
 		case 0:
 			u8RetValue = KPAD_KEY00;
