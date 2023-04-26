@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : SEG_cfg.h												  */
+/* File Name   : SEG_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -34,7 +34,7 @@
 #define SEG_B				AMIT_7Seg_B
 #define SEG_C				AMIT_7Seg_C
 #define SEG_D				AMIT_7Seg_D
-#define SEG_h				AMIT_7Seg_D
+#define SEG_h				AMIT_C0
 
 #elif	ETA32_KIT
 
@@ -54,7 +54,7 @@
 #define SEG_B				Eta32_7Seg_B
 #define SEG_C				Eta32_7Seg_C
 #define SEG_D				Eta32_7Seg_D
-#define SEG_h				Eta32_7Seg_D
+#define SEG_h				Eta32_LED_R
 
 #else
 
@@ -75,6 +75,11 @@
 #define SEG_h				GPIO_7Seg_h
 
 #endif
+
+
+#define SEG_DELAY			5u
+
+#define DOT_DELAY			5u
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */

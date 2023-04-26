@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : LMD_cfg.h												  */
+/* File Name   : LMD_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -32,12 +32,6 @@
 COL0  COL1  COL2  COL3				 <== OUTPUT
 */
 
-#if 	AMIT_KIT
-
-#elif	ETA32_KIT
-
-#else
-
 #define LMD_MAX_ARRAY_LEN		128u
 #define LMD_REFRESH_RATE		2u
 
@@ -51,9 +45,6 @@ COL0  COL1  COL2  COL3				 <== OUTPUT
 
 #define LMD_COL_PORT			B
 #define LMD_COL_ACTIVE			LMD_ACTIVE_HIGH
-
-#endif
-
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */

@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : LED_prg.c												  */
+/* File Name   : LED_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -36,7 +36,7 @@ typedef enum{
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-extern const LED_tstrConfiguration pu8LEDConfiguration_LGB[LED_NUM];
+extern const LED_tstrConfiguration kau8LEDConfiguration_LGB[LED_NUM];
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -52,7 +52,7 @@ extern const LED_tstrConfiguration pu8LEDConfiguration_LGB[LED_NUM];
 /* ************************************************************************** */
 void LED_vidInit(u8 u8LedNum){
 	LED_tstrConfiguration* pstrLed =
-			(LED_tstrConfiguration*)&pu8LEDConfiguration_LGB[u8LedNum];
+			(LED_tstrConfiguration*)&kau8LEDConfiguration_LGB[u8LedNum];
 	GPIO_u8SetPinDirection(pstrLed->u8PortNum, pstrLed->u8PinNum, PIN_OUTPUT);
 	LED_u8SetOFF(u8LedNum);
 }
@@ -64,7 +64,7 @@ void LED_vidInit(u8 u8LedNum){
 /* ************************************************************************** */
 LBTY_tenuErrorStatus LED_u8SetON(u8 u8LedNum){
 	LED_tstrConfiguration* pstrLed =
-			(LED_tstrConfiguration*)&pu8LEDConfiguration_LGB[u8LedNum];
+			(LED_tstrConfiguration*)&kau8LEDConfiguration_LGB[u8LedNum];
 	u8 u8State = LBTY_u8ZERO;
 	switch(pstrLed->u8Connection){
 		case LED_Forward:			u8State = LED_Forward_ON;			break;
@@ -81,7 +81,7 @@ LBTY_tenuErrorStatus LED_u8SetON(u8 u8LedNum){
 /* ************************************************************************** */
 LBTY_tenuErrorStatus LED_u8SetOFF(u8 u8LedNum){
 	LED_tstrConfiguration* pstrLed =
-			(LED_tstrConfiguration*)&pu8LEDConfiguration_LGB[u8LedNum];
+			(LED_tstrConfiguration*)&kau8LEDConfiguration_LGB[u8LedNum];
 	u8 u8State = LBTY_u8ZERO;
 	switch(pstrLed->u8Connection){
 		case LED_Forward:			u8State = LED_Forward_OFF;			break;
@@ -98,7 +98,7 @@ LBTY_tenuErrorStatus LED_u8SetOFF(u8 u8LedNum){
 /* ************************************************************************** */
 LBTY_tenuErrorStatus LED_u8Toggle(u8 u8LedNum){
 	LED_tstrConfiguration* pstrLed =
-			(LED_tstrConfiguration*)&pu8LEDConfiguration_LGB[u8LedNum];
+			(LED_tstrConfiguration*)&kau8LEDConfiguration_LGB[u8LedNum];
 	u8 u8State = LBTY_u8ZERO;
 
 	GPIO_u8GetPinValue(pstrLed->u8PortNum, pstrLed->u8PinNum, &u8State);
