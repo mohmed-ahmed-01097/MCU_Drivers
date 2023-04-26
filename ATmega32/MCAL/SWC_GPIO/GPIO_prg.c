@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : GPIO_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 23, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -76,9 +76,7 @@ void GPIO_voidInit(void){
 	#warning "there is some pin's in Port D direction is input so it will need to be set to the default value!"
 #endif
 
-#if PULL_UP_DISABLE
-	S_SFIOR->sBits.m_PUD  = LBTY_SET;		// PUD: Pull-up disable
-#endif
+	S_SFIOR->sBits.m_PUD  = PULL_UP_DISABLE;		// PUD: Pull-up disable
 
 	GPIO_u8SetPortDirection(A, GPIOA_DDR_INIT_DEF);
 	GPIO_u8SetPortValue	   (A, GPIOA_PORT_INIT_DEF);
@@ -308,7 +306,7 @@ LBTY_tenuErrorStatus GPIO_u8GetPinValue(GPIO_PortNum_type u8PortNum,
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
 		*pu8Value = LBTY_u8ZERO;
-		*pu8Value = (u8)GET_BIT(GPIO->m_PIN.u_Reg, u8PinNum) ? PIN_High : PIN_Low;
+		*pu8Value = (u8)GET_BIT(GPIO->m_PIN.u_Reg, u8PinNum);
 		u8RetErrorState = LBTY_OK;
 	}
 
@@ -449,6 +447,39 @@ LBTY_tenuErrorStatus GPIO_u8TogglePortValue(GPIO_PortNum_type u8PortNum){
 	}else{
 		TOG_REG(GPIO->m_PORT.u_Reg);
 		u8RetErrorState = LBTY_OK;
+	}
+
+	return u8RetErrorState;
+}
+
+/********************************************************************************************************************/
+
+/* ************************************************************************** */
+/* Description :  	Set the pin pull up res									  */
+/* Input       :	u8PortNum, u8PinNum, u8Pullup							  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus GPIO_u8SetPinPullUp(GPIO_PortNum_type u8PortNum, u8 u8PinNum,
+											LBTY_tenuFlagStatus u8Pullup){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_NOK;
+	GPIOx_type * GPIO = pu8GPIO_Port(u8PortNum);
+
+	if(GPIO == LBTY_NULL){
+		u8RetErrorState = LBTY_NULL_POINTER;
+	}else{
+		if(GET_BIT(GPIO->m_DDR.u_Reg, u8PinNum) == PIN_INPUT){
+			u8RetErrorState = LBTY_OK;
+
+			S_SFIOR->sBits.m_PUD  = LBTY_RESET;		// PUD: Pull-up disable
+
+			if(u8Pullup){
+				SET_BIT(GPIO->m_PORT.u_Reg, u8PinNum);
+			}else{
+				CLR_BIT(GPIO->m_PORT.u_Reg, u8PinNum);
+			}
+		}else{
+			u8RetErrorState = LBTY_WRITE_ERROR;
+		}
 	}
 
 	return u8RetErrorState;
