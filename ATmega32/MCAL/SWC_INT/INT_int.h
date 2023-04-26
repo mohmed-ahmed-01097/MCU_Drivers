@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : INT_int.h												  */
+/* File Name   : INT_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 26, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -43,49 +43,49 @@ typedef enum {
 /* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void INT_vidInit(u8 u8INT_Num);
+extern void INT_vidInit(u8 u8INT_Num);
 
 /* ************************************************************************** */
 /* Description :  	Set the SenseControl 									  */
 /* Input       :	u8INT_Num, u8INT_SC										  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void INT_vidSetSenseControl(u8 u8INT_Num, INT_tenuSenseControl u8INT_SC);
+extern void INT_vidSetSenseControl(u8 u8INT_Num, INT_tenuSenseControl u8INT_SC);
 
 /* ************************************************************************** */
 /* Description :  	Enable the INT		 									  */
 /* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void INT_vidEnable(u8 u8INT_Num);
+extern void INT_vidEnable(u8 u8INT_Num);
 
 /* ************************************************************************** */
 /* Description :  	Disable the INT		 									  */
 /* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void INT_vidDisable(u8 u8INT_Num);
+extern void INT_vidDisable(u8 u8INT_Num);
 
 /* ************************************************************************** */
 /* Description :  	Set the INT Flag	 									  */
 /* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void INT_vidSetFlag(u8 u8INT_Num);
+extern void INT_vidSetFlag(u8 u8INT_Num);
 
 /* ************************************************************************** */
 /* Description :  	Reset the INT Flag	 									  */
 /* Input       :	u8INT_Num												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void INT_vidResetFlag(u8 u8INT_Num);
+extern void INT_vidResetFlag(u8 u8INT_Num);
 
 /* ************************************************************************** */
 /* Description :  	Interrupt Callback	 									  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void INT_vidSetCallBack(u8 u8INT_Num, void (*pvidCallback)(void));
+extern void INT_vidSetCallBack(u8 u8INT_Num, void (*pvidCallback)(void));
 
 #endif /* INT_INT_H_ */
 /*************************** E N D (INT_int.h) ******************************/

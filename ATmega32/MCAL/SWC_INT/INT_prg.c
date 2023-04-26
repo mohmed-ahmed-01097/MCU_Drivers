@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : INT_prg.c												  */
+/* File Name   : INT_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 26, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -11,7 +11,9 @@
 #include "ATMega32.h"
 
 #include "LBTY_int.h"
-#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "INTP.h"
 
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
@@ -163,8 +165,7 @@ void INT_vidSetCallBack(u8 u8INT_Num, void (*pvidCallback)(void)){
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void __vector_1 (void) __attribute__((signal));
-void __vector_1 (void){
+ISR(EXT_INT0_vect){
 	INT0_pvidCallback();
 }
 
@@ -173,8 +174,7 @@ void __vector_1 (void){
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void __vector_2 (void) __attribute__((signal));
-void __vector_2 (void){
+ISR(EXT_INT1_vect){
 	INT1_pvidCallback();
 }
 
@@ -183,8 +183,7 @@ void __vector_2 (void){
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void __vector_3 (void) __attribute__((signal));
-void __vector_3 (void){
+ISR(EXT_INT2_vect){
 	INT2_pvidCallback();
 }
 

@@ -18,6 +18,16 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+typedef enum{
+    INT_Low_Level = (u8)0u,
+	INT_Logic_Change,
+	INT_Falling_Edge,
+	INT_Rising_Edge,
+
+	INT2_Falling_Edge = (u8)0u,
+	INT2_Rising_Edge
+}INT_tenuSenseControl;      // Interrupt Sense Control
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
