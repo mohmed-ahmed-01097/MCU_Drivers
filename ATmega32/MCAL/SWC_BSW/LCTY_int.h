@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : INT_int.h												  */
+/* File Name   : LCTY_int.h													  */
 /* Author      : MAAM														  */
 /* Version     : v00														  */
-/* date        : Mar 26, 2023												  */
+/* date        : Apr 26, 2023												  */
+/* description : Compiler Library											  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
-#ifndef MCU_INT_H_
-#define MCU_INT_H_
+#ifndef LCTY_INT_H_
+#define LCTY_INT_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -19,6 +20,25 @@
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
+
+/* Abstraction for inlining */
+//#define LCTY_INLINE  				static inline
+#define LCTY_INLINE  				__attribute__((always_inline)) static inline
+
+/* define function as interrupt handler */
+#define LCTY_INTERRUPT 				__attribute__((interrupt))
+
+/* place variable in direct page */
+#define LCTY_DPAGE 					__attribute__((dp))
+
+/* do not place variable in direct page */
+#define LCTY_NODPAGE 				__attribute__((nodp))
+
+/* Sections */
+#define LCTY_SECTION(section)		__attribute__((section( # section)))
+
+/* Abstraction for assembly command */
+# define LCTY_ASM(cmd)  			__asm__ __volatile__ ( # cmd ::)
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -32,19 +52,6 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
-/* ************************************************************************** */
-/* Description :  	Status Register Global Interrupt Enable					  */
-/* Input       :	void													  */
-/* Return      :	void													  */
-/* ************************************************************************** */
-void MCU_vidEnableGlobalInterrupt(void);
 
-/* ************************************************************************** */
-/* Description :  	Status Register Global Interrupt Disable				  */
-/* Input       :	void													  */
-/* Return      :	void													  */
-/* ************************************************************************** */
-void MCU_vidDisableGlobalInterrupt(void);
-
-#endif /* INT_INT_H_ */
-/*************************** E N D (MCU_int.h) ******************************/
+#endif /* LCTY_INT_H_ */
+/*************************** E N D (LCTY_int.h) ******************************/

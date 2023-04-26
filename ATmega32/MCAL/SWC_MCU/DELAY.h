@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : DELAY.h												  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -27,7 +27,13 @@
 #define DELAY_FOR_LOOP				DELAY_MCU_FOCS_8MHZ
 
 #define ERROR_RATIO					43
-#define DELAY_MS(x)					for(u32 u32Delay = ((F_CPU/1000u)*x/ERROR_RATIO) ; u32Delay-- ; )	__asm("NOP");
+#ifndef ERROR_RATIO
+#define DELAY_US(x)			DELAY_LOOP_MS((F_CPU/4000000u)*x))
+#define DELAY_MS(x)			DELAY_LOOP_US((F_CPU/4000u   )*x))
+#else
+#define DELAY_MS(x)					\
+	for(u32 u32Delay = ((F_CPU/1000u)*x/ERROR_RATIO) ; u32Delay-- ; )	__asm__ __volatile__("NOP")
+#endif
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -41,13 +47,23 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+LCTY_INLINE void DELAY_LOOP_US(u8 __count){
+	__asm__ __volatile__("1: dec %0"    "\n\t" "brne 1b" : "=r" (__count) : "0" (__count));
+}
+LCTY_INLINE void DELAY_LOOP_MS(u16 __count){
+	__asm__ __volatile__("1: sbiw %0,1" "\n\t" "brne 1b" : "=w" (__count) : "0" (__count));
+}
 
 /* ************************************************************************** */
 /* Description :    Delay function for milliseconde							  */
 /* Input       :	u8PortNum, u8PinNum										  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-void vidMyDelay_ms(u16 u16DelayNum);
+LCTY_INLINE void vidMyDelay_ms(u16 u16DelayNum){
+	while(--u16DelayNum){
+        for(u32 i = DELAY_FOR_LOOP ; i-- ; );
+	}
+}
 
 #endif /* DELAY_H_ */
 /*************************** E N D (DELAY.h) ******************************/

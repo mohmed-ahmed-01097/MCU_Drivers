@@ -3,19 +3,20 @@
 /* ************************************************************************** */
 /* File Name   : main.c												  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
 #include "ATMega32.h"
-#include "DELAY.h"
 
+#include "LCTY_int.h"
 #include "LBTY_int.h"
 #include "LBIT_int.h"
 
-#include "MCU_int.h"
+#include "INTP.h"
+#include "DELAY.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -44,9 +45,9 @@ int main(void){
     SET_BIT(SREG, 7);
 
    	while(1){
-   		MCU_vidEnableGlobalInterrupt();
+   		INTP_vidEnable();
    		vidMyDelay_ms(500);
-   		MCU_vidDisableGlobalInterrupt();
+   		INTP_vidDisable();
     }
    	return 0;
 }
