@@ -72,6 +72,16 @@ void SEG_vidInit(void){
     GPIO_u8SetPinValue    (SEG_PORT_COM3, SEG_PIN_COM3, PIN_Low);
 #endif
 
+#ifdef SEG_PIN_COM4
+    GPIO_u8SetPinDirection(SEG_PORT_COM4, SEG_PIN_COM4, PIN_OUTPUT);
+    GPIO_u8SetPinValue    (SEG_PORT_COM4, SEG_PIN_COM4, PIN_Low);
+#endif
+
+#ifdef SEG_PIN_COM5
+    GPIO_u8SetPinDirection(SEG_PORT_COM5, SEG_PIN_COM5, PIN_OUTPUT);
+    GPIO_u8SetPinValue    (SEG_PORT_COM5, SEG_PIN_COM5, PIN_Low);
+#endif
+
 #ifdef	SEG_DECODER
     GPIO_u8SetPinDirection(SEG_PORT_DATA, SEG_A, PIN_OUTPUT);
     GPIO_u8SetPinValue	  (SEG_PORT_DATA, SEG_A, PIN_Low);
@@ -127,6 +137,16 @@ void SEG_vidDisplayNum(u16 u16NumValue){
 	SEG_vidDispalyDigit(u16NumValue % 10u, SEG_PORT_COM3, SEG_PIN_COM3);
 #endif
 
+#ifdef SEG_PIN_COM4
+	u16NumValue /= 10u;
+	SEG_vidDispalyDigit(u16NumValue % 10u, SEG_PORT_COM4, SEG_PIN_COM4);
+#endif
+
+#ifdef SEG_PIN_COM5
+	u16NumValue /= 10u;
+	SEG_vidDispalyDigit(u16NumValue % 10u, SEG_PORT_COM5, SEG_PIN_COM5);
+#endif
+
 }
 
 /* ************************************************************************** */
@@ -169,6 +189,24 @@ void SEG_vidDisplayDot(u8 u8DotDigit){
 			GPIO_u8SetPinValue	(SEG_PORT_COM3, SEG_PIN_COM3, PIN_High);
 			vidMyDelay_ms(DOT_DELAY);
 			GPIO_u8SetPinValue 	(SEG_PORT_COM3, SEG_PIN_COM3, PIN_Low);
+			break;
+#endif
+
+#ifdef SEG_PIN_COM4
+		case 4:
+			GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_High);
+			GPIO_u8SetPinValue	(SEG_PORT_COM4, SEG_PIN_COM4, PIN_High);
+			vidMyDelay_ms(DOT_DELAY);
+			GPIO_u8SetPinValue 	(SEG_PORT_COM4, SEG_PIN_COM4, PIN_Low);
+			break;
+#endif
+
+#ifdef SEG_PIN_COM5
+		case 5:
+			GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_High);
+			GPIO_u8SetPinValue	(SEG_PORT_COM5, SEG_PIN_COM5, PIN_High);
+			vidMyDelay_ms(DOT_DELAY);
+			GPIO_u8SetPinValue 	(SEG_PORT_COM5, SEG_PIN_COM5, PIN_Low);
 			break;
 #endif
 	}

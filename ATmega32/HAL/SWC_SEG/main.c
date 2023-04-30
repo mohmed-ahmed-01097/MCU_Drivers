@@ -44,31 +44,35 @@ int main(void){
 
     SEG_vidInit();
 
-#ifdef AMIT_KIT
+#if defined(AMIT_KIT)
     GPIO_u8SetPinDirection(D, AMIT_LED0, PIN_OUTPUT);
     GPIO_u8SetPinValue	  (D, AMIT_LED0, PIN_Low);
-#endif
-#ifdef ETA32_KIT
+#elif defined(ETA32_KIT)
     GPIO_u8SetPinDirection(A, Eta32_LED_G, PIN_OUTPUT);
     GPIO_u8SetPinValue	  (A, Eta32_LED_G, PIN_Low);
+#else
+
 #endif
 
    	u16 u8Value = 0;
 
    	while(1){
 
-#ifdef AMIT_KIT
+#if defined(AMIT_KIT)
     	for(u16 i = 50 ; --i ; ){
     		SEG_vidDisplayDot(1);
     		SEG_vidDisplayNum(u8Value);
     	}
     GPIO_u8TogglePinValue (D, AMIT_LED0);
-#endif
-#ifdef ETA32_KIT
+#elif defined(ETA32_KIT)
     	for(u16 i = 50 ; --i ; ){
     		SEG_vidDisplayNum(u8Value);
     	}
     GPIO_u8TogglePinValue (A, Eta32_LED_G);
+#else
+	for(u16 i = 50 ; --i ; ){
+		SEG_vidDisplayNum(u8Value);
+	}
 #endif
 
     	u8Value++;

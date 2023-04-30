@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : LCD_int.h												  */
+/* File Name   : LCD_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 31, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -61,12 +61,13 @@ typedef enum{
 #define LCD_COL_NUM_8					8u
 #define LCD_COL_NUM_16					16u
 #define LCD_COL_NUM_20					20u
+#define LCD_COL_NUM_32					32u
 
 #define LCD_ROW_NUM_1					1u
 #define LCD_ROW_NUM_2					2u
 #define LCD_ROW_NUM_4					4u
 
-#define LCD_FLOAT_MUL					1000
+#define LCD_FLOAT_MUL					100
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */

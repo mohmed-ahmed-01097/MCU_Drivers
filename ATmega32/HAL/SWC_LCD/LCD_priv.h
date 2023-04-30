@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : LCD_priv.h												  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 31, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -74,15 +74,18 @@
 /** ... **/
 #define LCD_THIRD_LINE_POSITION_0 		0x90u	// Force cursor to beginning of third line
 #define LCD_THIRD_LINE_POSITION_0_20	0x94u	// Force cursor to beginning of third line
+#define LCD_THIRD_LINE_POSITION_0_32	0xA0u	// Force cursor to beginning of third line
 /** ... **/
 #define LCD_FOURTH_LINE_POSITION_0 		0xD0u	// Force cursor to beginning of fourth line
 #define LCD_FOURTH_LINE_POSITION_0_20	0xD4u	// Force cursor to beginning of fourth line
+#define LCD_FOURTH_LINE_POSITION_0_32	0xE0u	// Force cursor to beginning of fourth line
 
 /********************************************************************************************************************/
-
+// LCD_REGISTER_SELECT_PIN
 #define LCD_RS_CMD						0u
 #define LCD_RS_DATA						1u
 
+//LCD_READ_WRITE_PIN
 #define LCD_RW_WRITE					0u
 #define LCD_RW_READ						1u
 
