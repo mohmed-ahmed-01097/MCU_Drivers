@@ -21,7 +21,7 @@
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
-#define BV(bit)										(1u<<(bit))
+#define _BV(bit)										(1u<<(bit))
 
 /** Bitwise Operation **/
 #define SET_BIT(REG, bit) 							((REG) |=  (1u<<(bit)))

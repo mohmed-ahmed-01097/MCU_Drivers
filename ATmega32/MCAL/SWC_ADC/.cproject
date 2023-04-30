@@ -63,9 +63,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="SWC_MCU|SWC_GPIO|SWC_BSW" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="SWC_BSW"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="SWC_GPIO"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="SWC_MCU"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

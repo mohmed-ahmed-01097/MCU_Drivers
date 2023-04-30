@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : ADC_cfg.h												  */
+/* File Name   : ADC_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 27, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -51,8 +51,6 @@
 
 #endif
 
-#define ADC_PORT				A
-
 /** SFIOR **/
 #define ADC_TRIG_SRC			ADC_Free_Running_Mode
 
@@ -63,10 +61,9 @@
 #define ADC_PRESCALER			ADC_Division_Factor_2
 /** ADC MUX **/
 #define ADC_V_REF_SRC			ADC_AVCC
+#define ADC_V_REF				5u
 
 #define ADC_READ_DELAY			26u
-#define ADC_V_REF				5u
-#define ADC_V_FACTOR			(ADC_V_REF / 1023.0)
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */

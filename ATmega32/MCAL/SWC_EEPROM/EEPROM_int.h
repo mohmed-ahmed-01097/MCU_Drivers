@@ -1,22 +1,16 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : WDT_prg.c													  */
+/* File Name   : EEPROM_int.h												  */
 /* Author      : MAAM														  */
 /* Version     : v00														  */
-/* date        : Apr 8, 2023												  */
+/* date        : Apr 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-#include "ATMega32.h"
 
-#include "LBTY_int.h"
-#include "LCTY_int.h"
-
-#include "INTP.h"
-
-#include "WDT_cfg.h"
-#include "WDT_int.h"
+#ifndef EEPROM_INT_H_
+#define EEPROM_INT_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -39,55 +33,70 @@
 /* ************************************************************************** */
 
 /* ************************************************************************** */
-/* Description :  	Initialization of the WDT								  */
+/* Description :  	Initialization of the EEPROM							  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidInit(void){
-	S_WDTCR->sBits.m_WDTOE = LBTY_RESET;
-	S_WDTCR->sBits.m_WDE   = LBTY_SET;
-	S_WDTCR->sBits.m_WDP   = WDT_TIME_OUT;
-	WDT_vidReset();
-}
+void EEPROM_vidInit(void);
 
 /* ************************************************************************** */
-/* Description :  	WDT Sleep												  */
-/* Input       :	u8Period												  */
-/* Return      :	void													  */
-/* ************************************************************************** */
-void WDT_vidSleep(u8 u8Period){
-	S_WDTCR->sBits.m_WDP   = u8Period;
-}
-
-/* ************************************************************************** */
-/* Description :  	WDT Reset												  */
+/* Description :  	Enable EEPROM Interrupt									  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidReset(void){
-	wdr();	/* reset WDT */
-//	while(!S_MCUCSR->sBits.m_WDRF);
-//	S_MCUCSR->sBits.m_WDRF = LBTY_RESET;
-}
+void EEPROM_vidEnableInterrupt(void);
 
 /* ************************************************************************** */
-/* Description :  	WDT Enable												  */
+/* Description :  	Disable EEPROM Interrupt									  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidEnable(void){
-	S_WDTCR->sBits.m_WDTOE = LBTY_RESET;
-}
+void EEPROM_vidDisableInterrupt(void);
 
 /* ************************************************************************** */
-/* Description :  	WDT Disable												  */
-/* Input       :	void													  */
+/* Description :  	Erase EEPROM with range									  */
+/* Input       :	u16StartAdd, u16EndAdd									  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus EEPROM_u8Erase(u16 u16StartAdd, u16 u16EndAdd);
+
+/* ************************************************************************** */
+/* Description :  	Write Char in EEPROM address							  */
+/* Input       :	u16Address, u8Data										  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus EEPROM_u8WriteChar(u16 u16Address, u8 u8Data);
+
+/* ************************************************************************** */
+/* Description :  	Write String in EEPROM address							  */
+/* Input       :	u16Address												  */
+/* Input/Output:	pu8String												  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus EEPROM_u8WriteString(u16 u16Address, u8* pu8String);
+
+/* ************************************************************************** */
+/* Description :  	Read Char in EEPROM address								  */
+/* Input       :	u16Address												  */
+/* Input/Output:	pu8Data													  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus EEPROM_u8ReadChar(u16 u16Address, u8* pu8Data);
+
+/* ************************************************************************** */
+/* Description :  	Read String in EEPROM address							  */
+/* Input       :	u16StartAddress, u16EndAddress							  */
+/* Input/Output:	pu8String												  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus EEPROM_u8ReadString(u16 u16StartAddress, u16 u16EndAddress, u8* pu8String);
+
+/* ************************************************************************** */
+/* Description :  	Set EEPROM Interrupt call back							  */
+/* Input       :	CallBack												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidDisable(void){
-	S_WDTCR->sBits.m_WDE   = LBTY_SET;
-	S_WDTCR->sBits.m_WDTOE = LBTY_SET;
-	S_WDTCR->sBits.m_WDE   = LBTY_RESET;
-}
+void EEPROM_vidSetCallBack(void (*CallBack)(void));
 
-/*************************** E N D (WDT_prg.c) ******************************/
+#endif /* EEPROM_INT_H_ */
+/*************************** E N D (EEPROM_int.h) ******************************/

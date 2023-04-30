@@ -32,6 +32,7 @@ typedef enum{
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
+# define wdr()						__asm__ __volatile__ ("wdr")
 # define sei()  					__asm__ __volatile__ ("sei" ::)
 # define cli()  					__asm__ __volatile__ ("cli" ::)
 # define reti()  					__asm__ __volatile__ ("reti" ::)

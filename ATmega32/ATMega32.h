@@ -495,6 +495,13 @@ typedef union{
 
 /*************************************************************************/
 
+typedef struct{
+    __I  u16    m_SP : 12;
+    __I  u16          : 4;
+}SP_type;
+
+/*************************************************************************/
+
 typedef union{
     u8 u_Reg;
     struct {
@@ -604,6 +611,7 @@ typedef union{
 #define SFIOR           (*(volatile u8* const)0x50U)
 
 /** On-chip Debug Register **/
+#define S_OCDR          ((BYTE_type* const)0x51U)
 #define OCDR            (*(volatile u8* const)0x51U)
 
 /** Timer/Counter 0 Register **/
@@ -643,6 +651,7 @@ typedef union{
 
 
 /** Stack Pointer **/
+#define S_SP            ((SP_type* const)0x5DU)
 #define SPL             (*(volatile u8* const)0x5DU)
 #define SPH             (*(volatile u8* const)0x5EU)
 

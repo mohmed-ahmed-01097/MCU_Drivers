@@ -126,6 +126,11 @@ typedef struct
 /* ************************************************************************** */
 
 /*
+	FUSES = {
+        .low.FUSE_L = LFUSE_DEFAULT,
+        .high.FUSE_H = (FUSE_BOOTSZ0 & FUSE_BOOTSZ1 & FUSE_EESAVE & FUSE_SPIEN & FUSE_JTAGEN)
+    };
+
     FUSES =
     {
         .low = LFUSE_DEFAULT,

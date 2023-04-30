@@ -1,18 +1,31 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : ADC_cfg.c													  */
+/* File Name   : main.c												  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
-/* date        : Mar 27, 2023												  */
+/* Version     : v00														  */
+/* date        : Apr 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
-#include "LBTY_int.h"
+#include "ATMega32.h"
 
-#include "ADC_int.h"
-#include "ADC_cfg.h"
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+#include "INTP.h"
+
+#include "INT_int.h"
+#include "INT_cfg.h"
+
+#include "LCD_int.h"
+#include "LCD_cfg.h"
+
+#include "EEPROM_int.h"
+#include "EEPROM_cfg.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -26,33 +39,6 @@
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
 
-const  u8 kau8ActiveChannel_LGB[ADC_CHANNELS_NUM] = {
-#if (ADC_CHANNELS_NUM >= 1)
-		ADC_CH0
-#endif
-#if (ADC_CHANNELS_NUM >= 2)
-		, ADC_CH1
-#endif
-#if (ADC_CHANNELS_NUM >= 3)
-		, ADC_CH2
-#endif
-#if (ADC_CHANNELS_NUM >= 4)
-		, ADC_CH3
-#endif
-#if (ADC_CHANNELS_NUM >= 5)
-		, ADC_CH4
-#endif
-#if (ADC_CHANNELS_NUM >= 6)
-		, ADC_CH5
-#endif
-#if (ADC_CHANNELS_NUM >= 7)
-		, ADC_CH6
-#endif
-#if (ADC_CHANNELS_NUM >= 8)
-		, ADC_CH7
-#endif
-};
-
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -61,5 +47,64 @@ const  u8 kau8ActiveChannel_LGB[ADC_CHANNELS_NUM] = {
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+#ifdef	SWC_EEPROM
 
-/*************************** E N D (ADC_cfg.c) ******************************/
+volatile u8 u8INT_Flag = LBTY_RESET, u8EEPROM_Flag = LBTY_SET;
+u8 u8Num = LBTY_u8ZERO;
+
+void Push_ISR(void);
+void EEPROM_ISR(void);
+
+int main(void){
+
+	LCD_vidInit();
+	LCD_u8ClrDisplay();
+	LCD_u8Home();
+
+	LCD_u8SetNum(u8Num, 0, 0);
+	vidMyDelay_ms(1000);
+
+    INT_vidInit(INT_AMIT_PUSH2);
+    INT_vidSetCallBack(INT_AMIT_PUSH2, Push_ISR);
+
+    INTP_vidEnable();
+
+	EEPROM_vidInit();
+//	EEPROM_vidSetCallBack(EEPROM_ISR);
+
+	EEPROM_Erase(0,100);
+	EEPROM_u8ReadChar(u8Num, &u8Num);
+	u8EEPROM_Flag = LBTY_SET;
+
+	LCD_u8SetNum(u8Num, 0, 0);
+	vidMyDelay_ms(1000);
+
+   	while(1){
+   		if(u8INT_Flag){
+   			u8INT_Flag = LBTY_RESET;
+   			while(EEPROM_u8WriteChar(u8Num, u8Num));
+   			vidMyDelay_ms(10);
+   			u8Num = LBTY_u8ZERO;
+   			while(EEPROM_u8ReadChar(u8Num, &u8Num));
+   			LCD_u8ClrDisplay();
+   			LCD_u8Home();
+   			vidMyDelay_ms(1000);
+   			LCD_u8SetNum(u8Num, 0, 0);
+   		}
+    }
+
+   	return 0;
+}
+
+void Push_ISR(void){
+	u8INT_Flag = LBTY_SET;
+	u8Num++;
+}
+
+void EEPROM_ISR(void){
+	u8EEPROM_Flag = LBTY_RESET;
+}
+
+#endif
+
+/*************************** E N D (main.c) ******************************/

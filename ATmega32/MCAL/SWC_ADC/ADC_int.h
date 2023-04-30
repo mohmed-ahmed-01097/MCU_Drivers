@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : ADC_int.h												  */
+/* File Name   : ADC_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 27, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -27,11 +27,46 @@ typedef enum{
     ADC7
 }ADC_tenuChannel;      // ADC Voltage Reference Selections
 
+typedef enum{
+    ADC_Division_Factor_2_DEF = (u8)0u,
+    ADC_Division_Factor_2,
+    ADC_Division_Factor_4,
+    ADC_Division_Factor_8,
+    ADC_Division_Factor_16,
+    ADC_Division_Factor_32,
+    ADC_Division_Factor_64,
+    ADC_Division_Factor_128
+}ADC_tenuPrescalerSelection;      // ADC Prescaler Selections
+
+typedef enum{
+    ADC_Free_Running_Mode = (u8)0u,
+	ADC_Analog_Comparator,
+	ADC_External_INT0,
+	ADC_TMR0_Compare_MatchA,
+	ADC_TMR0_Overflew,
+	ADC_TMR1_Compare_MatchB,
+	ADC_TMR1_Overflew,
+	ADC_TMR1_Capture_Event
+}ADC_tenuTriggerSource;      // ADC Auto Trigger Source
+
+typedef enum{
+    ADC_AREF = (u8)0u,		/* Internal Vref turned off */
+	ADC_AVCC,				/* external capacitor at AREF pin */
+	RESERVED,
+	ADC_INTERNAL_Vref		/* 2.56v with external capacitor at AREF pin */
+}ADC_tenuRefSelection;      // ADC Voltage Reference Selections
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
+#if defined(AMIT_KIT)
 #define ADC_CHANNELS_NUM		4
+#elif defined(ETA32_KIT)
+#define ADC_CHANNELS_NUM		2
+#else
+#define ADC_CHANNELS_NUM		8
+#endif
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -143,14 +178,14 @@ LBTY_tenuErrorStatus ADC_u16RefreshADC(void);
 /* Input       :	pu16ADC_Value											  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_u16GetADC(u16 pu16ADC_Value[ADC_CHANNELS_NUM]);
+LBTY_tenuErrorStatus ADC_u16GetAll(u16 pu16ADC_Value[ADC_CHANNELS_NUM]);
 
 /* ************************************************************************** */
 /* Description :  	Pass the CallBack function to TMR ISR to execute		  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void Timer_vidSetCallBack(void (*pvidCallBack)(void));
+void ADC_vidSetCallBack(void (*pvidCallBack)(void));
 
 
 #endif /* ADC_INT_H_ */

@@ -61,7 +61,7 @@ LCTY_INLINE void DELAY_LOOP_MS(u16 __count){
 /* ************************************************************************** */
 LCTY_INLINE void vidMyDelay_ms(u16 u16DelayNum){
 	while(--u16DelayNum){
-        for(u32 i = DELAY_FOR_LOOP ; i-- ; );
+        for(volatile u32 i = DELAY_FOR_LOOP ; i-- ; );
 	}
 }
 

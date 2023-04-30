@@ -1,26 +1,42 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : WDT_prg.c													  */
+/* File Name   : WDT_int.h													  */
 /* Author      : MAAM														  */
 /* Version     : v00														  */
-/* date        : Apr 8, 2023												  */
+/* date        : May 1, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-#include "ATMega32.h"
 
-#include "LBTY_int.h"
-#include "LCTY_int.h"
-
-#include "INTP.h"
-
-#include "WDT_cfg.h"
-#include "WDT_int.h"
+#ifndef WDT_INT_H_
+#define WDT_INT_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
+
+typedef enum{
+#if WDT_VCC == 3u
+	WDT_TimeOut_17_1ms = (u8)0u,
+	WDT_TimeOut_34_3ms,
+	WDT_TimeOut_68_5ms,
+	WDT_TimeOut_140ms,
+	WDT_TimeOut_270ms,
+	WDT_TimeOut_550ms,
+	WDT_TimeOut_1100ms,
+	WDT_TimeOut_2200ms
+#elif WDT_VCC == 5u
+	WDT_TimeOut_16_3ms = (u8)0u,
+	WDT_TimeOut_32_5ms,
+	WDT_TimeOut_65ms,
+	WDT_TimeOut_130ms,
+	WDT_TimeOut_260ms,
+	WDT_TimeOut_520ms,
+	WDT_TimeOut_1000ms,
+	WDT_TimeOut_2100ms
+#endif
+}WDT_tenumTimeOut;
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
@@ -43,51 +59,36 @@
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidInit(void){
-	S_WDTCR->sBits.m_WDTOE = LBTY_RESET;
-	S_WDTCR->sBits.m_WDE   = LBTY_SET;
-	S_WDTCR->sBits.m_WDP   = WDT_TIME_OUT;
-	WDT_vidReset();
-}
+void WDT_vidInit(void);
 
 /* ************************************************************************** */
 /* Description :  	WDT Sleep												  */
 /* Input       :	u8Period												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidSleep(u8 u8Period){
-	S_WDTCR->sBits.m_WDP   = u8Period;
-}
+void WDT_vidSleep(u8 u8Period);
 
 /* ************************************************************************** */
 /* Description :  	WDT Reset												  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidReset(void){
-	wdr();	/* reset WDT */
-//	while(!S_MCUCSR->sBits.m_WDRF);
-//	S_MCUCSR->sBits.m_WDRF = LBTY_RESET;
-}
+void WDT_vidReset(void);
 
 /* ************************************************************************** */
 /* Description :  	WDT Enable												  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidEnable(void){
-	S_WDTCR->sBits.m_WDTOE = LBTY_RESET;
-}
+void WDT_vidEnable(void);
 
 /* ************************************************************************** */
 /* Description :  	WDT Disable												  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidDisable(void){
-	S_WDTCR->sBits.m_WDE   = LBTY_SET;
-	S_WDTCR->sBits.m_WDTOE = LBTY_SET;
-	S_WDTCR->sBits.m_WDE   = LBTY_RESET;
-}
+void WDT_vidDisable(void);
 
-/*************************** E N D (WDT_prg.c) ******************************/
+
+#endif /* WDT_INT_H_ */
+/*************************** E N D (WDT_int.h) ******************************/

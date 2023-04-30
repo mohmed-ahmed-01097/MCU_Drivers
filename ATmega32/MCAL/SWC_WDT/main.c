@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : ADC_cfg.c													  */
+/* File Name   : main.c												  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
-/* date        : Mar 27, 2023												  */
+/* Version     : v00														  */
+/* date        : May 1, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
 #include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
 
-#include "ADC_int.h"
-#include "ADC_cfg.h"
+#include "DELAY.h"
+
+#include "LCD_int.h"
+#include "LCD_cfg.h"
+
+#include "WDT_cfg.h"
+#include "WDT_int.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -26,33 +33,6 @@
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
 
-const  u8 kau8ActiveChannel_LGB[ADC_CHANNELS_NUM] = {
-#if (ADC_CHANNELS_NUM >= 1)
-		ADC_CH0
-#endif
-#if (ADC_CHANNELS_NUM >= 2)
-		, ADC_CH1
-#endif
-#if (ADC_CHANNELS_NUM >= 3)
-		, ADC_CH2
-#endif
-#if (ADC_CHANNELS_NUM >= 4)
-		, ADC_CH3
-#endif
-#if (ADC_CHANNELS_NUM >= 5)
-		, ADC_CH4
-#endif
-#if (ADC_CHANNELS_NUM >= 6)
-		, ADC_CH5
-#endif
-#if (ADC_CHANNELS_NUM >= 7)
-		, ADC_CH6
-#endif
-#if (ADC_CHANNELS_NUM >= 8)
-		, ADC_CH7
-#endif
-};
-
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -61,5 +41,38 @@ const  u8 kau8ActiveChannel_LGB[ADC_CHANNELS_NUM] = {
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+#ifdef	SWC_WDT
 
-/*************************** E N D (ADC_cfg.c) ******************************/
+int main(void){
+
+	LCD_vidInit();
+	LCD_u8ClrDisplay();
+	LCD_u8Home();
+
+    WDT_vidInit();
+
+    u8 u8Num0 = LBTY_u8ZERO;
+    u8 u8Num1 = LBTY_u8ZERO;
+
+    LCD_u8SetChar(':', 3, 0);
+
+   	while(1){
+   		LCD_u8SetNum(u8Num0, 5, 0);
+   	   	LCD_u8SetNum(u8Num1, 0, 0);
+   		vidMyDelay_ms(700);
+   		WDT_vidReset();
+
+   		if(u8Num0++>=59){
+   	   		u8Num0 = LBTY_u8ZERO;
+   	   		if(u8Num1++>=59)	u8Num1 = LBTY_u8ZERO;
+
+   		}
+    }
+
+   	return 0;
+}
+
+#endif
+
+
+/*************************** E N D (main.c) ******************************/
