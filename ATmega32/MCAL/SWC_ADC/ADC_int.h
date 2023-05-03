@@ -24,7 +24,34 @@ typedef enum{
     ADC4,
     ADC5,
     ADC6,
-    ADC7
+    ADC7,
+
+	ADC0_ADC0_10X,
+	ADC1_ADC0_10X,
+	ADC0_ADC0_200X,
+	ADC1_ADC0_200X,
+	ADC2_ADC2_10X,
+	ADC3_ADC2_10X,
+	ADC2_ADC2_200X,
+	ADC3_ADC2_200X,
+
+	ADC0_ADC1,
+	ADC1_ADC1,
+	ADC2_ADC1,
+	ADC3_ADC1,
+	ADC4_ADC1,
+	ADC5_ADC1,
+	ADC6_ADC1,
+	ADC7_ADC1,
+	ADC0_ADC2,
+	ADC1_ADC2,
+	ADC2_ADC2,
+	ADC3_ADC2,
+	ADC4_ADC2,
+	ADC5_ADC2,
+
+	VBG_1V22,
+	GND
 }ADC_tenuChannel;      // ADC Voltage Reference Selections
 
 typedef enum{
@@ -92,7 +119,14 @@ void ADC_vidInit(void);
 /* Input       :	u8Channel												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_vidCofigChannel(u8 u8Channel);
+LBTY_tenuErrorStatus ADC_u8CofigChannel(u8 u8Channel);
+
+/* ************************************************************************** */
+/* Description :  	Calibrate ADC Voltage 									  */
+/* Input       :	void													  */
+/* Return      :	void 													  */
+/* ************************************************************************** */
+void ADC_vidCalibrate(void);
 
 /* ************************************************************************** */
 /* Description :  	Enable ADC to be ready for conversion					  */

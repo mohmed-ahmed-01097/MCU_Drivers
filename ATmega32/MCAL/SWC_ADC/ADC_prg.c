@@ -43,6 +43,7 @@ extern u8 kau8ActiveChannel_LGB[ADC_CHANNELS_NUM];
 static u8 kau8ChannelValue_LGB [ADC_CHANNELS_NUM];
 
 u8 u8ConvDone_GLB = LBTY_SET;
+f32 f32V_REF = ADC_V_REF;
 
 static void (*pvidFunctionCallBack)(void);
 
@@ -77,7 +78,7 @@ static void vid_AdcSyncRead(void){
 void ADC_vidInit(void){
 
 	for(u8 i = ADC_CHANNELS_NUM; i-- ; ){
-		ADC_vidCofigChannel(kau8ActiveChannel_LGB[i]);
+		ADC_u8CofigChannel(kau8ActiveChannel_LGB[i]);
 	}
 
 	S_SFIOR->sBits.m_ADTS = ADC_TRIG_SRC;
@@ -97,6 +98,9 @@ void ADC_vidInit(void){
 	// first conversion will take 25 ADC clock cycles instead of the normal 13.
 	S_ADC->m_ADCSRA.sBits.m_ADSC  = LBTY_SET;
 	while(S_ADC->m_ADCSRA.sBits.m_ADSC);
+
+	ADC_vidCalibrate();
+
 	S_ADC->m_ADCSRA.sBits.m_ADEN  = ADC_INIT_STATE;
 
 }
@@ -106,7 +110,7 @@ void ADC_vidInit(void){
 /* Input       :	u8Channel												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_vidCofigChannel(u8 u8Channel){
+LBTY_tenuErrorStatus ADC_u8CofigChannel(u8 u8Channel){
 	LBTY_tenuErrorStatus u8RetValue = LBTY_OK;
 
 	if(IS_CHANNEL(u8Channel)){
@@ -115,6 +119,19 @@ LBTY_tenuErrorStatus ADC_vidCofigChannel(u8 u8Channel){
 		u8RetValue = LBTY_NOK;
 	}
 	return u8RetValue;
+}
+
+/* ************************************************************************** */
+/* Description :  	Calibrate ADC Voltage 									  */
+/* Input       :	void													  */
+/* Return      :	void 													  */
+/* ************************************************************************** */
+void ADC_vidCalibrate(void){
+	ADC_vidSetChannel(VBG_1V22);
+	ADC_vidStartConversion();
+	ADC_vidWaitConversion();
+
+	f32V_REF = (f32)(ADC_u16GetData() * ADC_MAX) / ADC_VBG_1V22;
 }
 
 /********************************************************************************************************************/
@@ -179,7 +196,7 @@ u16 ADC_u16GetData(void){
 /* Return      :	f32														  */
 /* ************************************************************************** */
 f32 ADC_f32GetVoltage(void){
-	return (f32)ADC_u16GetData() * ADC_V_FACTOR;
+	return (f32)ADC_u16GetData() * f32V_REF / ADC_MAX;
 }
 
 /********************************************************************************************************************/
