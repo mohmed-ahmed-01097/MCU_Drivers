@@ -17,15 +17,7 @@
 /* ************************************************************************** */
 
 typedef struct{
-		//volatile u16 m_u16Ext_Address;		// device extended address, 0 if it is not used
-		volatile u8  m_u8Rec_Address;
-		volatile u8  m_u8Rec_AddressInv;
-		volatile u8  m_u8Command;
-		volatile u8  m_u8CommandInv;
-}IR_tstrFrameData;
-
-typedef struct{
-	IR_tstrFrameData strFrame;
+	IR_tstrPacket strPacket;
 	volatile u8  m_u8State;
 	volatile u8  m_u8Edge;
 	volatile u8  m_u8Stop;
@@ -55,11 +47,14 @@ typedef struct{
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+void vid_IrResetPrevPacket(void);
+
 void vid_IrWriteBuffer(u8 u8CMD);
 
 void vid_IrReadBuffer(u8* pu8CMD);
 
-void vid_IrReadFram(u32* pu32Fram);
+void vid_IrReadPacket(IR_tstrPacket* pstrPacket);
+void vid_IrReadFram(IR_tstrFram* pstrFram);
 
 void vid_IrBitStep(void);
 

@@ -36,13 +36,13 @@
 /* ************************************************************************** */
 
 extern IR_tstrFram strReceiveFram_GLB;
-static volatile u8*const kpu8FramBytes_GLB = (u8*)&strReceiveFram_GLB.strFrame;
+static volatile u8*const kpu8FramBytes_GLB = (u8*)&strReceiveFram_GLB.strPacket;
 
 static volatile u8 au8ReceiveBuffer_GLB[IR_CMD_QUEUE_LENGTH];
 static volatile u8 u8BufferIndex_GLB = LBTY_u8ZERO;
 static volatile u8 u8BufferEnd_GLB   = LBTY_u8ZERO;
 
-static IR_tstrFrameData u8PrevFram_GLB;
+static IR_tstrPacket strPrevPacket_GLB;
 
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
@@ -52,10 +52,19 @@ static IR_tstrFrameData u8PrevFram_GLB;
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+void vid_IrResetPrevPacket(void){
+
+	strPrevPacket_GLB.m_u8Rec_Address    = LBTY_u8MAX;
+	strPrevPacket_GLB.m_u8Rec_AddressInv = LBTY_u8MAX;
+	strPrevPacket_GLB.m_u8Command        = LBTY_u8MAX;
+	strPrevPacket_GLB.m_u8CommandInv     = LBTY_u8MAX;
+
+}
+
 void vid_IrWriteBuffer(u8 u8CMD){
-	if(++u8BufferEnd_GLB >= IR_CMD_QUEUE_LENGTH)		u8BufferEnd_GLB = LBTY_u8ZERO;
 
 	au8ReceiveBuffer_GLB[u8BufferEnd_GLB] = u8CMD;
+	if(++u8BufferEnd_GLB >= IR_CMD_QUEUE_LENGTH)		u8BufferEnd_GLB = LBTY_u8ZERO;
 
 	if(u8BufferEnd_GLB == u8BufferIndex_GLB){
 		if(++u8BufferIndex_GLB >= IR_CMD_QUEUE_LENGTH)	u8BufferIndex_GLB = LBTY_u8ZERO;
@@ -72,12 +81,12 @@ void vid_IrReadBuffer(u8* pu8CMD){
 	}
 }
 
-void vid_IrReadFram(u32* pu32Fram){
-	IR_tstrFrameData* tempFram = (IR_tstrFrameData*)pu32Fram;
-	tempFram->m_u8Rec_Address    = u8PrevFram_GLB.m_u8Rec_Address;
-	tempFram->m_u8Rec_AddressInv = u8PrevFram_GLB.m_u8Rec_AddressInv;
-	tempFram->m_u8Command        = u8PrevFram_GLB.m_u8Command;
-	tempFram->m_u8CommandInv     = u8PrevFram_GLB.m_u8CommandInv;
+void vid_IrReadPacket(IR_tstrPacket* pstrPacket){
+	*pstrPacket = strPrevPacket_GLB;
+}
+
+void vid_IrReadFram(IR_tstrFram* pstrFram){
+	*pstrFram = strReceiveFram_GLB;
 }
 
 void vid_IrBitStep(void){
@@ -117,7 +126,7 @@ void vid_IrLeadLow(u16 u16TempTime){
 
 	}else if(IR_CHECK_TIME(u16TempTime, IR_LOW1_LEAD_TIME)){
 		if(strReceiveFram_GLB.m_u8Repeat){
-			vid_IrWriteBuffer(u8PrevFram_GLB.m_u8Command);
+			vid_IrWriteBuffer(strPrevPacket_GLB.m_u8Command);
 		}else{
 			if(++strReceiveFram_GLB.m_u8RepeatCount >= IR_REPEAT_MAX)	strReceiveFram_GLB.m_u8Repeat = LBTY_SET;
 		}
@@ -154,14 +163,14 @@ void vid_IrReceiveBits(u16 u16TempTime){
 void vid_IrStop(void){
 
 	if(strReceiveFram_GLB.m_u8Edge == INT_Rising_Edge){
-		if(strReceiveFram_GLB.strFrame.m_u8Command == (u8)~strReceiveFram_GLB.strFrame.m_u8CommandInv){
+		if(strReceiveFram_GLB.strPacket.m_u8Command == (u8)~strReceiveFram_GLB.strPacket.m_u8CommandInv){
 
-			vid_IrWriteBuffer(strReceiveFram_GLB.strFrame.m_u8Command);
-			u8PrevFram_GLB.m_u8Command = strReceiveFram_GLB.strFrame.m_u8Command;
+			vid_IrWriteBuffer(strReceiveFram_GLB.strPacket.m_u8Command);
+			strPrevPacket_GLB = strReceiveFram_GLB.strPacket;
 			strReceiveFram_GLB.m_u8Repeat     = LBTY_u8ZERO;
 			strReceiveFram_GLB.m_u8RepeatCount= LBTY_u8ZERO;
-			IR_Reset();
 		}
+		IR_Reset();
 	}
 }
 

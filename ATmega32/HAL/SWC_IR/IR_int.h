@@ -41,6 +41,14 @@ typedef enum{
 	IR_WaitStopBit
 }IR_tenuState;
 
+typedef struct{
+		//volatile u16 m_u16Ext_Address;		// device extended address, 0 if it is not used
+		volatile u8  m_u8Rec_Address;
+		volatile u8  m_u8Rec_AddressInv;
+		volatile u8  m_u8Command;
+		volatile u8  m_u8CommandInv;
+}IR_tstrPacket;
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
@@ -62,7 +70,7 @@ void IR_Reset(void);
 void IR_vidInit(void);
 
 LBTY_tenuErrorStatus IR_GetCmd(u8* pu8CMD);
-LBTY_tenuErrorStatus IR_GetFram(u32* pu32Fram);
+LBTY_tenuErrorStatus IR_GetPacket(IR_tstrPacket* pstrPacket);
 
 void IR_INT_ISR(void);
 

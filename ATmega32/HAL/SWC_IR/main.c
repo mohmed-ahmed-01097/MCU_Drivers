@@ -1,36 +1,26 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : IR_cfg.h													  */
+/* File Name   : main.c												  */
 /* Author      : MAAM														  */
 /* Version     : v00														  */
-/* date        : May 3, 2023												  */
+/* date        : May 4, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
-#ifndef IR_CFG_H_
-#define IR_CFG_H_
+#include "LBTY_int.h"
+#include "LCTY_int.h"
 
-/*
-Sensor: TSOP1738 IR receiver module must be connected to INT0 Pin.
-		This is PIN16 in ATmega16 and ATmega32.
+#include "INTP.h"
 
-		   -----
-		  |  _  |
-		  | | | |
-		  | | | |
-		  -------
-		  | |  |
-		  | |  |
-		  | |  |
-	  (5V)(GND)(PD2)
+#include "LCD_int.h"
+#include "LCD_cfg.h"
 
-	**********************
-	*TSOP 1738 Front View*
-	**********************
-	Resource Usage:		-Timer0		-INT0 (PD2)
- */
+#include "IR_int.h"
+#include "IR_cfg.h"
+#include "IR_priv.h"
+
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
@@ -38,35 +28,6 @@ Sensor: TSOP1738 IR receiver module must be connected to INT0 Pin.
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
-
-#define IR_INT_PIN					INT0
-#define IR_TMR_10US_COMPARE			(F_CPU / 100000u)
-
-#define IR_TIME_TOL					0.4f	//0.2f
-#define IR_CHECK_TIME(temp, time)	(temp>(time-(time*IR_TIME_TOL)) && temp<(time+(time*IR_TIME_TOL)))
-
-#define IR_HIGH_LEAD_TIME			900
-#define IR_LOW0_LEAD_TIME			450
-#define IR_LOW1_LEAD_TIME			225
-#define IR_LOW_BIT_TIME 			169
-#define IR_HIGH_BIT_TIME 			36		//56
-
-#define IR_REPEAT_MAX				4u
-#define IR_FRAM_LENGTH				4u
-#define IR_CMD_MAX_LENGTH			8u
-#define IR_CMD_QUEUE_LENGTH			8u
-
-#define NEC_MAX_PACKET_BIT_NUMBER 	32u
-
-#define IR_NONE_CMD					LBTY_u8MAX
-#define IR_CMD_UP					0x0B
-#define IR_CMD_DOWN					0x1B
-#define IR_CMD_LEFT					0x5A
-#define IR_CMD_RIGHT				0x18
-#define IR_CMD_ENTER				0x58
-#define IR_CMD_VOL_INC				0x10
-#define IR_CMD_VOL_DEC				0x13
-/** .. **/
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -80,6 +41,49 @@ Sensor: TSOP1738 IR receiver module must be connected to INT0 Pin.
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+#ifdef	SWC_IR
 
-#endif /* IR_CFG_H_ */
-/*************************** E N D (IR_cfg.h) ******************************/
+static IR_tstrPacket strIRPacket;
+static IR_tstrFram strIRFram;
+
+int main(void){
+
+	IR_vidInit();
+	INTP_vidEnable();
+
+	LCD_vidInit();
+	LCD_u8ClrDisplay();
+	LCD_u8Home();
+
+	u8 u8CMD;
+
+	while(1){
+		IR_GetCmd(&u8CMD);
+   		LCD_u8SetNum(u8CMD, 12, 1);
+
+   		IR_GetPacket(&strIRPacket);
+   		vid_IrReadFram(&strIRFram);
+
+   		LCD_u8SetNum(strIRPacket.m_u8Rec_Address,     0, 0);
+   		LCD_u8SetNum(strIRPacket.m_u8Rec_AddressInv,  4, 0);
+   		LCD_u8SetNum(strIRPacket.m_u8Command,         8, 0);
+   		LCD_u8SetNum(strIRPacket.m_u8CommandInv,     12, 0);
+
+   		LCD_u8SetNum(strIRFram.m_u8ReadBit,      1, 1);
+   		LCD_u8SetNum(strIRFram.m_u8ReadByte,     4, 1);
+   		LCD_u8SetNum(strIRFram.m_u8Repeat,       7, 1);
+   		LCD_u8SetNum(strIRFram.m_u8RepeatCount, 10, 1);
+
+   		LCD_u8SetChar('b', 0, 1);
+   		LCD_u8SetChar('B', 3, 1);
+   		LCD_u8SetChar('R', 6, 1);
+   		LCD_u8SetChar('C', 9, 1);
+
+    }
+
+   	return 0;
+}
+
+#endif
+
+/*************************** E N D (main.c) ******************************/

@@ -20,9 +20,6 @@
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
 
-#include "ADC_int.h"
-#include "ADC_cfg.h"
-
 #include "LCD_int.h"
 #include "LCD_cfg.h"
 
@@ -47,6 +44,9 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_LCD
+
+#include "ADC_int.h"
+#include "ADC_cfg.h"
 
 void vid_LcdWelcome(void);
 void vid_LcdShifting(void);

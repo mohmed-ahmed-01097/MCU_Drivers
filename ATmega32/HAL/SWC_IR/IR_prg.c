@@ -46,11 +46,11 @@ IR_tstrFram strReceiveFram_GLB;
 /* ************************************************************************** */
 
 void IR_Reset(void){
-//	strReceiveFram_GLB.strFrame.m_u16Ext_Address   = LBTY_u16ZERO;
-	strReceiveFram_GLB.strFrame.m_u8Rec_Address    = LBTY_u8ZERO;
-	strReceiveFram_GLB.strFrame.m_u8Rec_AddressInv = LBTY_u8ZERO;
-	strReceiveFram_GLB.strFrame.m_u8Command        = LBTY_u8ZERO;
-	strReceiveFram_GLB.strFrame.m_u8CommandInv     = LBTY_u8ZERO;
+//	strReceiveFram_GLB.strPacket.m_u16Ext_Address   = LBTY_u16ZERO;
+	strReceiveFram_GLB.strPacket.m_u8Rec_Address    = LBTY_u8ZERO;
+	strReceiveFram_GLB.strPacket.m_u8Rec_AddressInv = LBTY_u8ZERO;
+	strReceiveFram_GLB.strPacket.m_u8Command        = LBTY_u8ZERO;
+	strReceiveFram_GLB.strPacket.m_u8CommandInv     = LBTY_u8ZERO;
 
 	strReceiveFram_GLB.m_u8State 	  = IR_ValidateLeadHigh;
 	strReceiveFram_GLB.m_u8Edge 	  = INT_Falling_Edge;
@@ -58,7 +58,7 @@ void IR_Reset(void){
     INT_vidSetSenseControl(IR_INT_PIN, strReceiveFram_GLB.m_u8Edge);
 
 	TMR0_u8SetMode(TMRx_u8_CTC_Mode_Mode);
-    TMR0_u8SetOutputCompare(IR_TMR_1US_COMPARE);
+    TMR0_u8SetOutputCompare(IR_TMR_10US_COMPARE);
 }
 
 void IR_vidInit(void){
@@ -69,6 +69,7 @@ void IR_vidInit(void){
     TMR0_vidInit();
     TMR0_vidSetCallBack_CompareMatch(IR_TMR_ISR);
 
+    vid_IrResetPrevPacket();
 	strReceiveFram_GLB.m_u8Repeat     = LBTY_u8ZERO;
 	strReceiveFram_GLB.m_u8RepeatCount= LBTY_u8ZERO;
 	strReceiveFram_GLB.m_u8ReadBit    = LBTY_u8ZERO;
@@ -86,24 +87,25 @@ LBTY_tenuErrorStatus IR_GetCmd(u8* pu8CMD){
 	return u8RetErrorState;
 }
 
-LBTY_tenuErrorStatus IR_GetFram(u32* pu32Fram){
+LBTY_tenuErrorStatus IR_GetPacket(IR_tstrPacket* pstrPacket){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
-	vid_IrReadFram(pu32Fram);
-	if(*pu32Fram == LBTY_u32MAX)	u8RetErrorState = LBTY_IN_PROGRESS;
+	vid_IrReadPacket(pstrPacket);
+	if(pstrPacket->m_u8Command == LBTY_u32MAX)	u8RetErrorState = LBTY_IN_PROGRESS;
 	return u8RetErrorState;
 }
 
 void IR_INT_ISR(void){
+
+    u16 u16TempTime = strReceiveFram_GLB.m_u16Time * 2u;
+    strReceiveFram_GLB.m_u16Time = LBTY_u16ZERO;
+    TMR0_u8SetCounter(LBTY_u8ZERO);
+
 	INT_vidDisable  (IR_INT_PIN);
 	INT_vidResetFlag(IR_INT_PIN);
 
 	INTP_vidEnable();
 	//if(strReceiveFram_GLB.m_u8StopState) return;
-
-    u16 u16TempTime = strReceiveFram_GLB.m_u16Time;
-    strReceiveFram_GLB.m_u16Time = LBTY_u16ZERO;
-    TMR0_u8SetCounter(LBTY_u8ZERO);
 
 	switch(strReceiveFram_GLB.m_u8State){
 		case IR_ValidateLeadHigh:	vid_IrLeadHigh   (u16TempTime); 	break;
