@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : TMR_priv.h												  */
+/* File Name   : TMR_priv.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Apr 5, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -59,38 +59,6 @@
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
-
-static inline u8   TMR0_u8GetOutputCompare(void){return S_TMR0->m_OCR0;}
-static inline u8   TMR0_u8GetCounter(void)      {return S_TMR0->m_TCNT0;}
-
-static inline void TMR0_vidCompareMatch_Enable(void) {S_TIMSK->sBits.m_OCIE0 = LBTY_SET;}
-static inline void TMR0_vidCompareMatch_Disable(void){S_TIMSK->sBits.m_OCIE0 = LBTY_RESET;}
-
-static inline void TMR0_vidSetCompareMatch_Flag(void){S_TIFR->sBits.m_OCF0   = LBTY_SET;}
-static inline void TMR0_vidClrCompareMatch_Flag(void){S_TIFR->sBits.m_OCF0   = LBTY_RESET;}
-
-static inline void TMR0_vidOverFlow_Enable(void) {S_TIMSK->sBits.m_TOIE0 = LBTY_SET;}
-static inline void TMR0_vidOverFlow_Disable(void){S_TIMSK->sBits.m_TOIE0 = LBTY_RESET;}
-
-static inline void TMR0_vidSetOverFlow_Flag(void){S_TIFR->sBits.m_TOV0   = LBTY_SET;}
-static inline void TMR0_vidClrOverFlow_Flag(void){S_TIFR->sBits.m_TOV0   = LBTY_RESET;}
-
-/********************************************************************************************************************/
-
-static inline u8   TMR2_u8GetOutputCompare(void){return S_TMR2->m_OCR2;}
-static inline u8   TMR2_u8GetCounter(void)      {return S_TMR2->m_TCNT2;}
-
-static inline void TMR2_vidCompareMatch_Enable(void) {S_TIMSK->sBits.m_OCIE2 = LBTY_SET;}
-static inline void TMR2_vidCompareMatch_Disable(void){S_TIMSK->sBits.m_OCIE2 = LBTY_RESET;}
-
-static inline void TMR2_vidSetCompareMatch_Flag(void){S_TIFR->sBits.m_OCF2   = LBTY_SET;}
-static inline void TMR2_vidClrCompareMatch_Flag(void){S_TIFR->sBits.m_OCF2   = LBTY_RESET;}
-
-static inline void TMR2_vidOverFlow_Enable(void) {S_TIMSK->sBits.m_TOIE2 = LBTY_SET;}
-static inline void TMR2_vidOverFlow_Disable(void){S_TIMSK->sBits.m_TOIE2 = LBTY_RESET;}
-
-static inline void TMR2_vidSetOverFlow_Flag(void){S_TIFR->sBits.m_TOV2   = LBTY_SET;}
-static inline void TMR2_vidClrOverFlow_Flag(void){S_TIFR->sBits.m_TOV2   = LBTY_RESET;}
 
 /********************************************************************************************************************/
 

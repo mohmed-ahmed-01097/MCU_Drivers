@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : TMR_int.h												  */
+/* File Name   : TMR_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Apr 5, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -99,6 +99,32 @@ typedef enum{
 	TMR1_Capture_Rising_Edge
 }TMR1_tenuInputCaptureEdgeSelect;
 
+/********************************************************************************************************************/
+#if defined(TMR0) || defined(PWM0)
+typedef struct{
+	u8 								m_TMR_Reload;
+	u8 								m_TMR_Compare;
+	TMRx_tenuClockSource 			m_TMR_Prescalar;
+	TMRx_u8_tenuWaveGenerationMode	m_TMR_Mode;
+	TMRx_u8_tenuCompareOutputMode	m_TMR_OutputMode;
+	LBTY_tenuFlagStatus				m_TMR_FOC;
+	LBTY_tenuFlagStatus				m_TMR_OVIE;
+	LBTY_tenuFlagStatus				m_TMR_OCIE;
+}TMR0_tstrConfig;
+#endif
+#if defined(TMR2) || defined(PWM2)
+typedef struct{
+	u8 								m_TMR_Reload;
+	u8 								m_TMR_Compare;
+	TMRx_tenuClockSource 			m_TMR_Prescalar;
+	TMRx_u8_tenuWaveGenerationMode	m_TMR_Mode;
+	TMRx_u8_tenuCompareOutputMode	m_TMR_OutputMode;
+	LBTY_tenuFlagStatus				m_TMR_FOC;
+	LBTY_tenuFlagStatus				m_TMR_OVIE;
+	LBTY_tenuFlagStatus				m_TMR_OCIE;
+	TMR2_tenuInputCaptureEdgeSelect m_TMR_AsyClock;
+}TMR2_tstrConfig;
+#endif
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
@@ -115,6 +141,9 @@ typedef enum{
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+void TMR0_vidSetConfig(TMR0_tstrConfig const* const pstrConfig);
+void TMR0_vidSRestConfig(TMR0_tstrConfig* const pstrConfig);
+
 void TMR0_vidInit(void);
 
 void TMR0_vidEnable(void);
@@ -126,6 +155,9 @@ LBTY_tenuErrorStatus TMR0_u8SetOutputMode(TMRx_u8_tenuCompareOutputMode u8OutMod
 LBTY_tenuErrorStatus TMR0_u8SetOutputCompare(u8 u8Reload);
 LBTY_tenuErrorStatus TMR0_u8SetCounter(u8 u8Reload);
 
+LBTY_tenuErrorStatus TMR0_u8GetOutputCompare(u8* pu8Reload);
+LBTY_tenuErrorStatus TMR0_u8GetCounter(u8* pu8Reload);
+
 #if PWM0
 LBTY_tenuErrorStatus PWM_u8SetFreq_OC0(u16 u16Freq);
 LBTY_tenuErrorStatus PWM_u8SetDuty_OC0(u8 u8Duty);
@@ -134,10 +166,29 @@ static inline void PWM_vidEnable_OC0(void) {TMR0_vidEnable(); }
 static inline void PWM_vidDisable_OC0(void){TMR0_vidDisable();}
 #endif
 
+void TMR0_vidSetOverflowNum(u8 u8Num);
+void TMR0_vidGetOverflowNum(u8* pu8Num);
+void TMR0_vidGetTicks(u32* pu32Tick);
+
+void TMR0_vidCompareMatch_Enable(void);
+void TMR0_vidCompareMatch_Disable(void);
+
+void TMR0_vidSetCompareMatch_Flag(void);
+void TMR0_vidClrCompareMatch_Flag(void);
+
+void TMR0_vidOverFlow_Enable(void);
+void TMR0_vidOverFlow_Disable(void);
+
+void TMR0_vidSetOverFlow_Flag(void);
+void TMR0_vidClrOverFlow_Flag(void);
+
 void TMR0_vidSetCallBack_CompareMatch(void (*pCallBack)(void));
 void TMR0_vidSetCallBack_OverFlow(void (*pCallBack)(void));
 
 /********************************************************************************************************************/
+
+void TMR2_vidSetConfig(TMR2_tstrConfig const* const pstrConfig);
+void TMR2_vidSRestConfig(TMR2_tstrConfig* const pstrConfig);
 
 void TMR2_vidInit(void);
 
@@ -150,6 +201,9 @@ LBTY_tenuErrorStatus TMR2_u8SetOutputMode(TMRx_u8_tenuCompareOutputMode u8OutMod
 LBTY_tenuErrorStatus TMR2_u8SetOutputCompare(u8 u8Reload);
 LBTY_tenuErrorStatus TMR2_u8SetCounter(u8 u8Reload);
 
+LBTY_tenuErrorStatus TMR2_u8GetOutputCompare(u8* pu8Reload);
+LBTY_tenuErrorStatus TMR2_u8GetCounter(u8* pu8Reload);
+
 #if PWM2
 LBTY_tenuErrorStatus PWM_u8SetFreq_OC2(u16 u16Freq);
 LBTY_tenuErrorStatus PWM_u8SetDuty_OC2(u8 u8Duty);
@@ -157,6 +211,22 @@ LBTY_tenuErrorStatus PWM_u8SetDuty_OC2(u8 u8Duty);
 static inline void PWM_vidEnable_OC2(void) {TMR2_vidEnable(); }
 static inline void PWM_vidDisable_OC2(void){TMR2_vidDisable();}
 #endif
+
+void TMR2_vidSetOverflowNum(u8 u8Num);
+void TMR2_vidGetOverflowNum(u8* pu8Num);
+void TMR2_vidGetTicks(u32* pu32Tick);
+
+void TMR2_vidCompareMatch_Enable(void);
+void TMR2_vidCompareMatch_Disable(void);
+
+void TMR2_vidSetCompareMatch_Flag(void);
+void TMR2_vidClrCompareMatch_Flag(void);
+
+void TMR2_vidOverFlow_Enable(void);
+void TMR2_vidOverFlow_Disable(void);
+
+void TMR2_vidSetOverFlow_Flag(void);
+void TMR2_vidClrOverFlow_Flag(void);
 
 void TMR2_vidSetCallBack_CompareMatch(void (*pCallBack)(void));
 void TMR2_vidSetCallBack_OverFlow(void (*pCallBack)(void));
