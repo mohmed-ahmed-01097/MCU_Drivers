@@ -88,16 +88,13 @@
 
 /********************************************************************************************************************/
 
+#if TMR1
+
 #define TMR1_CLOCK_SOURCE						TMRx_Fosc_Prescaler_1
 
 #define TMR1_MODE_INIT							TMR1_Normal_Mode
 #define TMR1_COMPARE_OUTPUT_A_MODE				TMR1_COM_Disconnected
 #define TMR1_COMPARE_OUTPUT_B_MODE				TMR1_COM_Disconnected
-
-#define TMR1_COUNTER_INIT						0x00u
-#define TMR1_INPUT_CAPTURE_INIT					0x00u
-#define TMR1_OUTPUT_COMPARE_A_INIT				0xFFu
-#define TMR1_OUTPUT_COMPARE_B_INIT				0xFFu
 
 #define TMR1_INPUT_CAPTURE_INTERRUPT_STATE		LBTY_RESET
 #define TMR1_OVERFLOW_INTERRUPT_STATE			LBTY_RESET
@@ -106,6 +103,45 @@
 
 #define TMR1_INPUT_CAPTURE_NOISE_CANCELER		LBTY_SET
 #define TMR1_INPUT_CAPTURE_EDGE_SELECT			TMR1_Capture_Rising_Edge
+
+#define TMR1_COUNTER_INIT						0x00u
+#define TMR1_INPUT_CAPTURE_INIT					0x00u
+#define TMR1_OUTPUT_COMPARE_A_INIT				0xFFu
+#define TMR1_OUTPUT_COMPARE_B_INIT				0xFFu
+
+#elif PWM1
+
+#define TMR2_ASYNCHRONOUS_CLOCK					TMR2_IO_Clock
+
+#define TMR1_CLOCK_SOURCE						TMRx_Fosc_Prescaler_8
+#define TMR1_MODE_INIT							TMR1_PWM_Fase_Mode_10bit
+#define TMR1_COMPARE_OUTPUT_A_MODE				TMR1_FastPWM_Clear_on_Match
+#define TMR1_COMPARE_OUTPUT_B_MODE				TMR1_PhasePWM_ToggleA_on_Match_Mode15
+
+#define TMR1_INPUT_CAPTURE_INTERRUPT_STATE		LBTY_RESET
+#define TMR1_OVERFLOW_INTERRUPT_STATE			LBTY_RESET
+#define TMR1_COMPARE_A_MATCH_INTERRUPT_STATE	LBTY_RESET
+#define TMR1_COMPARE_B_MATCH_INTERRUPT_STATE	LBTY_RESET
+
+#define TMR1_INPUT_CAPTURE_NOISE_CANCELER		LBTY_SET
+#define TMR1_INPUT_CAPTURE_EDGE_SELECT			TMR1_Capture_Rising_Edge
+
+// Resolution_PWM = log(Top + 1) / log(2)
+// F_P_PWM = F_clk / (Prescaler *  2 * Top )
+// F_F_PWM = F_clk / (Prescaler * (1 + Top))
+// counts  = top - F_CPU / (Freq * Prescaler)
+#define PWM1A_FREQ_INIT							10000u
+#define PWM1A_DUTY_INIT							50u
+
+#define PWM1B_FREQ_INIT							10000u
+#define PWM1B_DUTY_INIT							50u
+
+#define TMR1_COUNTER_INIT						0x00u
+#define TMR1_INPUT_CAPTURE_INIT					0x00u
+#define TMR1_OUTPUT_COMPARE_A_INIT				0xFFu
+#define TMR1_OUTPUT_COMPARE_B_INIT				0xFFu
+
+#endif
 
 /********************************************************************************************************************/
 

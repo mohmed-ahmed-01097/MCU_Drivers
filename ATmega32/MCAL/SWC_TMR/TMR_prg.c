@@ -50,8 +50,6 @@ static void (*pFuncCallBack_TMR1_CompareMatch_A)(void);
 static void (*pFuncCallBack_TMR1_CompareMatch_B)(void);
 static void (*pFuncCallBack_TMR1_OverFlow)(void);
 
-static volatile u16 TMR1_u16Reload_GLB = TMR1_COUNTER_INIT;
-
 #if defined(TMR0) || defined(PWM0)
 static volatile TMR0_tstrConfig strTMR0_Config_GLB = {
 	.m_TMR_Reload    = TMR0_COUNTER_INIT,
@@ -77,9 +75,30 @@ static volatile TMR2_tstrConfig strTMR2_Config_GLB = {
 	.m_TMR_AsyClock  = TMR2_ASYNCHRONOUS_CLOCK
 };
 #endif
+#if defined(TMR1) || defined(PWM1)
+static volatile TMR1_tstrConfig strTMR1_Config_GLB ={
+	.m_TMR_Reload = TMR1_COUNTER_INIT,
+	.m_TMR_Input = TMR1_INPUT_CAPTURE_INIT,
+	.m_TMR_CompareA = TMR1_OUTPUT_COMPARE_A_INIT,
+	.m_TMR_CompareB = TMR1_OUTPUT_COMPARE_B_INIT,
+	.m_TMR_Prescalar = TMR1_CLOCK_SOURCE,
+	.m_TMR_Mode = TMR1_MODE_INIT,
+	.m_TMR_OutputModeA = TMR1_COMPARE_OUTPUT_A_MODE,
+	.m_TMR_OutputModeB = TMR1_COMPARE_OUTPUT_B_MODE,
+	.m_TMR_FOCA = LBTY_RESET,
+	.m_TMR_FOCB = LBTY_RESET,
+	.m_TMR_TICIE = TMR1_INPUT_CAPTURE_INTERRUPT_STATE,
+	.m_TMR_OCIEA = TMR1_COMPARE_A_MATCH_INTERRUPT_STATE,
+	.m_TMR_OCIEB = TMR1_COMPARE_B_MATCH_INTERRUPT_STATE,
+	.m_TMR_TOIE = TMR1_OVERFLOW_INTERRUPT_STATE,
+	.m_TMR_InputNoise = TMR1_INPUT_CAPTURE_NOISE_CANCELER,
+	.m_TMR_InputEdge = TMR1_COMPARE_OUTPUT_A_MODE,
+};
+#endif
 
 static volatile u8  TMR0_u8OverflewNum_GLB  = LBTY_u8ZERO;
 static volatile u8  TMR2_u8OverflewNum_GLB  = LBTY_u8ZERO;
+static volatile u8  TMR1_u8OverflewNum_GLB  = LBTY_u8ZERO;
 
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
@@ -327,7 +346,7 @@ void TMR0_vidGetOverflowNum(u8* pu8Num){
 }
 
 void TMR0_vidGetTicks(u32* pu32Tick){
-	*pu32Tick = (u32)(256 - strTMR0_Config_GLB.m_TMR_Reload) * TMR0_u8OverflewNum_GLB + S_TMR0->m_TCNT0;
+	*pu32Tick = (u32)(TMR_u8MAX - strTMR0_Config_GLB.m_TMR_Reload) * TMR0_u8OverflewNum_GLB + S_TMR0->m_TCNT0;
 }
 
 /********************************************************************************************************************/
@@ -642,7 +661,7 @@ void TMR2_vidGetOverflowNum(u8* pu8Num){
 }
 
 void TMR2_vidGetTicks(u32* pu32Tick){
-	*pu32Tick = (u32)(256 - strTMR2_Config_GLB.m_TMR_Reload) * TMR2_u8OverflewNum_GLB + S_TMR2->m_TCNT2;
+	*pu32Tick = (u32)(TMR_u8MAX - strTMR2_Config_GLB.m_TMR_Reload) * TMR2_u8OverflewNum_GLB + S_TMR2->m_TCNT2;
 }
 
 /********************************************************************************************************************/
@@ -687,37 +706,91 @@ ISR(TIMER2_OVF_vect){
 
 /********************************************************************************************************************/
 
+void TMR1_vidSetConfig(TMR1_tstrConfig const* const pstrConfig){
+	if(pstrConfig != LBTY_NULL){
+		strTMR1_Config_GLB = *pstrConfig;
+	}
+	TMR1_vidInit();
+}
+
+void TMR1_vidSRestConfig(TMR1_tstrConfig* const pstrConfig){
+	strTMR1_Config_GLB.m_TMR_Reload = TMR1_COUNTER_INIT;
+	strTMR1_Config_GLB.m_TMR_Input = TMR1_INPUT_CAPTURE_INIT;
+	strTMR1_Config_GLB.m_TMR_CompareA = TMR1_OUTPUT_COMPARE_A_INIT;
+	strTMR1_Config_GLB.m_TMR_CompareB = TMR1_OUTPUT_COMPARE_B_INIT;
+	strTMR1_Config_GLB.m_TMR_Prescalar = TMR1_CLOCK_SOURCE;
+	strTMR1_Config_GLB.m_TMR_Mode = TMR1_MODE_INIT;
+	strTMR1_Config_GLB.m_TMR_OutputModeA = TMR1_COMPARE_OUTPUT_A_MODE;
+	strTMR1_Config_GLB.m_TMR_OutputModeB = TMR1_COMPARE_OUTPUT_B_MODE;
+	strTMR1_Config_GLB.m_TMR_FOCA = LBTY_RESET;
+	strTMR1_Config_GLB.m_TMR_FOCB = LBTY_RESET;
+	strTMR1_Config_GLB.m_TMR_TICIE = TMR1_INPUT_CAPTURE_INTERRUPT_STATE;
+	strTMR1_Config_GLB.m_TMR_OCIEA = TMR1_COMPARE_A_MATCH_INTERRUPT_STATE;
+	strTMR1_Config_GLB.m_TMR_OCIEB = TMR1_COMPARE_B_MATCH_INTERRUPT_STATE;
+	strTMR1_Config_GLB.m_TMR_TOIE = TMR1_OVERFLOW_INTERRUPT_STATE;
+	strTMR1_Config_GLB.m_TMR_InputNoise = TMR1_INPUT_CAPTURE_NOISE_CANCELER;
+	strTMR1_Config_GLB.m_TMR_InputEdge = TMR1_INPUT_CAPTURE_EDGE_SELECT;
+
+	if(pstrConfig != LBTY_NULL){
+		*pstrConfig = strTMR1_Config_GLB;
+	}
+	TMR1_vidInit();
+}
+
 void TMR1_vidInit(void){
 
 	//S_SFIOR->sBits.m_PSR10 = LBTY_SET;
 
-	S_TMR1->m_TCCR1A.sBits.m_WGM10 = GET_BIT(TMR1_MODE_INIT, TMRx_WGMx0_MASK);
-	S_TMR1->m_TCCR1A.sBits.m_WGM11 = GET_BIT(TMR1_MODE_INIT, TMRx_WGMx1_MASK);
-	S_TMR1->m_TCCR1B.sBits.m_WGM12 = GET_BIT(TMR1_MODE_INIT, TMRx_WGMx2_MASK);
-	S_TMR1->m_TCCR1B.sBits.m_WGM13 = GET_BIT(TMR1_MODE_INIT, TMRx_WGMx3_MASK);
+	// TMR1_u8SetMode(TMR1_MODE_INIT);
+	S_TMR1->m_TCCR1A.sBits.m_WGM10 = GET_BIT(strTMR1_Config_GLB.m_TMR_Mode, TMRx_WGMx0_MASK);
+	S_TMR1->m_TCCR1A.sBits.m_WGM11 = GET_BIT(strTMR1_Config_GLB.m_TMR_Mode, TMRx_WGMx1_MASK);
+	S_TMR1->m_TCCR1B.sBits.m_WGM12 = GET_BIT(strTMR1_Config_GLB.m_TMR_Mode, TMRx_WGMx2_MASK);
+	S_TMR1->m_TCCR1B.sBits.m_WGM13 = GET_BIT(strTMR1_Config_GLB.m_TMR_Mode, TMRx_WGMx3_MASK);
 
-	S_TMR1->m_TCCR1A.sBits.m_FOC1A = LBTY_RESET;
-	S_TMR1->m_TCCR1A.sBits.m_FOC1B = LBTY_RESET;
-	S_TMR1->m_TCCR1A.sBits.m_COM1A = TMR1_COMPARE_OUTPUT_A_MODE;
-	S_TMR1->m_TCCR1A.sBits.m_COM1B = TMR1_COMPARE_OUTPUT_B_MODE;
+	// TMR1_u8SetOutputModeA(TMR1_COMPARE_OUTPUT_A_MODE);
+	// TMR1_u8SetOutputModeB(TMR1_COMPARE_OUTPUT_B_MODE);
+	S_TMR1->m_TCCR1A.sBits.m_FOC1A = strTMR1_Config_GLB.m_TMR_FOCA;
+	S_TMR1->m_TCCR1A.sBits.m_FOC1B = strTMR1_Config_GLB.m_TMR_FOCB;
+	S_TMR1->m_TCCR1A.sBits.m_COM1A = strTMR1_Config_GLB.m_TMR_OutputModeA;
+	S_TMR1->m_TCCR1A.sBits.m_COM1B = strTMR1_Config_GLB.m_TMR_OutputModeB;
 
-	S_TMR1->m_TCCR1B.sBits.m_CS1   = TMR1_CLOCK_SOURCE;
-	if(TMR1_CLOCK_SOURCE == TMRx_ExternalClock_FallingEdge || TMR1_CLOCK_SOURCE == TMRx_ExternalClock_RisinfEdge){
+	//TMR1_vidEnable();
+	S_TMR1->m_TCCR1B.sBits.m_CS1   = strTMR1_Config_GLB.m_TMR_Prescalar;
+	if(strTMR1_Config_GLB.m_TMR_Prescalar == TMRx_ExternalClock_FallingEdge ||
+	   strTMR1_Config_GLB.m_TMR_Prescalar == TMRx_ExternalClock_RisinfEdge){
 		GPIO_u8SetPinDirection(TMR_EXT0_PORT, TMR_EXT0_PIN, PIN_INPUT);
 		GPIO_u8SetPinDirection(TMR_EXT1_PORT, TMR_EXT1_PIN, PIN_INPUT);
 	}
-	S_TMR1->m_TCCR1B.sBits.m_ICES1 = TMR1_INPUT_CAPTURE_EDGE_SELECT;
-	S_TMR1->m_TCCR1B.sBits.m_ICNC1 = TMR1_INPUT_CAPTURE_NOISE_CANCELER;
+	//TMR1_vidInitInputCapture();
+	S_TMR1->m_TCCR1B.sBits.m_ICNC1 = strTMR1_Config_GLB.m_TMR_InputNoise;
+	S_TMR1->m_TCCR1B.sBits.m_ICES1 = strTMR1_Config_GLB.m_TMR_InputEdge;
+	if(strTMR1_Config_GLB.m_TMR_InputEdge != TMR1_Capture_Off){
+		GPIO_u8SetPinDirection(TMR_ICP1_PORT, TMR_ICP1_PIN, PIN_INPUT);
+	}
 
-	S_TMR1->m_ICR1.u16Reg  = TMR1_INPUT_CAPTURE_INIT;
-	S_TMR1->m_OCR1A.u16Reg = TMR1_OUTPUT_COMPARE_A_INIT;
-	S_TMR1->m_OCR1B.u16Reg = TMR1_OUTPUT_COMPARE_B_INIT;
-	S_TMR1->m_TCNT1.u16Reg = TMR1_COUNTER_INIT;
+#if TMR1
+	//TMR1_u8SetInputCapture(TMR1_INPUT_CAPTURE_INIT);
+	S_TMR1->m_ICR1.u16Reg  = strTMR1_Config_GLB.m_TMR_Input;
+	//TMR1_u8SetOutputCompare_A(TMR1_OUTPUT_COMPARE_A_INIT);
+	S_TMR1->m_OCR1A.u16Reg = strTMR1_Config_GLB.m_TMR_CompareA;
+	//TMR1_u8SetOutputCompare_B(TMR1_OUTPUT_COMPARE_B_INIT);
+	S_TMR1->m_OCR1B.u16Reg = strTMR1_Config_GLB.m_TMR_CompareB;
+	//TMR1_u8SetCounter(TMR1_COUNTER_INIT);
+	S_TMR1->m_TCNT1.u16Reg = strTMR1_Config_GLB.m_TMR_Reload;
+#elif PWM1
+	PWM_u8SetFreq_OC1A(PWM1A_FREQ_INIT);
+	PWM_u8SetDuty_OC1A(PWM1B_DUTY_INIT);
+	PWM_vidDisable_OC1A();
 
-	S_TIMSK->sBits.m_TICIE1 = TMR1_INPUT_CAPTURE_INTERRUPT_STATE;
-	S_TIMSK->sBits.m_OCIE1A = TMR1_COMPARE_A_MATCH_INTERRUPT_STATE;
-	S_TIMSK->sBits.m_OCIE1B = TMR1_COMPARE_B_MATCH_INTERRUPT_STATE;
-	S_TIMSK->sBits.m_TOIE1  = TMR1_OVERFLOW_INTERRUPT_STATE;
+	PWM_u8SetFreq_OC1B(PWM1B_FREQ_INIT);
+	PWM_u8SetDuty_OC1B(PWM1B_DUTY_INIT);
+	PWM_vidDisable_OC1B();
+#endif
+
+	S_TIMSK->sBits.m_TICIE1 = strTMR1_Config_GLB.m_TMR_TICIE;
+	S_TIMSK->sBits.m_OCIE1A = strTMR1_Config_GLB.m_TMR_OCIEA;
+	S_TIMSK->sBits.m_OCIE1B = strTMR1_Config_GLB.m_TMR_OCIEB;
+	S_TIMSK->sBits.m_TOIE1  = strTMR1_Config_GLB.m_TMR_TOIE;
 
 	S_TIFR->sBits.m_ICF1    = LBTY_RESET;
 	S_TIFR->sBits.m_OCF1A   = LBTY_RESET;
@@ -726,8 +799,9 @@ void TMR1_vidInit(void){
 }
 
 void TMR1_vidEnable(void){
-	S_TMR1->m_TCCR1B.sBits.m_CS1 = TMR1_CLOCK_SOURCE;
-	if(TMR1_CLOCK_SOURCE == TMRx_ExternalClock_FallingEdge || TMR1_CLOCK_SOURCE == TMRx_ExternalClock_RisinfEdge){
+	S_TMR1->m_TCCR1B.sBits.m_CS1 = strTMR1_Config_GLB.m_TMR_Prescalar;
+	if(strTMR1_Config_GLB.m_TMR_Prescalar == TMRx_ExternalClock_FallingEdge ||
+	   strTMR1_Config_GLB.m_TMR_Prescalar == TMRx_ExternalClock_RisinfEdge){
 		GPIO_u8SetPinDirection(TMR_EXT0_PORT, TMR_EXT0_PIN, PIN_INPUT);
 		GPIO_u8SetPinDirection(TMR_EXT1_PORT, TMR_EXT1_PIN, PIN_INPUT);
 	}
@@ -737,11 +811,20 @@ void TMR1_vidDisable(void){
 	S_TMR1->m_TCCR1B.sBits.m_CS1 = TMRx_NoClockSource_Disable;
 }
 
-static void TMR1_vidSetWaveGenerationMode(TMR1_tenuWaveGenerationMode u8Mode){
+void TMR1_vidInitInputCapture(void){
+	S_TMR1->m_TCCR1B.sBits.m_ICNC1 = strTMR1_Config_GLB.m_TMR_InputNoise;
+	S_TMR1->m_TCCR1B.sBits.m_ICES1 = strTMR1_Config_GLB.m_TMR_InputEdge;
+	if(strTMR1_Config_GLB.m_TMR_InputEdge != TMR1_Capture_Off){
+		GPIO_u8SetPinDirection(TMR_ICP1_PORT, TMR_ICP1_PIN, PIN_INPUT);
+	}
+}
+
+LCTY_INLINE void TMR1_vidSetWaveGenerationMode(TMR1_tenuWaveGenerationMode u8Mode){
 	S_TMR1->m_TCCR1A.sBits.m_WGM10 = GET_BIT(u8Mode, TMRx_WGMx0_MASK);
 	S_TMR1->m_TCCR1A.sBits.m_WGM11 = GET_BIT(u8Mode, TMRx_WGMx1_MASK);
 	S_TMR1->m_TCCR1B.sBits.m_WGM12 = GET_BIT(u8Mode, TMRx_WGMx2_MASK);
 	S_TMR1->m_TCCR1B.sBits.m_WGM13 = GET_BIT(u8Mode, TMRx_WGMx3_MASK);
+	strTMR1_Config_GLB.m_TMR_Mode = u8Mode;
 }
 
 LBTY_tenuErrorStatus TMR1_u8SetMode(TMR1_tenuWaveGenerationMode u8Mode){
@@ -848,6 +931,7 @@ LBTY_tenuErrorStatus TMR1_u8SetOutputModeA(TMR1_tenuCompareOutputMode u8OutMode)
 	}
 	if(u8RetErrorState == LBTY_OK){
 		GPIO_u8SetPinDirection(TMR_OC1A_PORT, TMR_OC1A_PIN, PIN_OUTPUT);
+		strTMR1_Config_GLB.m_TMR_OutputModeA = u8OutMode;
 	}
 	return u8RetErrorState;
 }
@@ -901,6 +985,7 @@ LBTY_tenuErrorStatus TMR1_u8SetOutputModeB(TMR1_tenuCompareOutputMode u8OutMode)
 	}
 	if(u8RetErrorState == LBTY_OK){
 		GPIO_u8SetPinDirection(TMR_OC1B_PORT, TMR_OC1B_PIN, PIN_OUTPUT);
+		strTMR1_Config_GLB.m_TMR_OutputModeB = u8OutMode;
 	}
 	return u8RetErrorState;
 }
@@ -908,9 +993,8 @@ LBTY_tenuErrorStatus TMR1_u8SetOutputModeB(TMR1_tenuCompareOutputMode u8OutMode)
 LBTY_tenuErrorStatus TMR1_u8SetInputCapture(u16 u16Reload){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	if(u16Reload <= LBTY_u16MAX){
-		S_TMR1->m_ICR1.u16Reg = u16Reload;
+		S_TMR1->m_ICR1.u16Reg = strTMR1_Config_GLB.m_TMR_Input = u16Reload;
 	}else{
-		S_TMR1->m_ICR1.u16Reg = LBTY_u16ZERO;
 		u8RetErrorState = LBTY_WRITE_ERROR;
 	}
 	return u8RetErrorState;
@@ -919,35 +1003,174 @@ LBTY_tenuErrorStatus TMR1_u8SetInputCapture(u16 u16Reload){
 LBTY_tenuErrorStatus TMR1_u8SetOutputCompare_A(u16 u16Reload){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	if(u16Reload <= LBTY_u16MAX){
-		S_TMR1->m_OCR1A.u16Reg = u16Reload;
+		S_TMR1->m_OCR1A.u16Reg = strTMR1_Config_GLB.m_TMR_CompareA = u16Reload;
 	}else{
-		S_TMR1->m_OCR1A.u16Reg = LBTY_u16ZERO;
 		u8RetErrorState = LBTY_WRITE_ERROR;
 	}
 	return u8RetErrorState;
 }
 
-LBTY_tenuErrorStatus TMR1_u16SetOutputCompare_B(u16 u16Reload){
+LBTY_tenuErrorStatus TMR1_u8SetOutputCompare_B(u16 u16Reload){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	if(u16Reload <= LBTY_u16MAX){
-		S_TMR1->m_OCR1B.u16Reg = u16Reload;
+		S_TMR1->m_OCR1B.u16Reg = strTMR1_Config_GLB.m_TMR_CompareB = u16Reload;
 	}else{
-		S_TMR1->m_OCR1B.u16Reg = LBTY_u16ZERO;
 		u8RetErrorState = LBTY_WRITE_ERROR;
 	}
 	return u8RetErrorState;
 }
 
-LBTY_tenuErrorStatus TMR1_u16SetCounter(u16 u16Reload){
+LBTY_tenuErrorStatus TMR1_u8SetCounter(u16 u16Reload){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	if(u16Reload <= LBTY_u16MAX){
-		TMR1_u16Reload_GLB = u16Reload;
+		S_TMR1->m_TCNT1.u16Reg = strTMR1_Config_GLB.m_TMR_Reload = u16Reload;
 	}else{
 		u8RetErrorState = LBTY_WRITE_ERROR;
 	}
-	S_TMR1->m_TCNT1.u16Reg = TMR1_u16Reload_GLB;
 	return u8RetErrorState;
 }
+
+LBTY_tenuErrorStatus TMR1_u8GetInputCapture(u16* pu16Reload){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+	if(pu16Reload != LBTY_NULL){
+		*pu16Reload = S_TMR1->m_ICR1.u16Reg;
+	}else{
+		u8RetErrorState = LBTY_NULL_POINTER;
+	}
+	return u8RetErrorState;
+}
+
+LBTY_tenuErrorStatus TMR1_u8GetOutputCompare_A(u16* pu16Reload){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+	if(pu16Reload != LBTY_NULL){
+		*pu16Reload = S_TMR1->m_OCR1A.u16Reg;
+	}else{
+		u8RetErrorState = LBTY_NULL_POINTER;
+	}
+	return u8RetErrorState;
+}
+
+LBTY_tenuErrorStatus TMR1_u8GetOutputCompare_B(u16* pu16Reload){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+	if(pu16Reload != LBTY_NULL){
+		*pu16Reload = S_TMR1->m_OCR1B.u16Reg;
+	}else{
+		u8RetErrorState = LBTY_NULL_POINTER;
+	}
+	return u8RetErrorState;
+}
+
+LBTY_tenuErrorStatus TMR1_u8GetCounter(u16* pu16Reload){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+	if(pu16Reload != LBTY_NULL){
+		*pu16Reload = S_TMR1->m_TCNT1.u16Reg;
+	}else{
+		u8RetErrorState = LBTY_NULL_POINTER;
+	}
+	return u8RetErrorState;
+}
+
+/** TODO: Phase Correct Freq, and Duty Update **/
+#if PWM1
+static u16 TMR1_u8GetPrescaler(void){
+	u16 u16RetValue;
+	switch(S_TMR1->m_TCCR1B.sBits.m_CS1){
+		case TMRx_NoClockSource_Disable:	u16RetValue = 0;		break;
+		case TMRx_Fosc_Prescaler_1:			u16RetValue = 1;		break;
+		case TMRx_Fosc_Prescaler_8:			u16RetValue = 8;		break;
+		case TMRx_Fosc_Prescaler_64:		u16RetValue = 64;		break;
+		case TMRx_Fosc_Prescaler_256:		u16RetValue = 256;		break;
+		case TMRx_Fosc_Prescaler_1024:		u16RetValue = 1024;		break;
+		default:						u16RetValue = LBTY_u16MAX; 	break;
+	}
+	return u16RetValue;
+}
+
+LBTY_tenuErrorStatus PWM_u8SetFreq_OC1A(u16 u16Freq){
+	u32 u32TimerValue = LBTY_u32ZERO;
+//	TMR1_tenuWaveGenerationMode u8Mode =
+//				(S_TMR1->m_TCCR1A.sBits.m_WGM10<<TMRx_WGMx0_MASK) | (S_TMR1->m_TCCR1A.sBits.m_WGM11<<TMRx_WGMx1_MASK) |
+//				(S_TMR1->m_TCCR1B.sBits.m_WGM12<<TMRx_WGMx2_MASK) | (S_TMR1->m_TCCR1B.sBits.m_WGM13<<TMRx_WGMx3_MASK);
+
+	u32TimerValue = (u32)(LBTY_u16MAX - (u32)(F_CPU / ((f32)u16Freq * TMR1_u8GetPrescaler())));
+
+	while(u32TimerValue > (u32)LBTY_u8MAX);
+	return TMR1_u8SetCounter((u16)u32TimerValue);
+}
+
+LBTY_tenuErrorStatus PWM_u8SetDuty_OC1A(u8 u8Duty){
+	u32 u32TimerValue = LBTY_u32ZERO;
+//	TMR1_tenuWaveGenerationMode u8Mode =
+//				(S_TMR1->m_TCCR1A.sBits.m_WGM10<<TMRx_WGMx0_MASK) | (S_TMR1->m_TCCR1A.sBits.m_WGM11<<TMRx_WGMx1_MASK) |
+//				(S_TMR1->m_TCCR1B.sBits.m_WGM12<<TMRx_WGMx2_MASK) | (S_TMR1->m_TCCR1B.sBits.m_WGM13<<TMRx_WGMx3_MASK);
+
+	u32TimerValue = (u32)((f32)u8Duty / 100.0 * (LBTY_u16MAX - strTMR1_Config_GLB.m_TMR_Reload)) +  strTMR1_Config_GLB.m_TMR_Reload;
+
+	while(u32TimerValue > (u32)LBTY_u16MAX);
+	return TMR1_u8SetOutputCompare_A((u16)u32TimerValue);
+}
+LBTY_tenuErrorStatus PWM_u8SetFreq_OC1B(u16 u16Freq){
+	u32 u32TimerValue = LBTY_u32ZERO;
+//	TMR1_tenuWaveGenerationMode u8Mode =
+//				(S_TMR1->m_TCCR1A.sBits.m_WGM10<<TMRx_WGMx0_MASK) | (S_TMR1->m_TCCR1A.sBits.m_WGM11<<TMRx_WGMx1_MASK) |
+//				(S_TMR1->m_TCCR1B.sBits.m_WGM12<<TMRx_WGMx2_MASK) | (S_TMR1->m_TCCR1B.sBits.m_WGM13<<TMRx_WGMx3_MASK);
+
+	u32TimerValue = (u32)(LBTY_u16MAX - (u32)(F_CPU / ((f32)u16Freq * TMR1_u8GetPrescaler())));
+
+	while(u32TimerValue > (u32)LBTY_u8MAX);
+	return TMR1_u8SetCounter((u16)u32TimerValue);
+}
+
+LBTY_tenuErrorStatus PWM_u8SetDuty_OC1B(u8 u8Duty){
+	u32 u32TimerValue = LBTY_u32ZERO;
+//	TMR1_tenuWaveGenerationMode u8Mode =
+//				(S_TMR1->m_TCCR1A.sBits.m_WGM10<<TMRx_WGMx0_MASK) | (S_TMR1->m_TCCR1A.sBits.m_WGM11<<TMRx_WGMx1_MASK) |
+//				(S_TMR1->m_TCCR1B.sBits.m_WGM12<<TMRx_WGMx2_MASK) | (S_TMR1->m_TCCR1B.sBits.m_WGM13<<TMRx_WGMx3_MASK);
+
+	u32TimerValue = (u32)((f32)u8Duty / 100.0 * (LBTY_u16MAX - strTMR1_Config_GLB.m_TMR_Reload)) +  strTMR1_Config_GLB.m_TMR_Reload;
+
+	while(u32TimerValue > (u32)LBTY_u16MAX);
+	return TMR1_u8SetOutputCompare_B((u16)u32TimerValue);
+}
+#endif
+
+void TMR1_vidSetOverflowNum(u8 u8Num){
+	TMR1_u8OverflewNum_GLB = u8Num;
+}
+
+void TMR1_vidGetOverflowNum(u8* pu8Num){
+	*pu8Num = TMR1_u8OverflewNum_GLB;
+}
+
+void TMR1_vidGetTicks(u32* pu32Tick){
+	*pu32Tick = (u32)(TMR_u16MAX - strTMR1_Config_GLB.m_TMR_Reload) * TMR1_u8OverflewNum_GLB + S_TMR1->m_TCNT1.u16Reg;
+}
+
+/********************************************************************************************************************/
+
+void TMR1_vidInputCapture_Enable(void) {S_TIMSK->sBits.m_TICIE1 = LBTY_SET;}
+void TMR1_vidInputCapture_Disable(void){S_TIMSK->sBits.m_TICIE1 = LBTY_RESET;}
+
+void TMR1_vidSetInputCapture_Flag(void){S_TIFR->sBits.m_ICF1   = LBTY_SET;}
+void TMR1_vidClrInputCapture_Flag(void){S_TIFR->sBits.m_ICF1   = LBTY_RESET;}
+
+void TMR1_vidCompareMatch_A_Enable(void) {S_TIMSK->sBits.m_OCIE1A = LBTY_SET;}
+void TMR1_vidCompareMatch_A_Disable(void){S_TIMSK->sBits.m_OCIE1A = LBTY_RESET;}
+
+void TMR1_vidSetCompareMatch_A_Flag(void){S_TIFR->sBits.m_OCF1A   = LBTY_SET;}
+void TMR1_vidClrCompareMatch_A_Flag(void){S_TIFR->sBits.m_OCF1A   = LBTY_RESET;}
+
+void TMR1_vidCompareMatch_B_Enable(void) {S_TIMSK->sBits.m_OCIE1B = LBTY_SET;}
+void TMR1_vidCompareMatch_B_Disable(void){S_TIMSK->sBits.m_OCIE1B = LBTY_RESET;}
+
+void TMR1_vidSetCompareMatch_B_Flag(void){S_TIFR->sBits.m_OCF1B   = LBTY_SET;}
+void TMR1_vidClrCompareMatch_B_Flag(void){S_TIFR->sBits.m_OCF1B   = LBTY_RESET;}
+
+void TMR1_vidOverFlow_Enable(void) {S_TIMSK->sBits.m_TOIE1 = LBTY_SET;}
+void TMR1_vidOverFlow_Disable(void){S_TIMSK->sBits.m_TOIE1 = LBTY_RESET;}
+
+void TMR1_vidSetOverFlow_Flag(void){S_TIFR->sBits.m_TOV1   = LBTY_SET;}
+void TMR1_vidClrOverFlow_Flag(void){S_TIFR->sBits.m_TOV1   = LBTY_RESET;}
 
 void TMR1_vidSetCallBack_CaptureEvent(void (*pCallBack)(void)){
 	pFuncCallBack_TMR1_CaptureEven = pCallBack;
@@ -976,26 +1199,23 @@ ISR(TIM1_COMPA_vect){
 ISR(TIM1_CAPT_vect){
 }
 */
-void __vector_6 (void) __attribute__((signal));
-void __vector_6 (void){
+ISR(TIMER1_CAPT_vect){
 	pFuncCallBack_TMR1_CaptureEven();
-	S_TIFR->sBits.m_ICF1    = LBTY_RESET;
+	//TMR1_vidClrInputCapture_Flag();
 }
-void __vector_7 (void) __attribute__((signal));
-void __vector_7 (void){
+ISR(TIMER1_COMPA_vect){
 	pFuncCallBack_TMR1_CompareMatch_A();
-	S_TIFR->sBits.m_OCF1A   = LBTY_RESET;
+	//TMR1_vidClrCompareMatch_A_Flag();
 }
-void __vector_8 (void) __attribute__((signal));
-void __vector_8 (void){
+ISR(TIMER1_COMPB_vect){
 	pFuncCallBack_TMR1_CompareMatch_B();
-	S_TIFR->sBits.m_OCF1B   = LBTY_RESET;
+	//TMR1_vidClrCompareMatch_B_Flag();
 }
-void __vector_9 (void) __attribute__((signal));
-void __vector_9 (void){
-	S_TMR1->m_TCNT1.u16Reg  = TMR1_u16Reload_GLB;
+ISR(TIMER1_OVF_vect){
+	S_TMR1->m_TCNT1.u16Reg  = strTMR1_Config_GLB.m_TMR_Reload;
+	TMR1_u8OverflewNum_GLB++;
 	pFuncCallBack_TMR1_OverFlow();
-	S_TIFR->sBits.m_TOV1    = LBTY_RESET;
+	//TMR1_vidClrOverFlow_Flag();
 }
 
 /*************************** E N D (TMR_prg.c) ******************************/

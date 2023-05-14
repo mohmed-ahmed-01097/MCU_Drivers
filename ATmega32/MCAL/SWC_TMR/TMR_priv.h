@@ -48,6 +48,9 @@
 #define TMR_OC1B_PORT		D
 #define TMR_OC1B_PIN		GPIO_TMR_OC1B
 
+#define TMR_u8MAX			(LBTY_u8MAX + 1u)
+#define TMR_u16MAX			(LBTY_u16MAX + 1u)
+
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
@@ -59,37 +62,6 @@
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
-
-/********************************************************************************************************************/
-
-static inline u16  TMR1_u16GetInputCapture(void)   {return S_TMR1->m_ICR1.u16Reg;}
-static inline u16  TMR1_u16GetOutputCompare_A(void){return S_TMR1->m_OCR1A.u16Reg;}
-static inline u16  TMR1_u16GetOutputCompare_B(void){return S_TMR1->m_OCR1B.u16Reg;}
-static inline u16  TMR1_u16GetCounter(void)        {return S_TMR1->m_TCNT1.u16Reg;}
-
-static inline void TMR1_vidInputCapture_Enable(void) {S_TIMSK->sBits.m_TICIE1 = LBTY_SET;}
-static inline void TMR1_vidInputCapture_Disable(void){S_TIMSK->sBits.m_TICIE1 = LBTY_RESET;}
-
-static inline void TMR1_vidSetInputCapture_Flag(void){S_TIFR->sBits.m_ICF1   = LBTY_SET;}
-static inline void TMR1_vidClrInputCapture_Flag(void){S_TIFR->sBits.m_ICF1   = LBTY_RESET;}
-
-static inline void TMR1_vidCompareMatch_A_Enable(void) {S_TIMSK->sBits.m_OCIE1A = LBTY_SET;}
-static inline void TMR1_vidCompareMatch_A_Disable(void){S_TIMSK->sBits.m_OCIE1A = LBTY_RESET;}
-
-static inline void TMR1_vidSetCompareMatch_A_Flag(void){S_TIFR->sBits.m_OCF1A   = LBTY_SET;}
-static inline void TMR1_vidClrCompareMatch_A_Flag(void){S_TIFR->sBits.m_OCF1A   = LBTY_RESET;}
-
-static inline void TMR1_vidCompareMatch_B_Enable(void) {S_TIMSK->sBits.m_OCIE1B = LBTY_SET;}
-static inline void TMR1_vidCompareMatch_B_Disable(void){S_TIMSK->sBits.m_OCIE1B = LBTY_RESET;}
-
-static inline void TMR1_vidSetCompareMatch_B_Flag(void){S_TIFR->sBits.m_OCF1B   = LBTY_SET;}
-static inline void TMR1_vidClrCompareMatch_B_Flag(void){S_TIFR->sBits.m_OCF1B   = LBTY_RESET;}
-
-static inline void TMR1_vidOverFlow_Enable(void) {S_TIMSK->sBits.m_TOIE1 = LBTY_SET;}
-static inline void TMR1_vidOverFlow_Disable(void){S_TIMSK->sBits.m_TOIE1 = LBTY_RESET;}
-
-static inline void TMR1_vidSetOverFlow_Flag(void){S_TIFR->sBits.m_TOV1   = LBTY_SET;}
-static inline void TMR1_vidClrOverFlow_Flag(void){S_TIFR->sBits.m_TOV1   = LBTY_RESET;}
 
 
 #endif /* TMR_PRIV_H_ */
