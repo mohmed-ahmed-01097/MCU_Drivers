@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : LMD_prg.c												  */
+/* File Name   : LMD_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -11,6 +11,8 @@
 
 #include "LBTY_int.h"
 #include "LBIT_int.h"
+#include "LCTY_int.h"
+
 #include "DELAY.h"
 
 #include "GPIO_int.h"
@@ -67,6 +69,9 @@ void LMD_vidInit(void){
 /* ************************************************************************** */
 LBTY_tenuErrorStatus LMD_u8Display(u8* const pu8Display){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+
+	/** TODO: Update LDM with decoder **/
+
 #if LMD_MUX_TYPE ==	LMD_COL_MUX
 	for(u8 i = LMD_MAX_ROW_NUM ; i-- ; ){
 		u8 u8ColChar = LBTY_u8ZERO;
@@ -128,6 +133,10 @@ LBTY_tenuErrorStatus LMD_u8Update(void){
 
 	if(u8Refresh++ > LMD_REFRESH_RATE){
 		u8Refresh =  LBTY_u8ZERO;
+		u8TempChar_GLB = pu8Array_GLB[u8index];
+		for(u8 i = 0 ; i<LMD_MAX_COL_NUM ; i++){
+			pu8Char[i] = pu8Char[i] >> 1 | (GET_BIT(IMAGES[u8TempChar_GLB][i], u8Shift)) << (LMD_MAX_COL_NUM - 1);
+		}
 		if(u8Shift<LMD_MAX_COL_NUM){
 			u8Shift++;
 		}else{
@@ -137,10 +146,6 @@ LBTY_tenuErrorStatus LMD_u8Update(void){
 				u8index = 0;
 				u8RetErrorState = LBTY_NOK;
 			}
-		}
-		u8TempChar_GLB = pu8Array_GLB[u8index];
-		for(u8 i = 0 ; i<LMD_MAX_COL_NUM ; i++){
-			pu8Char[i] = pu8Char[i] >> 1 | (GET_BIT(IMAGES[u8TempChar_GLB][i], u8Shift)) << (LMD_MAX_COL_NUM - 1);
 		}
 	}
 

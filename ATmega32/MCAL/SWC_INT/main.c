@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c												  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
 #include "ATMega32.h"
-#include "DELAY.h"
 
 #include "LBTY_int.h"
-#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
 
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
 
-#include "MCU_int.h"
+#include "INTP.h"
 
 #include "INT_int.h"
 #include "INT_cfg.h"
@@ -39,13 +40,13 @@
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
 
-u8 u8INT_Flag = LBTY_RESET;
-
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
 #ifdef	SWC_INT
+
+u8 u8INT_Flag = LBTY_RESET;
 
 void Push_ISR(void);
 
@@ -64,7 +65,7 @@ int main(void){
     INT_vidInit(INT_AMIT_PUSH2);
     INT_vidSetCallBack(INT_AMIT_PUSH2, Push_ISR);
 
-    MCU_vidEnableGlobalInterrupt();
+    INTP_vidEnable();
 
    	while(1){
    		if(u8INT_Flag){

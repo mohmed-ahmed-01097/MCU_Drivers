@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : KEYPAD_cfg.h												  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -36,23 +36,32 @@ COL0  COL1  COL2  COL3				 <== INPUT
 */
 #if 	AMIT_KIT
 
+#define KPAD_ROW_DIR_OUTPUT
+//#define KPAD_COL_DIR_OUTPUT
+
+#define KPAD_KEY_RES			PUSH_PULL_DOWN
+
 #define KPAD_ROW_NUM			3u
-#define KPAD_COL_NUM			3u
-
-#define KPAD_ROW_PORT			A
-#define KPAD_COL_PORT			A
-
+#define KPAD_ROW_PORT			D
 #define KPAD_ROW0				0u
 #define KPAD_ROW1				1u
 #define KPAD_ROW2				2u
-#define KPAD_ROW3				KPAD_ROW0
 
-#define KPAD_COL0				4u
-#define KPAD_COL1				5u
-#define KPAD_COL2				6u
-#define KPAD_COL3				KPAD_COL0
+#define KPAD_COL_NUM			3u
+#define KPAD_COL_PORT			B
+#define KPAD_COL0				5u
+#define KPAD_COL1				6u
+#define KPAD_COL2				7u
+
+#define KPAD_ROW_MASK			(1<<KPAD_ROW0)|(1<<KPAD_ROW1)|(1<<KPAD_ROW2)
+#define KPAD_COL_MASK			(1<<KPAD_COL0)|(1<<KPAD_COL1)|(1<<KPAD_COL2)
 
 #elif	ETA32_KIT
+
+#define KPAD_ROW_DIR_OUTPUT
+//#define KPAD_COL_DIR_OUTPUT
+
+#define KPAD_KEY_RES			PUSH_PULL_UP
 
 #define KPAD_ROW_NUM			4u
 #define KPAD_ROW_PORT			C
@@ -68,7 +77,13 @@ COL0  COL1  COL2  COL3				 <== INPUT
 #define KPAD_COL2				Eta32_Keypad_col2
 #define KPAD_COL3				Eta32_Keypad_col3
 
+#define KPAD_ROW_MASK			(1<<KPAD_ROW0)|(1<<KPAD_ROW1)|(1<<KPAD_ROW2)|(1<<KPAD_ROW3)
+#define KPAD_COL_MASK			(1<<KPAD_COL0)|(1<<KPAD_COL1)|(1<<KPAD_COL2)|(1<<KPAD_COL3)
+
 #else
+
+#define KPAD_ROW_DIR_OUTPUT
+//#define KPAD_COL_DIR_OUTPUT
 
 #define KPAD_ROW_NUM			4u
 #define KPAD_COL_NUM			4u
@@ -86,19 +101,13 @@ COL0  COL1  COL2  COL3				 <== INPUT
 #define KPAD_COL2				6u
 #define KPAD_COL3				7u
 
+#define KPAD_ROW_MASK			(1<<KPAD_ROW0)|(1<<KPAD_ROW1)|(1<<KPAD_ROW2)|(1<<KPAD_ROW3)
+#define KPAD_COL_MASK			(1<<KPAD_COL0)|(1<<KPAD_COL1)|(1<<KPAD_COL2)|(1<<KPAD_COL3)
+
 #endif
 
 #define KPAD_MAX_COL			4u
 #define KPAD_MAX_ROW			4u
-
-#define KPAD_ROW_DIR_OUTPUT
-//#define KPAD_COL_DIR_OUTPUT
-
-#define KPAD_KEY_PRESSED		PIN_Low
-#define KPAD_KEY_RELEASED		PIN_High
-
-#define KPAD_ROW_MASK			(1<<KPAD_ROW0)|(1<<KPAD_ROW1)|(1<<KPAD_ROW2)|(1<<KPAD_ROW3)
-#define KPAD_COL_MASK			(1<<KPAD_COL0)|(1<<KPAD_COL1)|(1<<KPAD_COL2)|(1<<KPAD_COL3)
 
 /** Row 0 **/
 #define KPAD_KEY00				'1'

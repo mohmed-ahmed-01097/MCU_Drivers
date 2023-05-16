@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : SEG_cfg.h												  */
+/* File Name   : SEG_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -34,7 +34,7 @@
 #define SEG_B				AMIT_7Seg_B
 #define SEG_C				AMIT_7Seg_C
 #define SEG_D				AMIT_7Seg_D
-#define SEG_h				AMIT_7Seg_D
+#define SEG_h				AMIT_C0
 
 #elif	ETA32_KIT
 
@@ -54,27 +54,40 @@
 #define SEG_B				Eta32_7Seg_B
 #define SEG_C				Eta32_7Seg_C
 #define SEG_D				Eta32_7Seg_D
-#define SEG_h				Eta32_7Seg_D
+#define SEG_h				Eta32_LED_R
 
 #else
 
 #define SEG_PORT_COM0		C
-#define SEG_PIN_COM0		AMIT_7Seg_COM0
+#define SEG_PIN_COM0		0u
 #define SEG_PORT_COM1		C
-#define SEG_PIN_COM1		AMIT_7Seg_COM1
+#define SEG_PIN_COM1		1u
+#define SEG_PORT_COM2		C
+#define SEG_PIN_COM2		2u
+#define SEG_PORT_COM3		C
+#define SEG_PIN_COM3		3u
+#define SEG_PORT_COM4		C
+#define SEG_PIN_COM4		4u
+#define SEG_PORT_COM5		C
+#define SEG_PIN_COM5		5u
 
 #define SEG_PINS			8u
-#define SEG_PORT_DATA		C
-#define SEG_a				GPIO_7Seg_a
-#define SEG_b				GPIO_7Seg_b
-#define SEG_c				GPIO_7Seg_c
-#define SEG_d				GPIO_7Seg_d
-#define SEG_e				GPIO_7Seg_e
-#define SEG_f				GPIO_7Seg_f
-#define SEG_g				GPIO_7Seg_g
-#define SEG_h				GPIO_7Seg_h
+#define SEG_PORT_DATA		B
+#define SEG_a				0u
+#define SEG_b				1u
+#define SEG_c				2u
+#define SEG_d				3u
+#define SEG_e				4u
+#define SEG_f				5u
+#define SEG_g				6u
+#define SEG_h				7u
 
 #endif
+
+
+#define SEG_DELAY			5u
+
+#define DOT_DELAY			5u
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */

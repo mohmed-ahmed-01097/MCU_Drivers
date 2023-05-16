@@ -1,20 +1,35 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : DELAY.c												 	  */
+/* File Name   : IR_priv.h													  */
 /* Author      : MAAM														  */
 /* Version     : v00														  */
-/* date        : Mar 25, 2023												  */
+/* date        : May 3, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
-#include "LBTY_int.h"
-#include "DELAY.h"
+#ifndef IR_PRIV_H_
+#define IR_PRIV_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
+
+typedef struct{
+	IR_tstrPacket strPacket;
+	volatile u8  m_u8State;
+	volatile u8  m_u8Edge;
+	volatile u8  m_u8Stop;
+
+	volatile u8  m_u8Repeat;
+	volatile u8  m_u8RepeatCount;
+
+	volatile u8  m_u8ReadBit;
+	volatile u8  m_u8ReadByte;
+
+	volatile u16 m_u16Time;
+}IR_tstrFram;
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
@@ -32,17 +47,22 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
-/* ************************************************************************** */
-/* Description :    Delay function for milliseconde							  */
-/* Input       :	u8PortNum, u8PinNum										  */
-/* Return      :	LBTY_tenuErrorStatus									  */
-/* ************************************************************************** */
-void vidMyDelay_ms(u16 u16DelayNum){
-	while(--u16DelayNum){
-        for(u32 i = DELAY_FOR_LOOP ; i-- ; );
-	}
-    //for(u32 i = 235294 ; i-- ; );
-}
+void vid_IrResetPrevPacket(void);
+
+void vid_IrWriteBuffer(u8 u8CMD);
+
+void vid_IrReadBuffer(u8* pu8CMD);
+
+void vid_IrReadPacket(IR_tstrPacket* pstrPacket);
+void vid_IrReadFram(IR_tstrFram* pstrFram);
+
+void vid_IrBitStep(void);
+
+void vid_IrLeadHigh(u16 u16TempTime);
+void vid_IrLeadLow(u16 u16TempTime);
+void vid_IrReceiveBits(u16 u16TempTime);
+void vid_IrStop(void);
 
 
-/*************************** E N D (DELAY.c) ******************************/
+#endif /* IR_PRIV_H_ */
+/*************************** E N D (IR_priv.h) ******************************/

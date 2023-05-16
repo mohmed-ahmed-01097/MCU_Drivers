@@ -1,15 +1,17 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : LCD_prg.c												  */
+/* File Name   : LCD_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 31, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
 #include "LBTY_int.h"
+#include "LCTY_int.h"
+
 #include "DELAY.h"
 
 #include "LCD_int.h"
@@ -23,6 +25,12 @@
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
+
+/** TODO: sprintf function **/
+//#include <stdlib.h>
+//#include <stdio.h>
+//
+//	sprintf (str, "%s%d.%04d", tmpSign, tmpInt1, tmpInt2);
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -374,18 +382,22 @@ LBTY_tenuErrorStatus LCD_u8GoTo_XY(u8 u8Col, u8 u8Row){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	if((u8Col < LCD_COL_NUM)){
 		switch(u8Row){
-			case LCD_Line_1:	LCD_u8CMD_W(LCD_FIRST_LINE_POSITION_0  | u8Col);	break;
+			case LCD_Line_1:	LCD_u8CMD_W(LCD_FIRST_LINE_POSITION_0  + u8Col);	break;
 #if (LCD_ROW_NUM >= LCD_ROW_NUM_2)
-			case LCD_Line_2:	LCD_u8CMD_W(LCD_SECOND_LINE_POSITION_0 | u8Col);	break;
+			case LCD_Line_2:	LCD_u8CMD_W(LCD_SECOND_LINE_POSITION_0 + u8Col);	break;
 #endif
 #if (LCD_ROW_NUM >= LCD_ROW_NUM_4)
 #if (LCD_COL_NUM == LCD_COL_NUM_16)
-			case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0  | u8Col);	break;
-			case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0 | u8Col);	break;
+			case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0  + u8Col);	break;
+			case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0 + u8Col);	break;
 #endif
 #if (LCD_COL_NUM == LCD_COL_NUM_20)
-			case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0_20  | u8Col);	break;
-			case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0_20 | u8Col);	break;
+			case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0_20  + u8Col);	break;
+			case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0_20 + u8Col);	break;
+#endif
+#if (LCD_COL_NUM == LCD_COL_NUM_32)
+			case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0_32  + u8Col);	break;
+			case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0_32 + u8Col);	break;
 #endif
 #endif
 			default:			u8RetErrorState = LBTY_NULL_POINTER;;				break;

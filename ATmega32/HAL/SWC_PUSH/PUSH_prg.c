@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : PUSH_prg.c												  */
+/* File Name   : PUSH_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -36,7 +36,7 @@ typedef enum{
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-extern const PUSH_tstrConfiguration pu8PushConfiguration_LGB[PUSH_NUM];
+extern const PUSH_tstrConfiguration kau8PushConfiguration_LGB[PUSH_NUM];
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -52,7 +52,7 @@ extern const PUSH_tstrConfiguration pu8PushConfiguration_LGB[PUSH_NUM];
 /* ************************************************************************** */
 void PUSH_vidInit(u8 u8PushNum){
 	PUSH_tstrConfiguration* pstrPush =
-			(PUSH_tstrConfiguration*)&pu8PushConfiguration_LGB[u8PushNum];
+			(PUSH_tstrConfiguration*)&kau8PushConfiguration_LGB[u8PushNum];
 	GPIO_u8SetPinDirection(pstrPush->u8PortNum, pstrPush->u8PinNum, PIN_INPUT);
 }
 
@@ -64,7 +64,7 @@ void PUSH_vidInit(u8 u8PushNum){
 /* ************************************************************************** */
 LBTY_tenuErrorStatus PUSH_u8GetPushState(u8 u8PushNum, u8* pu8State){
 	PUSH_tstrConfiguration* pstrPush =
-			(PUSH_tstrConfiguration*)&pu8PushConfiguration_LGB[u8PushNum];
+			(PUSH_tstrConfiguration*)&kau8PushConfiguration_LGB[u8PushNum];
 	LBTY_tenuErrorStatus u8RetValue  =
 			GPIO_u8GetPinValue(pstrPush->u8PortNum, pstrPush->u8PinNum, pu8State);
 	switch(pstrPush->u8Connection){

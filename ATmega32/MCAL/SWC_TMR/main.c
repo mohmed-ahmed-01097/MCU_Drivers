@@ -1,24 +1,26 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c												  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
 #include "ATMega32.h"
-#include "DELAY.h"
 
 #include "LBTY_int.h"
 #include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
 
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
 
-#include "MCU_int.h"
+#include "INTP.h"
 
 #include "TMR_int.h"
 #include "TMR_cfg.h"
@@ -58,7 +60,7 @@ int main(void){
     GPIO_u8SetPinDirection(D, AMIT_LED0, PIN_OUTPUT);
     GPIO_u8SetPinValue	  (D, AMIT_LED0, PIN_Low);
 
-    MCU_vidDisableGlobalInterrupt();
+    INTP_vidDisable();
 
 //    TMR0_vidInit();
 //    TMR0_vidSetCallBack_OverFlow(TMR_ISR);
@@ -68,7 +70,7 @@ int main(void){
     TMR2_vidSetCallBack_OverFlow(TMR_ISR);
     PWM_vidEnable_OC2();
 
-    MCU_vidEnableGlobalInterrupt();
+    INTP_vidEnable();
 
    	while(1){
 //		    PWM_vidDisable_OC0();

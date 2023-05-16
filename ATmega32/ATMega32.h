@@ -9,80 +9,6 @@
 #define __I     volatile const
 /*************************************************************************/
 
-typedef enum{
-    External_Clock               = (u8)0u,
-
-    Internal_RC_Oscillator_1MHz  = (u8)1u,      //default
-    Internal_RC_Oscillator_2MHz  = (u8)2u,
-    Internal_RC_Oscillator_4MHz  = (u8)3u,
-    Internal_RC_Oscillator_8MHz  = (u8)4u,
-
-    External_RC_Oscillator_900KHz  = (u8)5u,
-    External_RC_Oscillator_3MHz    = (u8)6u,
-    External_RC_Oscillator_8MHz    = (u8)7u,
-    External_RC_Oscillator_12Mhz   = (u8)8u,
-
-    External_Low_Freq_Crystal_Oscillator   = (u8)9u,
-
-    /** 12 - 22 C1 and C2 for Use with Crystals (pF) **/
-    External_Crystal_Low_Freq0      =(u8)10u,   /** 900kHz Ceramic resonator, slowly rising power **/
-    External_Crystal_Low_Freq1      =(u8)11u,   /** 2MHz   Crystal Oscillator, slowly rising power **/
-    External_Crystal_Medium_Freq0   =(u8)12u,   /** 3MHz   Ceramic resonator, fast rising power **/
-    External_Crystal_Medium_Freq1   =(u8)13u,   /** 8MHz   Crystal Oscillator, fast rising power **/
-    External_Crystal_High_Freq0     =(u8)14u,   /** 8MHz   Ceramic resonator, BODenabled **/
-    External_Crystal_High_Freq1     =(u8)15u,   /** 16MHz  Crystal Oscillator, BOD enabled **/
-}SysClockOption_type;                              // CKSEL[3 0]
-
-typedef union{
-    __IO u8 FUSE_L;
-    struct {
-        u8 CKSEL    : 4;        // SysClockOption_t
-        u8 SUT      : 2;        // Select start-up time
-        u8 BODEN    : 1;        // Brown-out Detector
-        u8 BODLEVEL : 1;        // Brown-out Detector trigger level
-    }sBits;
-}Fuse_Low_Byte_type;
-
-
-typedef union{
-    __IO u8 FUSE_H;
-    struct {
-        u8 BOOTRST  : 1;        // Select reset vector
-        u8 BOOTSZ   : 2;        // Select Boot Size
-        u8 EESAVE   : 1;        // EEPROM memory
-        u8 CKOPT    : 1;        // Oscillator options
-        u8 SPIEN    : 1;        // Enable SPI Serial Program and Data Downloading
-        u8 JTAGEN   : 1;        // Enable JTAG
-        u8 OCDEN    : 1;        // Enable OCD
-    }sBits;
-}Fuse_High_Byte_type;
-
-/*************************************************************************/
-
-typedef enum{
-    IDEL_Mode = 0u,
-    ADC_Noise_Reduction_Mode = 1u,
-    Power_Down_Mode = 2u,
-    Power_Save_Mode = 3u,
-
-    Standby_Mode = 6u,
-    Extended_Standby_Mode = 7u
-}SleeS_Mode_type;
-
-/*************************************************************************/
-
-typedef enum{
-    INT_Low_Level = (u8)0u,
-	INT_Logic_Change,
-	INT_Falling_Edge,
-	INT_Rising_Edge,
-
-	INT2_Falling_Edge = (u8)0u,
-	INT2_Rising_Edge
-}INT_tenuSenseControl;      // Interrupt Sense Control
-
-/*************************************************************************/
-
 typedef union{
     u8 u_Reg;
     struct {
@@ -569,6 +495,13 @@ typedef union{
 
 /*************************************************************************/
 
+typedef struct{
+    __I  u16    m_SP : 12;
+    __I  u16          : 4;
+}SP_type;
+
+/*************************************************************************/
+
 typedef union{
     u8 u_Reg;
     struct {
@@ -584,208 +517,147 @@ typedef union{
 }SREG_type;   // General Interrupt Control Register
 
 /*************************************************************************/
-
-/** Interrupt Vectors **/
-/**************************************************************************
-* Vector No.	Program Address 	Source 		Interrupt Definition
-* 1  			$000 				RESET  		External Pin,
-* 											    Power-on Reset,
-* 											    Brown-out Reset,
-* 											    Watchdog Reset,
-* 											    and JTAG AVR Reset
-* 2  			$002 				INT0   		External Interrupt Request 0
-* 3  			$004 				INT1   		External Interrupt Request 1
-* 4  			$006 				INT2   		External Interrupt Request 2
-* 5  			$008 				TIMER2 		COMP Timer/Counter2 Compare Match
-* 6  			$00A 				TIMER2 		OVF Timer/Counter2 Overflow
-* 7  			$00C 				TIMER1 		CAPT Timer/Counter1 Capture Event
-* 8  			$00E 				TIMER1 		COMPA Timer/Counter1 Compare Match A
-* 9  			$010 				TIMER1 		COMPB Timer/Counter1 Compare Match B
-* 10 			$012 				TIMER1 		OVF Timer/Counter1 Overflow
-* 11 			$014 				TIMER0 		COMP Timer/Counter0 Compare Match
-* 12 			$016 				TIMER0 		OVF Timer/Counter0 Overflow
-* 13 			$018 				SPI,   		STC Serial Transfer Complete
-* 14 			$01A 				USART, 		RXC USART, Rx Complete
-* 15 			$01C 				USART, 		UDRE USART Data Register Empty
-* 16 			$01E 				USART, 		TXC USART, Tx Complete
-* 17 			$020 				ADC    		ADC Conversion Complete
-* 18 			$022 				EE_RDY 		EEPROM Ready
-* 19 			$024 				ANA_COMP   	Analog Comparator
-* 20 			$026 				TWI    		Two-wire Serial Interface
-* 21 			$028 				SPM_RDY    	Store Program Memory Ready
-**************************************************************************/
-/*
-Address 	Labels 	Code 						Comments
-$000 				jmp RESET 			 ; Reset Handler
-$002 				jmp EXT_INT0 		 ; IRQ0 Handler
-$004 				jmp EXT_INT1 		 ; IRQ1 Handler
-$006 				jmp EXT_INT2 		 ; IRQ2 Handler
-$008 				jmp TIM2_COMP 		 ; Timer2 Compare Handler
-$00A 				jmp TIM2_OVF 		 ; Timer2 Overflow Handler
-$00C 				jmp TIM1_CAPT 		 ; Timer1 Capture Handler
-$00E 				jmp TIM1_COMPA 		 ; Timer1 CompareA Handler
-$010 				jmp TIM1_COMPB 		 ; Timer1 CompareB Handler
-$012 				jmp TIM1_OVF 		 ; Timer1 Overflow Handler
-$014 				jmp TIM0_COMP 		 ; Timer0 Compare Handler
-$016 				jmp TIM0_OVF 		 ; Timer0 Overflow Handler
-$018 				jmp SPI_STC 		 ; SPI Transfer Complete Handler
-$01A 				jmp USART_RXC 		 ; USART RX Complete Handler
-$01C 				jmp USART_UDRE 		 ; UDR Empty Handler
-$01E 				jmp USART_TXC 		 ; USART TX Complete Handler
-$020 				jmp ADC 			 ; ADC Conversion Complete Handler
-$022 				jmp EE_RDY 			 ; EEPROM Ready Handler
-$024 				jmp ANA_COMP 		 ; Analog Comparator Handler
-$026 				jmp TWI 			 ; Two-wire Serial Interface Handler
-$028 				jmp SPM_RDY 		 ; Store Program Memory Ready Handler
-;
-$02A 		RESET: 	ldi r16,high(RAMEND) ; Main program start
-$02B 				out SPH,r16 		 ; Set Stack Pointer to top of RAM
-$02C 				ldi r16,low(RAMEND)
-$02D 				out SPL,r16
-$02E 				sei 				 ; Enable interrupts
-$02F 				<instr> xxx
-... ... ...
-*/
-
 /** Memory Mapped **/
 /** Two-Wire Serial Interface **/
-#define S_TWI           ((TWI_type*)0x20U)
-#define TWBR            *(volatile u8*)0x20U
-#define TWSR            *(volatile u8*)0x21U
-#define TWAR            *(volatile u8*)0x22U
-#define TWDR            *(volatile u8*)0x23U
+#define S_TWI           ((TWI_type* const)0x20U)
+#define TWBR            (*(volatile u8* const)0x20U)
+#define TWSR            (*(volatile u8* const)0x21U)
+#define TWAR            (*(volatile u8* const)0x22U)
+#define TWDR            (*(volatile u8* const)0x23U)
 
-#define TWCR            *(volatile u8*)0x56U
+#define TWCR            (*(volatile u8* const)0x56U)
 
 /** Analog Digital Converter **/
-#define S_ADC           ((ADC_type*)0x24U)
-#define ADCL            *(volatile u8*)0x24U
-#define ADCH            *(volatile u8*)0x25U
-#define ADCSRA          *(volatile u8*)0x26U
-#define ADMUX           *(volatile u8*)0x27U
-#define ACSR            *(volatile u8*)0x28U
+#define S_ADC           ((ADC_type* const)0x24U)
+#define ADCL            (*(volatile u8* const)0x24U)
+#define ADCH            (*(volatile u8* const)0x25U)
+#define ADCSRA          (*(volatile u8* const)0x26U)
+#define ADMUX           (*(volatile u8* const)0x27U)
+#define ACSR            (*(volatile u8* const)0x28U)
 
 /** USART **/
-#define S_USART         ((USART_type*)0x29U)
-#define UBRRL           *(volatile u8*)0x29U
-#define UCSRB           *(volatile u8*)0x2AU
-#define UCSRA           *(volatile u8*)0x2BU
-#define UDR             *(volatile u8*)0x2CU
+#define S_USART         ((USART_type* const)0x29U)
+#define UBRRL           (*(volatile u8* const)0x29U)
+#define UCSRB           (*(volatile u8* const)0x2AU)
+#define UCSRA           (*(volatile u8* const)0x2BU)
+#define UDR             (*(volatile u8* const)0x2CU)
 
-#define UCSRC           *(volatile u8*)0x40U
-#define UBRRH           *(volatile u8*)0x40U
+#define UCSRC           (*(volatile u8* const)0x40U)
+#define UBRRH           (*(volatile u8* const)0x40U)
 
 /** SPI **/
-#define S_SPI           ((SPI_type*)0x2DU)
-#define SPCR            *(volatile u8*)0x2DU
-#define SPSR            *(volatile u8*)0x2EU
-#define SPDR            *(volatile u8*)0x2FU
+#define S_SPI           ((SPI_type* const)0x2DU)
+#define SPCR            (*(volatile u8* const)0x2DU)
+#define SPSR            (*(volatile u8* const)0x2EU)
+#define SPDR            (*(volatile u8* const)0x2FU)
 
 /** GPIOD **/
-#define S_GPIOD         ((GPIOx_type*)0x30U)
-#define PIND            *(volatile u8*)0x30U
-#define DDRD            *(volatile u8*)0x31U
-#define PORTD           *(volatile u8*)0x32U
+#define S_GPIOD         ((GPIOx_type* const)0x30U)
+#define PIND            (*(volatile u8* const)0x30U)
+#define DDRD            (*(volatile u8* const)0x31U)
+#define PORTD           (*(volatile u8* const)0x32U)
 
 /** GPIOC **/
-#define S_GPIOC         ((GPIOx_type*)0x33U)
-#define PINC            *(volatile u8*)0x33U
-#define DDRC            *(volatile u8*)0x34U
-#define PORTC           *(volatile u8*)0x35U
+#define S_GPIOC         ((GPIOx_type* const)0x33U)
+#define PINC            (*(volatile u8* const)0x33U)
+#define DDRC            (*(volatile u8* const)0x34U)
+#define PORTC           (*(volatile u8* const)0x35U)
 
 /** GPIOB **/
-#define S_GPIOB         ((GPIOx_type*)0x36U)
-#define PINB            *(volatile u8*)0x36U
-#define DDRB            *(volatile u8*)0x37U
-#define PORTB           *(volatile u8*)0x38U
+#define S_GPIOB         ((GPIOx_type* const)0x36U)
+#define PINB            (*(volatile u8* const)0x36U)
+#define DDRB            (*(volatile u8* const)0x37U)
+#define PORTB           (*(volatile u8* const)0x38U)
 
 /** GPIOA **/
-#define S_GPIOA         ((GPIOx_type*)0x39U)
-#define PINA            *(volatile u8*)0x39U
-#define DDRA            *(volatile u8*)0x3AU
-#define PORTA           *(volatile u8*)0x3BU
+#define S_GPIOA         ((GPIOx_type* const)0x39U)
+#define PINA            (*(volatile u8* const)0x39U)
+#define DDRA            (*(volatile u8* const)0x3AU)
+#define PORTA           (*(volatile u8* const)0x3BU)
 
 /** EEPROM **/
-#define S_EEPROM        ((EEPROM_type*)0x3CU)
-#define EECR            *(volatile u8*)0x3CU
-#define EEDR            *(volatile u8*)0x3DU
-#define EEARL           *(volatile u8*)0x3EU
-#define EEARH           *(volatile u8*)0x3FU
+#define S_EEPROM        ((EEPROM_type* const)0x3CU)
+#define EECR            (*(volatile u8* const)0x3CU)
+#define EEDR            (*(volatile u8* const)0x3DU)
+#define EEARL           (*(volatile u8* const)0x3EU)
+#define EEARH           (*(volatile u8* const)0x3FU)
 
 /** Watchdog Control Register **/
-#define S_WDTCR         ((WDTCR_type*)0x41U)
-#define WDTCR           *(volatile u8*)0x41U
+#define S_WDTCR         ((WDTCR_type* const)0x41U)
+#define WDTCR           (*(volatile u8* const)0x41U)
 
 /** Timer/Counter 0 Register **/
-#define S_TMR2          ((GPTMR2_type*)0x42U)
-#define ASSR            *(volatile u8*)0x42U
-#define OCR2            *(volatile u8*)0x43U
-#define TCNT2           *(volatile u8*)0x44U
-#define TCCR2           *(volatile u8*)0x45U
+#define S_TMR2          ((GPTMR2_type* const)0x42U)
+#define ASSR            (*(volatile u8* const)0x42U)
+#define OCR2            (*(volatile u8* const)0x43U)
+#define TCNT2           (*(volatile u8* const)0x44U)
+#define TCCR2           (*(volatile u8* const)0x45U)
 
 /** Timer/Counter 1 Register **/
-#define S_TMR1          ((GPTMR1_type*)0x46U)
-#define ICR1L           *(volatile u8*)0x46U
-#define ICR1H           *(volatile u8*)0x47U
-#define OCR1BL          *(volatile u8*)0x48U
-#define OCR1BH          *(volatile u8*)0x49U
-#define OCR1AL          *(volatile u8*)0x4AU
-#define OCR1AH          *(volatile u8*)0x4BU
-#define TCNT1L          *(volatile u8*)0x4CU
-#define TCNT1H          *(volatile u8*)0x4DU
-#define TCCR1B          *(volatile u8*)0x4EU
-#define TCCR1A          *(volatile u8*)0x4FU
+#define S_TMR1          ((GPTMR1_type* const)0x46U)
+#define ICR1L           (*(volatile u8* const)0x46U)
+#define ICR1H           (*(volatile u8* const)0x47U)
+#define OCR1BL          (*(volatile u8* const)0x48U)
+#define OCR1BH          (*(volatile u8* const)0x49U)
+#define OCR1AL          (*(volatile u8* const)0x4AU)
+#define OCR1AH          (*(volatile u8* const)0x4BU)
+#define TCNT1L          (*(volatile u8* const)0x4CU)
+#define TCNT1H          (*(volatile u8* const)0x4DU)
+#define TCCR1B          (*(volatile u8* const)0x4EU)
+#define TCCR1A          (*(volatile u8* const)0x4FU)
 
 /** Special Function I/O Register **/
-#define S_SFIOR         ((SFIOR_type*)0x50U)
-#define SFIOR           *(volatile u8*)0x50U
+#define S_SFIOR         ((SFIOR_type* const)0x50U)
+#define SFIOR           (*(volatile u8* const)0x50U)
 
 /** On-chip Debug Register **/
-#define OCDR            *(volatile u8*)0x51U
+#define S_OCDR          ((BYTE_type* const)0x51U)
+#define OCDR            (*(volatile u8* const)0x51U)
 
 /** Timer/Counter 0 Register **/
-#define S_TMR0          ((GPTMR0_type*)0x52U)
-#define TCNT0           *(volatile u8*)0x52U
-#define TCCR0           *(volatile u8*)0x53U
+#define S_TMR0          ((GPTMR0_type* const)0x52U)
+#define TCNT0           (*(volatile u8* const)0x52U)
+#define TCCR0           (*(volatile u8* const)0x53U)
 
-#define OCR0            *(volatile u8*)0x5CU
+#define OCR0            (*(volatile u8* const)0x5CU)
 
 /** MCU Control and Status Register **/
-#define S_MCUCSR        ((MCUCSR_type*)0x54U)
-#define MCUCSR          *(volatile u8*)0x54U
+#define S_MCUCSR        ((MCUCSR_type* const)0x54U)
+#define MCUCSR          (*(volatile u8* const)0x54U)
 
 /** MCU Control Register **/
-#define S_MCUCR         ((MCUCR_type*)0x55U)
-#define MCUCR           *(volatile u8*)0x55U
+#define S_MCUCR         ((MCUCR_type* const)0x55U)
+#define MCUCR           (*(volatile u8* const)0x55U)
 
 /** Store Program Memory Control Register **/
-#define S_SPMCR         ((SPMCR_type*)0x57U)
-#define SPMCR           *(volatile u8*)0x57U
+#define S_SPMCR         ((SPMCR_type* const)0x57U)
+#define SPMCR           (*(volatile u8* const)0x57U)
 
 /** Timer/Counter Interrupt Flag Register **/
-#define S_TIFR          ((TIFR_type*)0x58U)
-#define TIFR            *(volatile u8*)0x58U
+#define S_TIFR          ((TIFR_type* const)0x58U)
+#define TIFR            (*(volatile u8* const)0x58U)
 
 /** Timer/Counter Interrupt Mask Register **/
-#define S_TIMSK         ((TIMSK_type*)0x59U)
-#define TIMSK           *(volatile u8*)0x59U
+#define S_TIMSK         ((TIMSK_type* const)0x59U)
+#define TIMSK           (*(volatile u8* const)0x59U)
 
 /** General Interrupt Flag Register **/
-#define S_GIFR          ((GIFR_type*)0x5AU)
-#define GIFR            *(volatile u8*)0x5AU
+#define S_GIFR          ((GIFR_type* const)0x5AU)
+#define GIFR            (*(volatile u8* const)0x5AU)
 
 /** General Interrupt Control Register **/
-#define S_GICR          ((GICR_type*)0x5BU)
-#define GICR            *(volatile u8*)0x5BU
+#define S_GICR          ((GICR_type* const)0x5BU)
+#define GICR            (*(volatile u8* const)0x5BU)
 
 
 /** Stack Pointer **/
-#define SPL             *(volatile u8*)0x5DU
-#define SPH             *(volatile u8*)0x5EU
+#define S_SP            ((SP_type* const)0x5DU)
+#define SPL             (*(volatile u8* const)0x5DU)
+#define SPH             (*(volatile u8* const)0x5EU)
 
 /** Status Register **/
-#define S_SREG          ((SREG_type*)0x5FU)
-#define SREG            *(volatile u8*)0x5FU
+#define S_SREG          ((SREG_type* const)0x5FU)
+#define SREG            (*(volatile u8* const)0x5FU)
 
 /*************************************************************************/
 

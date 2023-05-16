@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : SEG_prg.c												  */
+/* File Name   : SEG_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -11,6 +11,8 @@
 
 #include "LBTY_int.h"
 #include "LBIT_int.h"
+#include "LCTY_int.h"
+
 #include "DELAY.h"
 
 #include "SEG_int.h"
@@ -30,41 +32,11 @@
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-/* Seven segment
-  Segments:             Pins:
-          a a a              0 0 0
-        f       b          5       1
-        f       b          5       1
-        f       b          5       1
-          g g g              6 6 6
-        e       c          4       2
-        e       c          4       2
-        e       c          4       2
-          d d d   *          3 3 3   7
-*/
-//                         a  b  c  d  e  f  g  h
-const u8 pu8SegPins[]   = {0, 1, 2, 3, 4, 5, 6, 7};
-const u8 pu8SegDigits[] = {
-		0x3F,			// 0  0  1	1  1  1  1	1  = 	0
-		0x06,			// 0  0  0  0  0  1  1	0  =	1
-		0x5B,			// 0  1  0  1  1  0  1  1  =	2
-		0x4F,			// 0  1  0  0  1  1  1  1  =	3
-		0x66, 			// 0  1  1  0  0  1  1  0  =	4
-		0x6D,			// 0  1  1  0  1  1  0  1  =	5
-		0x7D,			// 0  1  1  1  1  1  0  1  =	6
-		0x07,			// 0  0  0  0  0  1  1  1  =	7
-		0x7F,			// 0  1  1  1  1  1  1  1  =	8
-		0x67,			// 0  1  1  0  0  1  1  1  =	9
-		0x77,			// 0  1  1  1  0  1  1  1  =	A
-		0x7C,			// 0  1  1  1  1  1  0  0  =	b
-		0x39,			// 0  0  1  1  1  0  0  1  =	C
-		0x5E,			// 0  1  0  1  1  1  1  0  =	d
-		0x79, 			// 0  1  1  1  1  0  0  1  =	E
-		0x71			// 0  1  1  1  0  0  0  1  =	F
-	 // 0x00 			0b h  g  f  e  d  c  b  a  =	SEG
-};
 
-const u8 pu8SegDecoderPort[] = {SEG_A, SEG_B, SEG_C, SEG_D};
+extern const u8 kau8SegPins[];
+extern const u8 kau8SegDigits[];
+extern const u8 kau8SegDecoderPort[];
+
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -98,6 +70,16 @@ void SEG_vidInit(void){
 #ifdef SEG_PIN_COM3
     GPIO_u8SetPinDirection(SEG_PORT_COM3, SEG_PIN_COM3, PIN_OUTPUT);
     GPIO_u8SetPinValue    (SEG_PORT_COM3, SEG_PIN_COM3, PIN_Low);
+#endif
+
+#ifdef SEG_PIN_COM4
+    GPIO_u8SetPinDirection(SEG_PORT_COM4, SEG_PIN_COM4, PIN_OUTPUT);
+    GPIO_u8SetPinValue    (SEG_PORT_COM4, SEG_PIN_COM4, PIN_Low);
+#endif
+
+#ifdef SEG_PIN_COM5
+    GPIO_u8SetPinDirection(SEG_PORT_COM5, SEG_PIN_COM5, PIN_OUTPUT);
+    GPIO_u8SetPinValue    (SEG_PORT_COM5, SEG_PIN_COM5, PIN_Low);
 #endif
 
 #ifdef	SEG_DECODER
@@ -155,6 +137,16 @@ void SEG_vidDisplayNum(u16 u16NumValue){
 	SEG_vidDispalyDigit(u16NumValue % 10u, SEG_PORT_COM3, SEG_PIN_COM3);
 #endif
 
+#ifdef SEG_PIN_COM4
+	u16NumValue /= 10u;
+	SEG_vidDispalyDigit(u16NumValue % 10u, SEG_PORT_COM4, SEG_PIN_COM4);
+#endif
+
+#ifdef SEG_PIN_COM5
+	u16NumValue /= 10u;
+	SEG_vidDispalyDigit(u16NumValue % 10u, SEG_PORT_COM5, SEG_PIN_COM5);
+#endif
+
 }
 
 /* ************************************************************************** */
@@ -166,40 +158,59 @@ void SEG_vidDisplayDot(u8 u8DotDigit){
 	switch(u8DotDigit){
 #ifdef SEG_PIN_COM0
 		case 0:
-			GPIO_u8SetPinValue	(SEG_PORT_COM0, SEG_PIN_COM0, PIN_High);
 			GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_High);
-			vidMyDelay_ms(1);
+			GPIO_u8SetPinValue	(SEG_PORT_COM0, SEG_PIN_COM0, PIN_High);
+			vidMyDelay_ms(DOT_DELAY);
 			GPIO_u8SetPinValue 	(SEG_PORT_COM0, SEG_PIN_COM0, PIN_Low);
 			break;
 #endif
 
 #ifdef SEG_PIN_COM1
 		case 1:
-			GPIO_u8SetPinValue	(SEG_PORT_COM1, SEG_PIN_COM1, PIN_High);
 			GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_High);
-			vidMyDelay_ms(1);
+			GPIO_u8SetPinValue	(SEG_PORT_COM1, SEG_PIN_COM1, PIN_High);
+			vidMyDelay_ms(DOT_DELAY);
 			GPIO_u8SetPinValue 	(SEG_PORT_COM1, SEG_PIN_COM1, PIN_Low);
 			break;
 #endif
 
 #ifdef SEG_PIN_COM2
 		case 2:
-			GPIO_u8SetPinValue	(SEG_PORT_COM2, SEG_PIN_COM2, PIN_High);
 			GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_High);
-			vidMyDelay_ms(1);
+			GPIO_u8SetPinValue	(SEG_PORT_COM2, SEG_PIN_COM2, PIN_High);
+			vidMyDelay_ms(DOT_DELAY);
 			GPIO_u8SetPinValue 	(SEG_PORT_COM2, SEG_PIN_COM2, PIN_Low);
 			break;
 #endif
 
 #ifdef SEG_PIN_COM3
 		case 3:
-			GPIO_u8SetPinValue	(SEG_PORT_COM3, SEG_PIN_COM3, PIN_High);
 			GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_High);
-			vidMyDelay_ms(1);
+			GPIO_u8SetPinValue	(SEG_PORT_COM3, SEG_PIN_COM3, PIN_High);
+			vidMyDelay_ms(DOT_DELAY);
 			GPIO_u8SetPinValue 	(SEG_PORT_COM3, SEG_PIN_COM3, PIN_Low);
 			break;
 #endif
+
+#ifdef SEG_PIN_COM4
+		case 4:
+			GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_High);
+			GPIO_u8SetPinValue	(SEG_PORT_COM4, SEG_PIN_COM4, PIN_High);
+			vidMyDelay_ms(DOT_DELAY);
+			GPIO_u8SetPinValue 	(SEG_PORT_COM4, SEG_PIN_COM4, PIN_Low);
+			break;
+#endif
+
+#ifdef SEG_PIN_COM5
+		case 5:
+			GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_High);
+			GPIO_u8SetPinValue	(SEG_PORT_COM5, SEG_PIN_COM5, PIN_High);
+			vidMyDelay_ms(DOT_DELAY);
+			GPIO_u8SetPinValue 	(SEG_PORT_COM5, SEG_PIN_COM5, PIN_Low);
+			break;
+#endif
 	}
+	GPIO_u8SetPinValue	(SEG_PORT_DATA, SEG_h, PIN_Low);
 }
 
 /* ************************************************************************** */
@@ -208,19 +219,19 @@ void SEG_vidDisplayDot(u8 u8DotDigit){
 /* Return      :	void													  */
 /* ************************************************************************** */
 void SEG_vidDispalyDigit(u8 u8DigitValue, u8 u8PortCom, u8 u8PinCom){
-    GPIO_u8SetPinValue (u8PortCom, u8PinCom, PIN_High);
 
 #ifdef	SEG_DECODER
 	u8 u8PortValue_LOC = 0;
 	GPIO_u8GetPortValue(SEG_PORT_DATA, &u8PortValue_LOC);
 	for(u8 i = SEG_PINS ; i-- ; ){
-		GPIO_u8SetPinValue 	(SEG_PORT_DATA, pu8SegDecoderPort[i], GET_BIT(u8DigitValue, i));
+		GPIO_u8SetPinValue 	(SEG_PORT_DATA, kau8SegDecoderPort[i], GET_BIT(u8DigitValue, i));
 	}
 #else
-	GPIO_u8SetPortValue(SEG_PORT_DATA, pu8SegDigits[u8DigitValue]);
+	GPIO_u8SetPortValue(SEG_PORT_DATA, kau8SegDigits[u8DigitValue]);
 #endif
 
-	vidMyDelay_ms(5);
+    GPIO_u8SetPinValue (u8PortCom, u8PinCom, PIN_High);
+	vidMyDelay_ms(SEG_DELAY);
     GPIO_u8SetPinValue (u8PortCom, u8PinCom, PIN_Low);
 }
 

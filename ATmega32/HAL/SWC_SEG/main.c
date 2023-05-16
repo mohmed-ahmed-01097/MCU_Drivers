@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c												  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -44,55 +44,38 @@ int main(void){
 
     SEG_vidInit();
 
-<<<<<<< HEAD
-	for(u16 i = 50 ; i-- ; ){
-		SEG_vidDisplayNum(1234);
-	}
-	for(u16 i = 50 ; i-- ; ){
-		SEG_vidDisplayNum(5678);
-	}
-	for(u16 i = 50 ; i-- ; ){
-		SEG_vidDisplayNum(9012);
-	}
-	for(u16 i = 50 ; i-- ; ){
-		SEG_vidDisplayNum(3456);
-	}
-	for(u16 i = 50 ; i-- ; ){
-=======
-	for(u16 i = 50 ; --i ; ){
-		SEG_vidDisplayNum(1234);
-	}
-	for(u16 i = 50 ; --i ; ){
-		SEG_vidDisplayNum(5678);
-	}
-	for(u16 i = 50 ; --i ; ){
-		SEG_vidDisplayNum(9012);
-	}
-	for(u16 i = 50 ; --i ; ){
-		SEG_vidDisplayNum(3456);
-	}
-	for(u16 i = 50 ; --i ; ){
->>>>>>> 6f5ce5a5b4301b3d2358894a5f7817cec7df04cb
-		SEG_vidDisplayNum(7890);
-	}
+#if defined(AMIT_KIT)
+    GPIO_u8SetPinDirection(D, AMIT_LED0, PIN_OUTPUT);
+    GPIO_u8SetPinValue	  (D, AMIT_LED0, PIN_Low);
+#elif defined(ETA32_KIT)
+    GPIO_u8SetPinDirection(A, Eta32_LED_G, PIN_OUTPUT);
+    GPIO_u8SetPinValue	  (A, Eta32_LED_G, PIN_Low);
+#else
 
-    GPIO_u8SetPinDirection(B, Eta32_LED_R, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (B, Eta32_LED_R, PIN_Low);
+#endif
 
-   	u8 u8Value = 0;
+   	u16 u8Value = 0;
 
    	while(1){
 
-<<<<<<< HEAD
-    	for(u16 i = 50 ; i-- ; ){
-=======
+#if defined(AMIT_KIT)
     	for(u16 i = 50 ; --i ; ){
->>>>>>> 6f5ce5a5b4301b3d2358894a5f7817cec7df04cb
+    		SEG_vidDisplayDot(1);
     		SEG_vidDisplayNum(u8Value);
     	}
-    	u8Value++;
-    	GPIO_u8TogglePinValue(B, Eta32_LED_R);
+    GPIO_u8TogglePinValue (D, AMIT_LED0);
+#elif defined(ETA32_KIT)
+    	for(u16 i = 50 ; --i ; ){
+    		SEG_vidDisplayNum(u8Value);
+    	}
+    GPIO_u8TogglePinValue (A, Eta32_LED_G);
+#else
+	for(u16 i = 50 ; --i ; ){
+		SEG_vidDisplayNum(u8Value);
+	}
+#endif
 
+    	u8Value++;
     }
    	return 0;
 }

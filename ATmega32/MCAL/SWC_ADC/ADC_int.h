@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : ADC_int.h												  */
+/* File Name   : ADC_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 27, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -24,14 +24,76 @@ typedef enum{
     ADC4,
     ADC5,
     ADC6,
-    ADC7
+    ADC7,
+
+	ADC0_ADC0_10X,
+	ADC1_ADC0_10X,
+	ADC0_ADC0_200X,
+	ADC1_ADC0_200X,
+	ADC2_ADC2_10X,
+	ADC3_ADC2_10X,
+	ADC2_ADC2_200X,
+	ADC3_ADC2_200X,
+
+	ADC0_ADC1,
+	ADC1_ADC1,
+	ADC2_ADC1,
+	ADC3_ADC1,
+	ADC4_ADC1,
+	ADC5_ADC1,
+	ADC6_ADC1,
+	ADC7_ADC1,
+	ADC0_ADC2,
+	ADC1_ADC2,
+	ADC2_ADC2,
+	ADC3_ADC2,
+	ADC4_ADC2,
+	ADC5_ADC2,
+
+	VBG_1V22,
+	GND
 }ADC_tenuChannel;      // ADC Voltage Reference Selections
+
+typedef enum{
+    ADC_Division_Factor_2_DEF = (u8)0u,
+    ADC_Division_Factor_2,
+    ADC_Division_Factor_4,
+    ADC_Division_Factor_8,
+    ADC_Division_Factor_16,
+    ADC_Division_Factor_32,
+    ADC_Division_Factor_64,
+    ADC_Division_Factor_128
+}ADC_tenuPrescalerSelection;      // ADC Prescaler Selections
+
+typedef enum{
+    ADC_Free_Running_Mode = (u8)0u,
+	ADC_Analog_Comparator,
+	ADC_External_INT0,
+	ADC_TMR0_Compare_MatchA,
+	ADC_TMR0_Overflew,
+	ADC_TMR1_Compare_MatchB,
+	ADC_TMR1_Overflew,
+	ADC_TMR1_Capture_Event
+}ADC_tenuTriggerSource;      // ADC Auto Trigger Source
+
+typedef enum{
+    ADC_AREF = (u8)0u,		/* Internal Vref turned off */
+	ADC_AVCC,				/* external capacitor at AREF pin */
+	RESERVED,
+	ADC_INTERNAL_Vref		/* 2.56v with external capacitor at AREF pin */
+}ADC_tenuRefSelection;      // ADC Voltage Reference Selections
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
+#if defined(AMIT_KIT)
 #define ADC_CHANNELS_NUM		4
+#elif defined(ETA32_KIT)
+#define ADC_CHANNELS_NUM		2
+#else
+#define ADC_CHANNELS_NUM		8
+#endif
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -57,7 +119,14 @@ void ADC_vidInit(void);
 /* Input       :	u8Channel												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_vidCofigChannel(u8 u8Channel);
+LBTY_tenuErrorStatus ADC_u8CofigChannel(u8 u8Channel);
+
+/* ************************************************************************** */
+/* Description :  	Calibrate ADC Voltage 									  */
+/* Input       :	void													  */
+/* Return      :	void 													  */
+/* ************************************************************************** */
+void ADC_vidCalibrate(void);
 
 /* ************************************************************************** */
 /* Description :  	Enable ADC to be ready for conversion					  */
@@ -143,14 +212,14 @@ LBTY_tenuErrorStatus ADC_u16RefreshADC(void);
 /* Input       :	pu16ADC_Value											  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_u16GetADC(u16 pu16ADC_Value[ADC_CHANNELS_NUM]);
+LBTY_tenuErrorStatus ADC_u16GetAll(u16 pu16ADC_Value[ADC_CHANNELS_NUM]);
 
 /* ************************************************************************** */
 /* Description :  	Pass the CallBack function to TMR ISR to execute		  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void Timer_vidSetCallBack(void (*pvidCallBack)(void));
+void ADC_vidSetCallBack(void (*pvidCallBack)(void));
 
 
 #endif /* ADC_INT_H_ */

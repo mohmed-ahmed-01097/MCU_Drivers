@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : LBTY_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 23, 2023												  */
 /* description : Basic Library												  */
 /* ************************************************************************** */
@@ -32,6 +32,7 @@ typedef int16_t     s16;
 typedef int32_t     s32;
 typedef int64_t		s64;
 
+/** Standard Real Decimal number **/
 typedef float       f32;
 typedef double      f64;
 
@@ -65,10 +66,10 @@ typedef s64*		ps64;
 #define LBTY_s16MAX		((u16)0x7FFF )
 #define LBTY_s16MIN		((u16)0x8000 )
 
-#define LBTY_u32ZERO	((u32)0x00000000U)
-#define LBTY_u32MAX		((u32)0xFFFFFFFFU)
-#define LBTY_s32MAX		((u32)0x7FFFFFFF )
-#define LBTY_s32MIN		((u32)0x80000000 )
+#define LBTY_u32ZERO	((u32)0x00000000UL)
+#define LBTY_u32MAX		((u32)0xFFFFFFFFUL)
+#define LBTY_s32MAX		((u32)0x7FFFFFFFL )
+#define LBTY_s32MIN		((u32)0x80000000L )
 
 #define LBTY_u64ZERO	((u64)0x0000000000000000ULL)
 #define LBTY_u64MAX		((u64)0xFFFFFFFFFFFFFFFFULL)

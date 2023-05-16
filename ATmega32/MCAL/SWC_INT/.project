@@ -26,19 +26,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>SWC_BSW</name>
-			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/MCAL/SWC_BSW</locationURI>
-		</link>
-		<link>
 			<name>SWC_GPIO</name>
 			<type>2</type>
 			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/MCAL/SWC_GPIO</locationURI>
-		</link>
-		<link>
-			<name>SWC_MCU</name>
-			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/MCAL/SWC_MCU</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

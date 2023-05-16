@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : SEG_int.h												  */
+/* File Name   : SEG_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -37,28 +37,28 @@
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void SEG_vidInit(void);
+extern void SEG_vidInit(void);
 
 /* ************************************************************************** */
 /* Description :    7-Seg Display Num Value									  */
 /* Input       :	u16NumValue, 											  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void SEG_vidDisplayNum(u16 u16NumValue);
+extern void SEG_vidDisplayNum(u16 u16NumValue);
 
 /* ************************************************************************** */
 /* Description :    7-Seg Display Dot 										  */
 /* Input       :	u8DotDigit	 											  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void SEG_vidDisplayDot(u8 u8DotDigit);
+extern void SEG_vidDisplayDot(u8 u8DotDigit);
 
 /* ************************************************************************** */
 /* Description :    7-Seg Display Digit										  */
 /* Input       :	u8DigitValue, u8PortCom, u8PinCom						  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void SEG_vidDispalyDigit(u8 u8DigitValue, u8 u8PortCom, u8 u8PinCom);
+extern void SEG_vidDispalyDigit(u8 u8DigitValue, u8 u8PortCom, u8 u8PinCom);
 
 #endif /* SEG_INT_H_ */
 /*************************** E N D (SEG_int.h) ******************************/

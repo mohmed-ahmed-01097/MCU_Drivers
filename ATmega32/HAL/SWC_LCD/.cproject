@@ -65,7 +65,6 @@
 					<sourceEntries>
 						<entry excluding="SWC_ADC|SWC_GPIO|SWC_BSW" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="SWC_ADC"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="SWC_BSW"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="SWC_GPIO"/>
 					</sourceEntries>
 				</configuration>

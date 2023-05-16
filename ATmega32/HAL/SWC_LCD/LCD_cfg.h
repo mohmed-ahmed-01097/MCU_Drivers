@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : LCD_cfg.h												  */
+/* File Name   : LCD_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 31, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -64,9 +64,11 @@
 
 #else
 
+#define LCD_DELAY_CMD		1u
+
 #define LCD_FUNCTION_SET	LCD_FUNCTION_SET_8Bits
 
-#define LCD_COL_NUM			LCD_COL_NUM_16
+#define LCD_COL_NUM			LCD_COL_NUM_32
 #define LCD_ROW_NUM			LCD_ROW_NUM_2
 
 #define LCD_DATA_PORT		A

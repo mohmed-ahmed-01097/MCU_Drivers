@@ -1,24 +1,42 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : INT_int.h												  */
+/* File Name   : SLEEP.h												  */
 /* Author      : MAAM														  */
 /* Version     : v00														  */
-/* date        : Mar 26, 2023												  */
+/* date        : Apr 26, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
-#ifndef MCU_INT_H_
-#define MCU_INT_H_
+#ifndef SLEEP_H_
+#define SLEEP_H_
+
+#include "ATMega32.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+typedef enum{
+    IDEL_Mode = 0u,
+    ADC_Noise_Reduction_Mode = 1u,
+    Power_Down_Mode = 2u,
+    Power_Save_Mode = 3u,
+
+    Standby_Mode = 6u,
+    Extended_Standby_Mode = 7u
+}SleeS_Mode_type;
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
+
+#if defined(MCUR) && !defined(MCUCR)
+#define SLEEP_CONTROL_REG  			S_MCUR
+#elif !defined(MCUR) && defined(MCUCR)
+#define SLEEP_CONTROL_REG  			S_MCUCR
+#endif
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -32,19 +50,27 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
-/* ************************************************************************** */
-/* Description :  	Status Register Global Interrupt Enable					  */
-/* Input       :	void													  */
-/* Return      :	void													  */
-/* ************************************************************************** */
-void MCU_vidEnableGlobalInterrupt(void);
+LCTY_INLINE void set_sleep_mode(SleeS_Mode_type u8mode){
+	SLEEP_CONTROL_REG->sBits.m_SM = u8mode;
+}
 
-/* ************************************************************************** */
-/* Description :  	Status Register Global Interrupt Disable				  */
-/* Input       :	void													  */
-/* Return      :	void													  */
-/* ************************************************************************** */
-void MCU_vidDisableGlobalInterrupt(void);
+LCTY_INLINE void sleep_enable(){
+	SLEEP_CONTROL_REG->sBits.m_SE = LBTY_SET;
+}
 
-#endif /* INT_INT_H_ */
-/*************************** E N D (MCU_int.h) ******************************/
+LCTY_INLINE void sleep_disable(){
+	SLEEP_CONTROL_REG->sBits.m_SE = LBTY_RESET;
+}
+
+LCTY_INLINE void sleep_cpu(){
+	__asm__ __volatile__ ( "sleep" "\n\t" :: );
+}
+
+LCTY_INLINE void sleep_mode(){
+    sleep_enable();
+    sleep_cpu();
+    sleep_disable();
+}
+
+#endif /* SLEEP_H_ */
+/*************************** E N D (SLEEP.h) ******************************/

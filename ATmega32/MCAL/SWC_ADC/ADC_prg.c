@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : ADC_prg.c												  */
+/* File Name   : ADC_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Mar 26, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -13,6 +13,9 @@
 
 #include "LBTY_int.h"
 #include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "INTP.h"
 
 #include "GPIO_int.h"
 
@@ -36,16 +39,36 @@
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
 
-extern u8 pu8ActiveChannel_LGB[ADC_CHANNELS_NUM];
-static u8 pu8ChannelValue_LGB [ADC_CHANNELS_NUM];
+extern u8 kau8ActiveChannel_LGB[ADC_CHANNELS_NUM];
+static u8 kau8ChannelValue_LGB [ADC_CHANNELS_NUM];
 
 u8 u8ConvDone_GLB = LBTY_SET;
+f32 f32V_REF = ADC_V_REF;
 
 static void (*pvidFunctionCallBack)(void);
 
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
+
+static void vid_AdcSyncRead(void){
+	static u8 u8Channel = LBTY_u8ZERO;
+
+	if (u8Channel < ADC_CHANNELS_NUM){
+
+		u8ConvDone_GLB = LBTY_RESET;
+
+		kau8ChannelValue_LGB[u8Channel++] = (u16)S_ADC->m_ADC;
+
+		while(ADC_u8StartRead(u8Channel));
+
+	}else{
+
+		ADC_u16RefreshADC();
+		u8Channel = LBTY_u8ZERO;
+		u8ConvDone_GLB = LBTY_SET;
+	}
+}
 
 /* ************************************************************************** */
 /* Description :  	Initialization of the ADC								  */
@@ -54,14 +77,19 @@ static void (*pvidFunctionCallBack)(void);
 /* ************************************************************************** */
 void ADC_vidInit(void){
 
+	for(u8 i = ADC_CHANNELS_NUM; i-- ; ){
+		ADC_u8CofigChannel(kau8ActiveChannel_LGB[i]);
+	}
+
 	S_SFIOR->sBits.m_ADTS = ADC_TRIG_SRC;
 
 	S_ADC->m_ADCSRA.sBits.m_ADEN  = LBTY_SET;
 	S_ADC->m_ADCSRA.sBits.m_ADSC  = LBTY_RESET;
 	S_ADC->m_ADCSRA.sBits.m_ADATE = ADC_AUTO_TRIG;
 	S_ADC->m_ADCSRA.sBits.m_ADIE  = LBTY_RESET;
-	S_ADC->m_ADCSRA.sBits.m_ADIF  = LBTY_RESET;
+	S_ADC->m_ADCSRA.sBits.m_ADIF  = LBTY_SET;	/** Clear complete flag by writing logic one **/
 	S_ADC->m_ADCSRA.sBits.m_ADPS  = ADC_PRESCALER;
+	ADC_vidSetCallBack(vid_AdcSyncRead);
 
 	S_ADC->m_ADMUX.sBits.m_REFS  = ADC_V_REF_SRC;
 	S_ADC->m_ADMUX.sBits.m_ADLAR = ADC_ADJUSTMENT;
@@ -70,6 +98,9 @@ void ADC_vidInit(void){
 	// first conversion will take 25 ADC clock cycles instead of the normal 13.
 	S_ADC->m_ADCSRA.sBits.m_ADSC  = LBTY_SET;
 	while(S_ADC->m_ADCSRA.sBits.m_ADSC);
+
+	ADC_vidCalibrate();
+
 	S_ADC->m_ADCSRA.sBits.m_ADEN  = ADC_INIT_STATE;
 
 }
@@ -79,22 +110,31 @@ void ADC_vidInit(void){
 /* Input       :	u8Channel												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_vidCofigChannel(u8 u8Channel){
+LBTY_tenuErrorStatus ADC_u8CofigChannel(u8 u8Channel){
 	LBTY_tenuErrorStatus u8RetValue = LBTY_OK;
 
-	switch(u8Channel){
-		case ADC0:	u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, ADC0, PIN_INPUT);	break;
-		case ADC1:	u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, ADC1, PIN_INPUT);	break;
-		case ADC2:	u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, ADC2, PIN_INPUT);	break;
-		case ADC3:	u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, ADC3, PIN_INPUT);	break;
-		case ADC4:	u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, ADC4, PIN_INPUT);	break;
-		case ADC5:	u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, ADC5, PIN_INPUT);	break;
-		case ADC6:	u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, ADC6, PIN_INPUT);	break;
-		case ADC7:	u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, ADC7, PIN_INPUT);	break;
-		default  :	u8RetValue = LBTY_NOK;
+	if(IS_CHANNEL(u8Channel)){
+		u8RetValue = GPIO_u8SetPinDirection(ADC_PORT, u8Channel, PIN_INPUT);
+	}else{
+		u8RetValue = LBTY_NOK;
 	}
 	return u8RetValue;
 }
+
+/* ************************************************************************** */
+/* Description :  	Calibrate ADC Voltage 									  */
+/* Input       :	void													  */
+/* Return      :	void 													  */
+/* ************************************************************************** */
+void ADC_vidCalibrate(void){
+	ADC_vidSetChannel(VBG_1V22);
+	ADC_vidStartConversion();
+	ADC_vidWaitConversion();
+
+	f32V_REF = (f32)(ADC_u16GetData() * ADC_MAX) / ADC_VBG_1V22;
+}
+
+/********************************************************************************************************************/
 
 /* ************************************************************************** */
 /* Description :  	Enable ADC to be ready for conversion					  */
@@ -156,8 +196,10 @@ u16 ADC_u16GetData(void){
 /* Return      :	f32														  */
 /* ************************************************************************** */
 f32 ADC_f32GetVoltage(void){
-	return (f32)ADC_u16GetData() * ADC_V_FACTOR;
+	return (f32)ADC_u16GetData() * f32V_REF / ADC_MAX;
 }
+
+/********************************************************************************************************************/
 
 /* ************************************************************************** */
 /* Description :  	start ADC Read of the channel							  */
@@ -167,17 +209,12 @@ f32 ADC_f32GetVoltage(void){
 LBTY_tenuErrorStatus ADC_u8StartRead(u8 u8Channel){
 	LBTY_tenuErrorStatus u8RetValue = LBTY_OK;
 
-	switch(u8Channel){
-		case ADC0:	S_ADC->m_ADMUX.sBits.m_MUX = ADC0;		break;
-		case ADC1:	S_ADC->m_ADMUX.sBits.m_MUX = ADC1;		break;
-		case ADC2:	S_ADC->m_ADMUX.sBits.m_MUX = ADC2;		break;
-		case ADC3:	S_ADC->m_ADMUX.sBits.m_MUX = ADC3;		break;
-		case ADC4:	S_ADC->m_ADMUX.sBits.m_MUX = ADC4;		break;
-		case ADC5:	S_ADC->m_ADMUX.sBits.m_MUX = ADC5;		break;
-		case ADC6:	S_ADC->m_ADMUX.sBits.m_MUX = ADC6;		break;
-		case ADC7:	S_ADC->m_ADMUX.sBits.m_MUX = ADC7;		break;
-		default  :	S_ADC->m_ADMUX.sBits.m_MUX = ADC0;		u8RetValue = LBTY_NOK;
+	if(IS_CHANNEL(u8Channel)){
+		S_ADC->m_ADMUX.sBits.m_MUX = u8Channel;
+	}else{
+		u8RetValue = LBTY_NOK;
 	}
+
 	S_ADC->m_ADCSRA.sBits.m_ADSC = LBTY_SET;
 
 	return u8RetValue;
@@ -213,8 +250,8 @@ LBTY_tenuErrorStatus ADC_u8ReadConvValue(u8 u8Channel, u16* pu16ADC_Value){
 	LBTY_tenuErrorStatus u8RetValue = LBTY_OK;
 
 	for(u8 i = 0 ; i<ADC_CHANNELS_NUM ; i++){
-		if(u8Channel == pu8ActiveChannel_LGB[i]){
-			*pu16ADC_Value = pu8ChannelValue_LGB[i];
+		if(u8Channel == kau8ActiveChannel_LGB[i]){
+			*pu16ADC_Value = kau8ChannelValue_LGB[i];
 			u8RetValue = LBTY_OK;
 			break;
 		}else{
@@ -235,10 +272,10 @@ LBTY_tenuErrorStatus ADC_u16RefreshADC(void){
 	if(u8ConvDone_GLB == LBTY_SET){
 		u8ConvDone_GLB = LBTY_RESET;
 		S_ADC->m_ADCSRA.sBits.m_ADIE  = LBTY_SET;
-		S_ADC->m_ADCSRA.sBits.m_ADIF  = LBTY_RESET;
-		u8RetValue = ADC_u8StartRead(*pu8ActiveChannel_LGB);
+		S_ADC->m_ADCSRA.sBits.m_ADIF  = LBTY_SET;	/** Clear complete flag by writing logic one **/
+		u8RetValue = ADC_u8StartRead(*kau8ActiveChannel_LGB);
 	}else{
-		u8RetValue = LBTY_NOK;
+		u8RetValue = LBTY_IN_PROGRESS;
 	}
 	return u8RetValue;
 }
@@ -248,17 +285,17 @@ LBTY_tenuErrorStatus ADC_u16RefreshADC(void){
 /* Input       :	pu16ADC_Value											  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_u16GetADC(u16 pu16ADC_Value[ADC_CHANNELS_NUM]){
+LBTY_tenuErrorStatus ADC_u16GetAll(u16 pu16ADC_Value[ADC_CHANNELS_NUM]){
 	LBTY_tenuErrorStatus u8RetValue = LBTY_OK;
 
 	if(u8ConvDone_GLB == LBTY_SET){
-		for(u8 i = 0 ; i<ADC_CHANNELS_NUM ; i++){
-			pu16ADC_Value[i] = pu8ChannelValue_LGB[i];
-		}
 		S_ADC->m_ADCSRA.sBits.m_ADIE  = LBTY_RESET;
-		S_ADC->m_ADCSRA.sBits.m_ADIF  = LBTY_RESET;
+		S_ADC->m_ADCSRA.sBits.m_ADIF  = LBTY_SET;		/** Clear complete flag by writing logic one **/
+		for(u8 i = 0 ; i<ADC_CHANNELS_NUM ; i++){
+			pu16ADC_Value[i] = kau8ChannelValue_LGB[i];
+		}
 	}else{
-		u8RetValue = LBTY_NOK;
+		u8RetValue = LBTY_IN_PROGRESS;
 	}
 	return u8RetValue;
 }
@@ -268,7 +305,7 @@ LBTY_tenuErrorStatus ADC_u16GetADC(u16 pu16ADC_Value[ADC_CHANNELS_NUM]){
 /* Input       :	void													  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-void Timer_vidSetCallBack(void (*pvidCallBack)(void)){
+void ADC_vidSetCallBack(void (*pvidCallBack)(void)){
 	pvidFunctionCallBack = pvidCallBack;
 }
 
@@ -277,25 +314,8 @@ void Timer_vidSetCallBack(void (*pvidCallBack)(void)){
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void __vector_16 (void) __attribute__((signal));
-void __vector_16 (void){
-	static u8 u8Channel = LBTY_u8ZERO;
-
-	if (u8Channel < ADC_CHANNELS_NUM){
-
-		u8ConvDone_GLB = LBTY_RESET;
-
-		pu8ChannelValue_LGB[u8Channel++] = (u16)S_ADC->m_ADC;
-
-		while(ADC_u8StartRead(u8Channel) != LBTY_OK);
-
-	}else{
-
-		pvidFunctionCallBack();		//call back function
-
-		u8Channel = LBTY_u8ZERO;
-		u8ConvDone_GLB = LBTY_SET;
-	}
+ISR(ADC_vect){
+	pvidFunctionCallBack();		//call back function
 }
 
 /*************************** E N D (ADC_prg.c) ******************************/
