@@ -82,7 +82,7 @@ int main(void){
     GPIO_u8SetPinValue	  (D, AMIT_LED2, PIN_Low);
 
     ADC_vidInit();
-    ADC_vidCofigChannel(ADC_CH1);
+    ADC_u8CofigChannel(ADC_CH1);
 
     u16 u16AdcReadValue = 0;
     f32 f32Volt = 0.0f;
@@ -119,7 +119,7 @@ int main(void){
     GPIO_u8SetPinValue	  (A, Eta32_LED_Y, PIN_Low);
 
     ADC_vidInit();
-    ADC_vidCofigChannel(ADC_CH1);
+    ADC_u8CofigChannel(ADC_CH1);
 
     u16 u16AdcReadValue = 0;
     f32 f32Volt = 0.0f;

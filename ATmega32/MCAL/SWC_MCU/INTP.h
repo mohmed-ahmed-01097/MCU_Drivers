@@ -49,7 +49,11 @@ typedef enum{
 #define ISR(vector, ...)           	\
     void vector(void) __attribute__((signal)) __VA_ARGS__; \
     void vector(void)
-
+/*
+#define ISR(vector, ...)           	\
+	void vector(void) __attribute__ ((signal,used,externally_visible)) __VA_ARGS__;\
+	void vector(void)
+*/
 /** Interrupt Vectors **/
 /***************************************************************************/
 /*

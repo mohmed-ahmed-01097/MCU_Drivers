@@ -39,7 +39,24 @@ typedef enum{
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
+/*
+#define A	(0x39)
+#define B	(0x36)
+#define C	(0x33)
+#define D	(0x30)
 
+#define INPUT				0
+#define OUTPUT				1
+
+#define IS_DIR(dir)			((dir==INPUT)||(dir==OUTPUT))
+#define IS_PORT(port_base)	((port_base==A)||(port_base==B)||(port_base==C)||(port_base==D))
+#define IS_PIN(pin)			(pin>=0&&pin<=7)
+#define IS_MASK(mask)       (mask <= 0xFF && mask >= 0x00)
+
+#define PORT(port_base)		(*((volatile U8 * const)(port_base+0x02)))
+#define DDR(port_base)		(*((volatile U8 * const)(port_base+0x01)))
+#define PIN(port_base)		(*((volatile U8 * const)(port_base+0x00)))
+*/
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */

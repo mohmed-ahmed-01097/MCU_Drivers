@@ -21,12 +21,24 @@
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
+/* prog memory attribute */
+#define LCTY_PROGMEM 				__attribute__((__progmem__))
+
+/* pure attribute */
+#define LCTY_PURE 					__attribute__((__pure__))
+
 /* Abstraction for inlining */
 //#define LCTY_INLINE  				static inline
 #define LCTY_INLINE  				__attribute__((always_inline)) static inline
 
 /* define function as interrupt handler */
 #define LCTY_INTERRUPT 				__attribute__((interrupt))
+
+/* Memory packed to pass Memory padding */
+#define CTY_PACKED 					__attribute__((__packed__))
+
+/* Const attribute */
+#define LCTY_CONST 					__attribute__((__const__))
 
 /* place variable in direct page */
 #define LCTY_DPAGE 					__attribute__((dp))

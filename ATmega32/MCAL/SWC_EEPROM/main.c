@@ -72,7 +72,7 @@ int main(void){
 	EEPROM_vidInit();
 //	EEPROM_vidSetCallBack(EEPROM_ISR);
 
-	EEPROM_Erase(0,100);
+	EEPROM_u8Erase(0,100);
 	EEPROM_u8ReadChar(u8Num, &u8Num);
 	u8EEPROM_Flag = LBTY_SET;
 
