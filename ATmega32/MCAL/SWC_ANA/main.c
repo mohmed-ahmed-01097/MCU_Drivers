@@ -3,25 +3,11 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : May 3, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "ATMega32.h"
-
-#include "LBTY_int.h"
-#include "LCTY_int.h"
-
-#include "DELAY.h"
-#include "INTP.h"
-
-#include "GPIO_int.h"
-#include "GPIO_cfg.h"
-
-#include "ANA_int.h"
-#include "ANA_cfg.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -44,6 +30,17 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_ANA
+
+#include "LBTY_int.h"
+#include "LCTY_int.h"
+
+#include "INTP.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "ANA_int.h"
+#include "ANA_cfg.h"
 
 int main(void){
 
