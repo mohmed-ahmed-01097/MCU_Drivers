@@ -1,31 +1,13 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c												  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Apr 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "ATMega32.h"
-
-#include "LBTY_int.h"
-#include "LBIT_int.h"
-#include "LCTY_int.h"
-
-#include "DELAY.h"
-#include "INTP.h"
-
-#include "INT_int.h"
-#include "INT_cfg.h"
-
-#include "LCD_int.h"
-#include "LCD_cfg.h"
-
-#include "EEPROM_int.h"
-#include "EEPROM_cfg.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -48,6 +30,22 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_EEPROM
+
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+#include "INTP.h"
+
+#include "INT_int.h"
+#include "INT_cfg.h"
+
+#include "LCD_int.h"
+#include "LCD_cfg.h"
+
+#include "EEPROM_int.h"
+#include "EEPROM_cfg.h"
 
 volatile u8 u8INT_Flag = LBTY_RESET, u8EEPROM_Flag = LBTY_SET;
 u8 u8Num = LBTY_u8ZERO;

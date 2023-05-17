@@ -3,23 +3,11 @@
 /* ************************************************************************** */
 /* File Name   : main.c												  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : May 1, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "LBTY_int.h"
-#include "LBIT_int.h"
-#include "LCTY_int.h"
-
-#include "DELAY.h"
-
-#include "LCD_int.h"
-#include "LCD_cfg.h"
-
-#include "WDT_cfg.h"
-#include "WDT_int.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -42,6 +30,18 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_WDT
+
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+
+#include "LCD_int.h"
+#include "LCD_cfg.h"
+
+#include "WDT_cfg.h"
+#include "WDT_int.h"
 
 int main(void){
 
