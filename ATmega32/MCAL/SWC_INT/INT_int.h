@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : INT_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 26, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -21,6 +21,16 @@ typedef enum {
 	INT1,
 	INT2
 }INT_tenuPin;
+
+typedef enum{
+    INT_Low_Level = (u8)0u,
+	INT_Logic_Change,
+	INT_Falling_Edge,
+	INT_Rising_Edge,
+
+	INT2_Falling_Edge = (u8)0u,
+	INT2_Rising_Edge
+}INT_tenuSenseControl;      // Interrupt Sense Control
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
