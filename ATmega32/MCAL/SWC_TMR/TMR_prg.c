@@ -3,12 +3,11 @@
 /* ************************************************************************** */
 /* File Name   : TMR_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Apr 3, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-#include "ATMega32.h"
 
 #include "LBTY_int.h"
 #include "LBIT_int.h"
@@ -171,8 +170,12 @@ void TMR0_vidEnable(void){
 	}
 }
 
-void TMR0_vidDisable(void){
-	S_TMR0->m_TCCR0.sBits.m_CSx = TMRx_NoClockSource_Disable;
+void TMR0_vidSetForceOutputCompare(void){
+	S_TMR0->m_TCCR0.sBits.m_FOCx  = strTMR0_Config_GLB.m_TMR_FOC = LBTY_SET;
+}
+
+void TMR0_vidResetForceOutputCompare(void){
+	S_TMR0->m_TCCR0.sBits.m_FOCx  = strTMR0_Config_GLB.m_TMR_FOC = LBTY_RESET;
 }
 
 LBTY_tenuErrorStatus TMR0_u8SetMode(TMRx_u8_tenuWaveGenerationMode u8Mode){
@@ -183,6 +186,7 @@ LBTY_tenuErrorStatus TMR0_u8SetMode(TMRx_u8_tenuWaveGenerationMode u8Mode){
 			S_TMR0->m_TCCR0.sBits.m_WGMx1 = GET_BIT(TMRx_u8_Normal_Mode, TMRx_WGMx1_MASK);
 			break;
 		case TMRx_u8_PWM_PhaseCorrect_Mode:
+			TMR0_vidResetForceOutputCompare();
 			S_TMR0->m_TCCR0.sBits.m_WGMx0 = GET_BIT(TMRx_u8_PWM_PhaseCorrect_Mode, TMRx_WGMx0_MASK);
 			S_TMR0->m_TCCR0.sBits.m_WGMx1 = GET_BIT(TMRx_u8_PWM_PhaseCorrect_Mode, TMRx_WGMx1_MASK);
 			break;
@@ -191,6 +195,7 @@ LBTY_tenuErrorStatus TMR0_u8SetMode(TMRx_u8_tenuWaveGenerationMode u8Mode){
 			S_TMR0->m_TCCR0.sBits.m_WGMx1 = GET_BIT(TMRx_u8_CTC_Mode_Mode, TMRx_WGMx1_MASK);
 			break;
 		case TMRx_u8_PWM_Fase_Mode:
+			TMR0_vidResetForceOutputCompare();
 			S_TMR0->m_TCCR0.sBits.m_WGMx0 = GET_BIT(TMRx_u8_PWM_Fase_Mode, TMRx_WGMx0_MASK);
 			S_TMR0->m_TCCR0.sBits.m_WGMx1 = GET_BIT(TMRx_u8_PWM_Fase_Mode, TMRx_WGMx1_MASK);
 			break;
@@ -485,6 +490,14 @@ void TMR2_vidEnable(void){
 void TMR2_vidDisable(void){
 	TMR2_vidControlUpdateBusy();
 	S_TMR2->m_TCCR2.sBits.m_CSx = TMRx_NoClockSource_Disable;
+}
+
+void TMR2_vidSetForceOutputCompare(void){
+	S_TMR2->m_TCCR2.sBits.m_FOCx  = strTMR2_Config_GLB.m_TMR_FOC = LBTY_SET;
+}
+
+void TMR2_vidResetForceOutputCompare(void){
+	S_TMR2->m_TCCR2.sBits.m_FOCx  = strTMR2_Config_GLB.m_TMR_FOC = LBTY_RESET;
 }
 
 LBTY_tenuErrorStatus TMR2_u8SetMode(TMRx_u8_tenuWaveGenerationMode u8Mode){
@@ -817,6 +830,22 @@ void TMR1_vidInitInputCapture(void){
 	if(strTMR1_Config_GLB.m_TMR_InputEdge != TMR1_Capture_Off){
 		GPIO_u8SetPinDirection(TMR_ICP1_PORT, TMR_ICP1_PIN, PIN_INPUT);
 	}
+}
+
+void TMR1_vidSetForceOutputCompareA(void){
+	S_TMR1->m_TCCR1A.sBits.m_FOC1A  = strTMR1_Config_GLB.m_TMR_FOCA = LBTY_SET;
+}
+
+void TMR1_vidResetForceOutputCompareA(void){
+	S_TMR1->m_TCCR1A.sBits.m_FOC1A  = strTMR1_Config_GLB.m_TMR_FOCA = LBTY_RESET;
+}
+
+void TMR1_vidSetForceOutputCompareB(void){
+	S_TMR1->m_TCCR1A.sBits.m_FOC1B  = strTMR1_Config_GLB.m_TMR_FOCB = LBTY_SET;
+}
+
+void TMR1_vidResetForceOutputCompareB(void){
+	S_TMR1->m_TCCR1A.sBits.m_FOC1B  = strTMR1_Config_GLB.m_TMR_FOCB = LBTY_RESET;
 }
 
 LCTY_INLINE void TMR1_vidSetWaveGenerationMode(TMR1_tenuWaveGenerationMode u8Mode){

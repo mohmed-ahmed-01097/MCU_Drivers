@@ -3,27 +3,11 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "ATMega32.h"
-
-#include "LBTY_int.h"
-#include "LBIT_int.h"
-#include "LCTY_int.h"
-
-#include "DELAY.h"
-
-#include "GPIO_int.h"
-#include "GPIO_cfg.h"
-
-#include "INTP.h"
-
-#include "TMR_int.h"
-#include "TMR_cfg.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -41,14 +25,28 @@
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
 
-u8 u8INT_Flag = LBTY_RESET;
-u8 u8Duty = LBTY_RESET;
-
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
 #ifdef	SWC_TMR
+
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "INTP.h"
+
+#include "TMR_int.h"
+#include "TMR_cfg.h"
+
+u8 u8INT_Flag = LBTY_RESET;
+u8 u8Duty = LBTY_RESET;
 
 void TMR_ISR(void);
 

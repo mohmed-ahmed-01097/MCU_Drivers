@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : TMR_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Apr 5, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -170,6 +170,9 @@ void TMR0_vidInit(void);
 void TMR0_vidEnable(void);
 void TMR0_vidDisable(void);
 
+void TMR0_vidSetForceOutputCompare(void);
+void TMR0_vidResetForceOutputCompare(void);
+
 LBTY_tenuErrorStatus TMR0_u8SetMode(TMRx_u8_tenuWaveGenerationMode u8Mode);
 LBTY_tenuErrorStatus TMR0_u8SetOutputMode(TMRx_u8_tenuCompareOutputMode u8OutMode);
 
@@ -215,6 +218,9 @@ void TMR2_vidInit(void);
 
 void TMR2_vidEnable(void);
 void TMR2_vidDisable(void);
+
+void TMR2_vidSetForceOutputCompare(void);
+void TMR2_vidResetForceOutputCompare(void);
 
 LBTY_tenuErrorStatus TMR2_u8SetMode(TMRx_u8_tenuWaveGenerationMode u8Mode);
 LBTY_tenuErrorStatus TMR2_u8SetOutputMode(TMRx_u8_tenuCompareOutputMode u8OutMode);
@@ -262,6 +268,11 @@ void TMR1_vidInit(void);
 void TMR1_vidEnable(void);
 void TMR1_vidDisable(void);
 void TMR1_vidInitInputCapture(void);
+
+void TMR1_vidSetForceOutputCompareA(void);
+void TMR1_vidResetForceOutputCompareA(void);
+void TMR1_vidSetForceOutputCompareB(void);
+void TMR1_vidResetForceOutputCompareB(void);
 
 LBTY_tenuErrorStatus TMR1_u8SetMode(TMR1_tenuWaveGenerationMode u8Mode);
 LBTY_tenuErrorStatus TMR1_u8SetOutputModeA(TMR1_tenuCompareOutputMode u8OutMode);
