@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : ADC_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 27, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -17,6 +17,7 @@
 /* ************************************************************************** */
 
 typedef enum{
+/** Analog Channels **/
     ADC0 = (u8)0u,
     ADC1,
     ADC2,
@@ -25,7 +26,7 @@ typedef enum{
     ADC5,
     ADC6,
     ADC7,
-
+/** Analog Amplifier **/
 	ADC0_ADC0_10X,
 	ADC1_ADC0_10X,
 	ADC0_ADC0_200X,
@@ -34,7 +35,7 @@ typedef enum{
 	ADC3_ADC2_10X,
 	ADC2_ADC2_200X,
 	ADC3_ADC2_200X,
-
+/** Analog Comparator with ADC1 **/
 	ADC0_ADC1,
 	ADC1_ADC1,
 	ADC2_ADC1,
@@ -43,16 +44,18 @@ typedef enum{
 	ADC5_ADC1,
 	ADC6_ADC1,
 	ADC7_ADC1,
+/** Analog Comparator with ADC1 **/
 	ADC0_ADC2,
 	ADC1_ADC2,
 	ADC2_ADC2,
 	ADC3_ADC2,
 	ADC4_ADC2,
 	ADC5_ADC2,
-
+/** Constant Voltage **/
 	VBG_1V22,
-	GND
-}ADC_tenuChannel;      // ADC Voltage Reference Selections
+	GND,
+	ADC_ChannelMux
+}ADC_tenuChannel;      // ADC Channel Selection
 
 typedef enum{
     ADC_Division_Factor_2_DEF = (u8)0u,
@@ -119,7 +122,7 @@ void ADC_vidInit(void);
 /* Input       :	u8Channel												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_u8CofigChannel(u8 u8Channel);
+LBTY_tenuErrorStatus ADC_u8CofigChannel(ADC_tenuChannel u8Channel);
 
 /* ************************************************************************** */
 /* Description :  	Calibrate ADC Voltage 									  */
@@ -133,21 +136,56 @@ void ADC_vidCalibrate(void);
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void ADC_voidEnable(void);
+void ADC_vidEnable(void);
 
 /* ************************************************************************** */
 /* Description :  	Disable ADC to be wont make further conversions			  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void ADC_voidDisable(void);
+void ADC_vidDisable(void);
+
+/* ************************************************************************** */
+/* Description :  	Enable ADC Auto Trigger									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void ADC_vidAutoTriggerEnable(void);
+
+/* ************************************************************************** */
+/* Description :  	Disable ADC Auto Trigger								  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void ADC_vidAutoTriggerDisable(void);
+
+/* ************************************************************************** */
+/* Description :  	Set Auto Trigger Source									  */
+/* Input       :	u8Source												  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus ADC_u8SetAutoTriggerSource(ADC_tenuTriggerSource u8Source);
+
+/* ************************************************************************** */
+/* Description :  	Set ADC Prescaler										  */
+/* Input       :	u8Prescaler												  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus ADC_u8SetPrescaler(ADC_tenuPrescalerSelection u8Prescaler);
+
+/* ************************************************************************** */
+/* Description :  	Set V_Ref												  */
+/* Input       :	u8Vref													  */
+/* Return      :	LBTY_tenuErrorStatus													  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus ADC_u8SetV_REF(ADC_tenuRefSelection u8Vref);
 
 /* ************************************************************************** */
 /* Description :  	Set Channel												  */
 /* Input       :	u8Channel												  */
-/* Return      :	void													  */
+/* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-void ADC_vidSetChannel(u8 u8Channel);
+LBTY_tenuErrorStatus ADC_u8SetChannel(ADC_tenuChannel u8Channel);
 
 /* ************************************************************************** */
 /* Description :  	Start conversion										  */
@@ -182,7 +220,7 @@ f32 ADC_f32GetVoltage(void);
 /* Input       :	u8Channel												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_u8StartRead(u8 u8Channel);
+LBTY_tenuErrorStatus ADC_u8StartRead(ADC_tenuChannel u8Channel);
 
 /* ************************************************************************** */
 /* Description :  	Get the ADC Read of the channel							  */
@@ -190,7 +228,7 @@ LBTY_tenuErrorStatus ADC_u8StartRead(u8 u8Channel);
 /* Input/Output:    pu16ADC_Value											  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_u8ReadChannel(u8 u8Channel, u16* pu16ADC_Value);
+LBTY_tenuErrorStatus ADC_u8ReadChannel(ADC_tenuChannel u8Channel, u16* pu16ADC_Value);
 
 /* ************************************************************************** */
 /* Description :  	Get the ADC Read from Conversion Array					  */
@@ -213,6 +251,29 @@ LBTY_tenuErrorStatus ADC_u16RefreshADC(void);
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus ADC_u16GetAll(u16 pu16ADC_Value[ADC_CHANNELS_NUM]);
+
+/********************************************************************************************************************/
+
+/* ************************************************************************** */
+/* Description :  	Enable ADC Interrupt									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void ADC_vidEnableINT(void);
+
+/* ************************************************************************** */
+/* Description :  	Disable ADC Interrupt									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void ADC_vidDisableINT(void);
+
+/* ************************************************************************** */
+/* Description :  	Clear ADC interrupt Flag								  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void ADC_vidClrFlagINT(void);
 
 /* ************************************************************************** */
 /* Description :  	Pass the CallBack function to TMR ISR to execute		  */

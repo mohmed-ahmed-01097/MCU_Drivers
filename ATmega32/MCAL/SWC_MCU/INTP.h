@@ -12,8 +12,6 @@
 #ifndef INTP_H_
 #define INTP_H_
 
-#include "ATMega32.h"
-
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
@@ -29,7 +27,29 @@ typedef enum{
 }INT_tenuSenseControl;      // Interrupt Sense Control
 
 /* ************************************************************************** */
+
+typedef union{
+    u8 u_Reg;
+    struct {
+    	__IO u8 m_C : 1;        // Carry Flag
+    	__IO u8 m_Z : 1;        // Zero Flag
+    	__IO u8 m_N : 1;        // Negative Flag
+    	__IO u8 m_V : 1;        // Two’s Complement Overflow Flag
+    	__IO u8 m_S : 1;        // Sign Bit
+    	__IO u8 m_H : 1;        // Half Carry Flag
+    	__IO u8 m_T : 1;        // Bit Copy Storage
+    	__IO u8 m_I : 1;        // Global Interrupt Enable
+    }sBits;
+}SREG_type;   // General Interrupt Control Register
+
+/* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
+/* ************************************************************************** */
+
+/** Status Register **/
+#define S_SREG          ((SREG_type* const)0x5FU)
+#define SREG            (*(volatile u8* const)0x5FU)
+
 /* ************************************************************************** */
 
 # define wdr()						__asm__ __volatile__ ("wdr")

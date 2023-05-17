@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : ADC_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 27, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -51,14 +51,17 @@
 
 #endif
 
+#define ADC_ADJUSTMENT			LBTY_RESET
+
 /** SFIOR **/
 #define ADC_TRIG_SRC			ADC_Free_Running_Mode
 
 /** ADC Control State **/
 #define ADC_INIT_STATE			LBTY_SET
 #define ADC_AUTO_TRIG			LBTY_RESET
-//#define ADC_IRQ_STATE			LBTY_RESET
+#define ADC_IRQ_STATE			LBTY_RESET
 #define ADC_PRESCALER			ADC_Division_Factor_2
+
 /** ADC MUX **/
 #define ADC_V_REF_SRC			ADC_AVCC
 #define ADC_V_REF				5u
@@ -68,6 +71,8 @@
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
+
+extern const u8 kau8ActiveChannel_LGB[ADC_CHANNELS_NUM];
 
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
