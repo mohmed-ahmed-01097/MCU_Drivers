@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : EEPROM_priv.h												  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Apr 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -16,8 +16,51 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+typedef union{
+    u8 u_Reg;
+    struct {
+    	__IO u8 m_EERE : 1;   // EEPROM Read Enable
+    	__IO u8 m_EEWE : 1;   // EEPROM Write Enable
+    	__IO u8 m_EEMWE: 1;   // EEPROM Master Write Enable
+    	__IO u8 m_EERIE: 1;   // EEPROM Ready Interrupt Enable
+    	__IO u8        : 4;
+    }sBits;
+}EECR_type; // EEPROM Control Register
+
+/*************************************************************************/
+
+typedef struct{
+    __IO EECR_type  m_EECR ;
+    __IO u8         m_EEDR ;
+    __IO u16        m_EEAR : 10;
+    __IO u16               : 6;
+}EEPROM_type;
+
+/*************************************************************************/
+
+typedef union{
+    u8 u_Reg;
+    struct {
+    	__IO u8 m_SPMEN : 1;        // Store Program Memory Enable
+        __I  u8         : 7;
+    }sBits;
+}SPMCR_type;   // MCU Control Register
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
+/* ************************************************************************** */
+
+/** EEPROM **/
+#define S_EEPROM        ((EEPROM_type* const)0x3CU)
+#define EECR            (*(volatile u8* const)0x3CU)
+#define EEDR            (*(volatile u8* const)0x3DU)
+#define EEARL           (*(volatile u8* const)0x3EU)
+#define EEARH           (*(volatile u8* const)0x3FU)
+
+/** Store Program Memory Control Register **/
+#define S_SPMCR         ((SPMCR_type* const)0x57U)
+#define SPMCR           (*(volatile u8* const)0x57U)
+
 /* ************************************************************************** */
 
 #define EEPROM_MAX_ADDRESS					1023u
