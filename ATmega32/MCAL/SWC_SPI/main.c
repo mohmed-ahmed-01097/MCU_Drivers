@@ -1,16 +1,13 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : SPI_cfg.h													  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
 /* Version     : v01														  */
-/* date        : Apr 12, 2023												  */
+/* date        : May 19, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#ifndef SPI_CFG_H_
-#define SPI_CFG_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -19,17 +16,6 @@
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
-
-#define SPI_MODE				SPI_MASTER
-
-//#define SPI_CLOCK_SPEED			SPI_Speed_x1
-#define SPI_CLOCK_PRESCALER		SPI_Prescaler_8
-#define SPI_CLOCK_POLARITY		SPI_Leading_Rising
-#define SPI_CLOCK_PHASE			SPI_Leading_Setup
-#define SPI_DATA_ORDER			SPI_LSB_Frist
-
-#define SPI_INTI_STATE			LBTY_RESET
-#define SPI_INTI_IRQ_STATE		LBTY_RESET
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -43,6 +29,36 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+#ifdef	SWC_SPI
 
-#endif /* SPI_CFG_H_ */
-/*************************** E N D (SPI_cfg.h) ******************************/
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "INTP.h"
+
+#include "SPI_int.h"
+#include "SPI_cfg.h"
+
+int main(void){
+
+    GPIO_voidInit();
+
+
+    INTP_vidEnable();
+
+   	while(1){
+
+   	}
+   	return 0;
+}
+
+#endif
+
+
+/*************************** E N D (main.c) ******************************/

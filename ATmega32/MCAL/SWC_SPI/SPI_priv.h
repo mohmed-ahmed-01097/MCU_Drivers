@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : SPI_priv.h												  */
+/* File Name   : SPI_priv.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : Apr 12, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -16,29 +16,79 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+typedef union{
+    u8 u_Reg;
+    struct {
+    	__IO u8 m_SPR : 2;   // SPI Clock Rate Select 1 and 0
+    	__IO u8 m_CPHA: 1;   // Clock Phase
+    	__IO u8 m_CPOL: 1;   // Clock Polarity
+    	__IO u8 m_MSTR: 1;   // Master/Slave Select
+    	__IO u8 m_DORD: 1;   // Data Order
+    	__IO u8 m_SPE : 1;   // SPI Enable
+    	__IO u8 m_SPIE: 1;   // SPI Interrupt Enable
+    }sBits;
+}SPCR_type; // SPI Control Register
+
+/*************************************************************************/
+
+typedef union{
+    u8 u_Reg;
+    struct {
+    	__IO u8 m_SPI2X: 1;   // Double SPI Speed Bit
+        __I  u8        : 5;
+        __I  u8 m_WCOL : 1;   // Write Collision Flag
+        __I  u8 m_SPIF : 1;   // SPI Interrupt Flag
+    }sBits;
+}SPSR_type; // SPI Status Register
+
+/*************************************************************************/
+
+typedef struct{
+    __IO SPCR_type m_SPCR;
+    __IO SPSR_type m_SPSR;
+    __IO u8        m_SPDR;
+}SPI_type;
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
+/** SPI **/
+#define S_SPI           ((SPI_type* const)0x2DU)
+#define SPCR            (*(volatile u8* const)0x2DU)
+#define SPSR            (*(volatile u8* const)0x2EU)
+#define SPDR            (*(volatile u8* const)0x2FU)
+
+/* ************************************************************************** */
+
+#define SPI_SLAVE				0u
+#define SPI_MASTER				1u
+
 #define SPI_SPR_MASK			3u
 #define SPI_SPI2X_BIT			2u
 
-#ifdef SPI_MASTER
+/* ************************************************************************** */
+
+#define SPI_PORT				B
+#define SPI_MOSI_PIN			GPIO_SPI_MOSI
+#define SPI_MISO_PIN			GPIO_SPI_MISO
+#define SPI_SCK_PIN				GPIO_SPI_SCK
+#define SPI_SS_PIN				GPIO_SPI_SS
+
+#if (SPI_MODE == SPI_MASTER)
 
 #define SPI_MOSI_CONFIG			PIN_OUTPUT
 #define SPI_MISO_CONFIG			PIN_INPUT
 #define SPI_SCK_CONFIG			PIN_OUTPUT
 #define SPI_SS_CONFIG			PIN_OUTPUT
 
-#else
-#ifdef SPI_SLAVE
+#elif(SPI_MODE == SPI_SLAVE)
 
 #define SPI_MOSI_CONFIG			PIN_INPUT
 #define SPI_MISO_CONFIG			PIN_OUTPUT
 #define SPI_SCK_CONFIG			PIN_INPUT
 #define SPI_SS_CONFIG			PIN_INPUT
 
-#endif
 #endif
 
 /* ************************************************************************** */
