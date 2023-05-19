@@ -1,16 +1,13 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : I2C_cfg.h													  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
 /* Version     : v01														  */
-/* date        : Apr 13, 2023												  */
+/* date        : May 19, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#ifndef I2C_CFG_H_
-#define I2C_CFG_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -19,20 +16,6 @@
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
-
-#define I2C_MODE_INIT				I2C_Master_IDLE
-#define I2C_STATE_INIT				I2C_IDLE
-
-#define I2C_SLAVE_ADDRESS			0x7A
-#define I2C_SCL_FREQ				1000u
-#define I2C_CLOCK_PRESCALER			I2C_Prescaler_4
-
-#define I2C_START_STATE				LBTY_SET
-#define I2C_STOP_STATE				LBTY_SET
-#define I2C_ACK_STATE				LBTY_SET
-
-#define I2C_INIT_STATE				LBTY_SET
-#define I2C_INT_STATE				LBTY_SET
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -46,6 +29,36 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+#ifdef	SWC_I2C
 
-#endif /* I2C_CFG_H_ */
-/*************************** E N D (I2C_cfg.h) ******************************/
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "INTP.h"
+
+#include "I2C_int.h"
+#include "I2C_cfg.h"
+
+int main(void){
+
+    GPIO_voidInit();
+
+
+    INTP_vidEnable();
+
+   	while(1){
+
+   	}
+   	return 0;
+}
+
+#endif
+
+
+/*************************** E N D (main.c) ******************************/
