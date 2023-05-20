@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : LCD_priv.h												  */
+/* File Name   : LCD_priv.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 31, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -111,6 +111,19 @@
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
+
+extern const u8 UnFilledHeart[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 FilledHeart[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Mobile[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Bell[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Silent[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Music[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Plug[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Face[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Human[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 YogaHuman[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Cat[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 Paw[LCD_CGRAM_LOCATIONS_NUM];
 
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */

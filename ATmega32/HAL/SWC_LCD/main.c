@@ -1,27 +1,13 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c												  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01.1														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "ATMega32.h"
-
-#include "LBTY_int.h"
-#include "LBIT_int.h"
-#include "LCTY_int.h"
-
-#include "DELAY.h"
-
-#include "GPIO_int.h"
-#include "GPIO_cfg.h"
-
-#include "LCD_int.h"
-#include "LCD_cfg.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -45,8 +31,21 @@
 
 #ifdef	SWC_LCD
 
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
 #include "ADC_int.h"
 #include "ADC_cfg.h"
+
+#include "LCD_int.h"
+#include "LCD_cfg.h"
+
 
 void vid_LcdWelcome(void);
 void vid_LcdShifting(void);

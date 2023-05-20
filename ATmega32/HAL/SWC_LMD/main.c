@@ -3,17 +3,11 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "LBTY_int.h"
-#include "LBIT_int.h"
-
-#include "LMD_cfg.h"
-#include "LMD_int.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -36,9 +30,16 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_LMD
+
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+
+#include "LMD_cfg.h"
+#include "LMD_int.h"
+
 int main(void){
 	LMD_vidInit();
-	u8 u8char = '0', i=5, u8Arr[150], index;
+	u8 u8char = '0', i=5, u8Arr[150], index = 0;
 	while(1){
 		LMD_u8String((u8*)"Hello_MAAM! ");
 		while(!LMD_u8Update());
