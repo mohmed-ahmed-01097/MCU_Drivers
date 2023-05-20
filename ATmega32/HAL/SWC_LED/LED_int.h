@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : LED_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -55,28 +55,28 @@ typedef enum{
 /* Input       :	u8LedNum												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-extern void LED_vidInit(u8 u8LedNum);
+void LED_vidInit(u8 u8LedNum);
 
 /* ************************************************************************** */
 /* Description :    Set the LED ON											  */
 /* Input       :	u8LedNum												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-extern LBTY_tenuErrorStatus LED_u8SetON(u8 u8LedNum);
+LBTY_tenuErrorStatus LED_u8SetON(u8 u8LedNum);
 
 /* ************************************************************************** */
 /* Description :    Set the LED OFF											  */
 /* Input       :	u8LedNum												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-extern LBTY_tenuErrorStatus LED_u8SetOFF(u8 u8LedNum);
+LBTY_tenuErrorStatus LED_u8SetOFF(u8 u8LedNum);
 
 /* ************************************************************************** */
 /* Description :    Set the LED OFF											  */
 /* Input       :	u8LedNum												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-extern LBTY_tenuErrorStatus LED_u8Toggle(u8 u8LedNum);
+LBTY_tenuErrorStatus LED_u8Toggle(u8 u8LedNum);
 
 #endif /* LED_INT_H_ */
 /*************************** E N D (LED_int.h) ******************************/

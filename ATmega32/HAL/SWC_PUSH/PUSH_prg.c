@@ -3,13 +3,16 @@
 /* ************************************************************************** */
 /* File Name   : PUSH_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
 #include "LBTY_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
 
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
@@ -57,17 +60,46 @@ void PUSH_vidInit(u8 u8PushNum){
 }
 
 /* ************************************************************************** */
+/* Description :    Get the Push Button DeBouncing							  */
+/* Input       :	u8PushNum												  */
+/* Input/Output:    pu8State												  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus PUSH_u8GetDebounce(u8 u8PushNum, u8* pu8State){
+	u8 u8PreValue = LBTY_u8ZERO;
+	u8 u8CurValue = LBTY_u8ZERO;
+	u8 u8DebouncingCount = LBTY_u8ZERO;
+
+	PUSH_tstrConfiguration* pstrPush =
+			(PUSH_tstrConfiguration*)&kau8PushConfiguration_LGB[u8PushNum];
+	LBTY_tenuErrorStatus u8RetValue  =
+			GPIO_u8GetPinValue(pstrPush->u8PortNum, pstrPush->u8PinNum, &u8PreValue);
+
+	while((u8DebouncingCount < DEBOUNCING_CYCLES_NUM) && (u8RetValue == LBTY_OK)){
+		vidMyDelay_ms(5);
+		u8RetValue  = GPIO_u8GetPinValue(pstrPush->u8PortNum, pstrPush->u8PinNum, &u8CurValue);
+
+		if(u8PreValue == u8CurValue){
+			u8DebouncingCount++;
+		}else{
+			u8DebouncingCount = 0;
+		}
+		u8PreValue = u8CurValue;
+	}
+	*pu8State = u8CurValue;
+	return u8RetValue;
+}
+
+/* ************************************************************************** */
 /* Description :    Get the Push Button value								  */
 /* Input       :	u8PushNum												  */
 /* Input/Output:    pu8State												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus PUSH_u8GetPushState(u8 u8PushNum, u8* pu8State){
-	PUSH_tstrConfiguration* pstrPush =
-			(PUSH_tstrConfiguration*)&kau8PushConfiguration_LGB[u8PushNum];
-	LBTY_tenuErrorStatus u8RetValue  =
-			GPIO_u8GetPinValue(pstrPush->u8PortNum, pstrPush->u8PinNum, pu8State);
-	switch(pstrPush->u8Connection){
+	LBTY_tenuErrorStatus u8RetValue  = PUSH_u8GetDebounce(u8PushNum, pu8State);
+
+	switch(kau8PushConfiguration_LGB[u8PushNum].u8Connection){
 		case PUSH_PULL_UP:
 			*pu8State = (*pu8State == PUSH_PULL_UP_PRESSED) ? PUSH_PRESSED : PUSH_RELEASED;
 			break;

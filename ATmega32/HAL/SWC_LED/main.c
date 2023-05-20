@@ -3,24 +3,11 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "LBTY_int.h"
-#include "LBIT_int.h"
-#include "LCTY_int.h"
-
-#include "DELAY.h"
-
-#include "GPIO_int.h"
-#include "GPIO_cfg.h"
-
-#include "LED_cfg.h"
-#include "LED_int.h"
-
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -43,6 +30,20 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_LED
+
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "LED_cfg.h"
+#include "LED_int.h"
+
+
 int main(void){
 
 #ifdef AMIT_KIT

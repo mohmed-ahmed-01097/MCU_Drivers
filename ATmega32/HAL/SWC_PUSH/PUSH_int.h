@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : PUSH_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -55,7 +55,15 @@ typedef enum{
 /* Input       :	u8PushNum												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-extern void PUSH_vidInit(u8 u8PushNum);
+void PUSH_vidInit(u8 u8PushNum);
+
+/* ************************************************************************** */
+/* Description :    Get the Push Button DeBouncing							  */
+/* Input       :	u8PushNum												  */
+/* Input/Output:    pu8State												  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus PUSH_u8GetDebounce(u8 u8PushNum, u8* pu8State);
 
 /* ************************************************************************** */
 /* Description :    Get the Push Button value								  */
@@ -63,7 +71,7 @@ extern void PUSH_vidInit(u8 u8PushNum);
 /* Input/Output:    pu8State												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-extern LBTY_tenuErrorStatus PUSH_u8GetPushState(u8 u8PushNum, u8* pu8State);
+LBTY_tenuErrorStatus PUSH_u8GetPushState(u8 u8PushNum, u8* pu8State);
 
 #endif /* PUSH_INT_H_ */
 /*************************** E N D (PUSH_int.h) ******************************/
