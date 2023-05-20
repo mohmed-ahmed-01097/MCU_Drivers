@@ -1,25 +1,13 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c												  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01														  */
 /* date        : May 4, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "LBTY_int.h"
-#include "LCTY_int.h"
-
-#include "INTP.h"
-
-#include "LCD_int.h"
-#include "LCD_cfg.h"
-
-#include "IR_int.h"
-#include "IR_cfg.h"
-#include "IR_priv.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -42,6 +30,18 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_IR
+
+#include "LBTY_int.h"
+#include "LCTY_int.h"
+
+#include "INTP.h"
+
+#include "LCD_int.h"
+#include "LCD_cfg.h"
+
+#include "IR_int.h"
+#include "IR_cfg.h"
+#include "IR_priv.h"
 
 static IR_tstrPacket strIRPacket;
 static IR_tstrFram strIRFram;
