@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : SEG_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -37,28 +37,35 @@
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-extern void SEG_vidInit(void);
+void SEG_vidInit(void);
+
+/* ************************************************************************** */
+/* Description :    7-Seg Display Value										  */
+/* Input       :	u16NumValue, u8Dot										  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void SEG_vidDisplay(u16 u16NumValue, u8 u8Dot);
+
+/* ************************************************************************** */
+/* Description :    7-Seg Display Real Num Value							  */
+/* Input       :	f32NumValue, 											  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void SEG_vidDisplayFloat(f32 f32NumValue);
 
 /* ************************************************************************** */
 /* Description :    7-Seg Display Num Value									  */
-/* Input       :	u16NumValue, 											  */
+/* Input       :	u16NumValue												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-extern void SEG_vidDisplayNum(u16 u16NumValue);
+void SEG_vidDisplayNum(u16 u16NumValue);
 
 /* ************************************************************************** */
-/* Description :    7-Seg Display Dot 										  */
-/* Input       :	u8DotDigit	 											  */
+/* Description :    7-Seg Display Digit	with Dot							  */
+/* Input       :	u8DigitValue, u8PortCom, u8PinCom, u8Dot				  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-extern void SEG_vidDisplayDot(u8 u8DotDigit);
-
-/* ************************************************************************** */
-/* Description :    7-Seg Display Digit										  */
-/* Input       :	u8DigitValue, u8PortCom, u8PinCom						  */
-/* Return      :	void													  */
-/* ************************************************************************** */
-extern void SEG_vidDispalyDigit(u8 u8DigitValue, u8 u8PortCom, u8 u8PinCom);
+void SEG_vidDispalyDigit(u8 u8DigitValue, u8 u8PortCom, u8 u8PinCom, u8 u8Dot);
 
 #endif /* SEG_INT_H_ */
 /*************************** E N D (SEG_int.h) ******************************/

@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : KEYPAD_prg.c												  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -69,6 +69,35 @@ void KPAD_vidInit(void){
 }
 
 /* ************************************************************************** */
+/* Description :    Get the Push Button DeBouncing							  */
+/* Input       :	u8PortNum, u8PinNum										  */
+/* Input/Output:    pu8Value												  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+static LBTY_tenuErrorStatus PUSH_u8GetDebounce(GPIO_tenuPortNum u8PortNum,
+		GPIO_tenuPinNum u8PinNum, pu8 pu8Value){
+	u8 u8PreValue = LBTY_u8ZERO;
+	u8 u8CurValue = LBTY_u8ZERO;
+	u8 u8DebouncingCount = LBTY_u8ZERO;
+
+	LBTY_tenuErrorStatus u8RetValue = GPIO_u8GetPinValue(u8PortNum, u8PinNum, &u8PreValue);
+
+	while((u8DebouncingCount < DEBOUNCING_CYCLES_NUM) && (u8RetValue == LBTY_OK)){
+		vidMyDelay_ms(5);
+		u8RetValue  = GPIO_u8GetPinValue(u8PortNum, u8PinNum, &u8CurValue);
+
+		if(u8PreValue == u8CurValue){
+			u8DebouncingCount++;
+		}else{
+			u8DebouncingCount = 0;
+		}
+		u8PreValue = u8CurValue;
+	}
+	*pu8Value = u8CurValue;
+	return u8RetValue;
+}
+
+/* ************************************************************************** */
 /* Description :    Keypad Get Push Press Number							  */
 /* Input       :	void													  */
 /* Return      :	u8														  */
@@ -80,13 +109,13 @@ u8 KPAD_u8GetKeyNum(void){
 	for(u8 i = 0 ; i<KPAD_ROW_NUM ; i++){
 		GPIO_u8SetPinValue(KPAD_ROW_PORT, kau8ROW_PINs_GLB[i], KPAD_PRESSED);
 		for(u8 j = 0 ; j<KPAD_COL_NUM ; j++){
-			GPIO_u8GetPinValue(KPAD_COL_PORT, kau8COL_PINs_GLB[j], &u8RetValue);
+			PUSH_u8GetDebounce(KPAD_COL_PORT, kau8COL_PINs_GLB[j], &u8RetValue);
 #endif
 #ifdef KPAD_COL_DIR_OUTPUT
 	for(u8 i = 0 ; i<KPAD_COL_NUM ; i++){
 		GPIO_u8SetPinValue(KPAD_COL_PORT, kau8COL_PINs_GLB[i], KPAD_PRESSED);
 		for(u8 j = 0 ; j<KPAD_ROW_NUM ; j++){
-			GPIO_u8GetPinValue(KPAD_ROW_PORT, kau8ROW_PINs_GLB[j], &u8RetValue);
+			PUSH_u8GetDebounce(KPAD_ROW_PORT, kau8ROW_PINs_GLB[j], &u8RetValue);
 #endif
 			if(u8RetValue == KPAD_RELEASED){
 				u8RetValue = LBTY_u8MAX;

@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : KEYPAD_cfg.h												  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -105,6 +105,8 @@ COL0  COL1  COL2  COL3				 <== INPUT
 #define KPAD_COL_MASK			(1<<KPAD_COL0)|(1<<KPAD_COL1)|(1<<KPAD_COL2)|(1<<KPAD_COL3)
 
 #endif
+
+#define DEBOUNCING_CYCLES_NUM	5u
 
 #define KPAD_MAX_COL			4u
 #define KPAD_MAX_ROW			4u

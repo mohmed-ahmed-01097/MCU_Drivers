@@ -3,19 +3,11 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.1														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#include "LBTY_int.h"
-
-#include "GPIO_int.h"
-#include "GPIO_cfg.h"
-
-#include "SEG_int.h"
-#include "SEG_cfg.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -38,6 +30,15 @@
 /* ************************************************************************** */
 
 #ifdef	SWC_SEG
+
+#include "LBTY_int.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "SEG_int.h"
+#include "SEG_cfg.h"
+
 int main(void){
 
 	GPIO_voidInit();
@@ -54,28 +55,32 @@ int main(void){
 
 #endif
 
-   	u16 u8Value = 0;
+   	u16 u16Value = 0;
+   	f32 f32Value = 0.0;
 
    	while(1){
 
 #if defined(AMIT_KIT)
     	for(u16 i = 50 ; --i ; ){
-    		SEG_vidDisplayDot(1);
-    		SEG_vidDisplayNum(u8Value);
+    		SEG_vidDisplayFloat(f32Value);
+    		//SEG_vidDisplayNum(u16Value);
     	}
     GPIO_u8TogglePinValue (D, AMIT_LED0);
 #elif defined(ETA32_KIT)
     	for(u16 i = 50 ; --i ; ){
-    		SEG_vidDisplayNum(u8Value);
+    		SEG_vidDisplayFloat(f32Value);
+    		//SEG_vidDisplayNum(u16Value);
     	}
     GPIO_u8TogglePinValue (A, Eta32_LED_G);
 #else
 	for(u16 i = 50 ; --i ; ){
-		SEG_vidDisplayNum(u8Value);
+		SEG_vidDisplayFloat(f32Value);
+		//SEG_vidDisplayNum(u16Value);
 	}
 #endif
 
-    	u8Value++;
+    	u16Value++;
+    	f32Value += 0.1;
     }
    	return 0;
 }
