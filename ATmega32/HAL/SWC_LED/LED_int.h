@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : LED_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -26,17 +26,18 @@ typedef enum{
 	LED_ON
 }LED_tenuStatus;
 
+/********************************************************************************************************************/
+
+/** @brief : type define of structure for Led Configuration                   */
+/** <b>Type</b> : struct <b>Unit</b> : None                                   */
+typedef struct{
+	LED_tenuConnection  m_Connection;		/*!< Push Active */
+	GPIO_tstrPinConfig  m_PinCfg;			/*!< Pin Configuration */
+}LED_tstrConfig;
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
-
-#if 	AMIT_KIT
-#define LED_NUM		3u
-#elif	ETA32_KIT
-#define LED_NUM		4u
-#else
-#define LED_NUM		7u
-#endif
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -55,28 +56,35 @@ typedef enum{
 /* Input       :	u8LedNum												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void LED_vidInit(u8 u8LedNum);
+extern void LED_vidInit(u8 u8LedNum);
+
+/* ************************************************************************** */
+/* Description : Initialize the All LED Button with Configurations			  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+extern void LED_vidInitAll(void);
 
 /* ************************************************************************** */
 /* Description :    Set the LED ON											  */
 /* Input       :	u8LedNum												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus LED_u8SetON(u8 u8LedNum);
+extern LBTY_tenuErrorStatus LED_u8SetON(u8 u8LedNum);
 
 /* ************************************************************************** */
 /* Description :    Set the LED OFF											  */
 /* Input       :	u8LedNum												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus LED_u8SetOFF(u8 u8LedNum);
+extern LBTY_tenuErrorStatus LED_u8SetOFF(u8 u8LedNum);
 
 /* ************************************************************************** */
-/* Description :    Set the LED OFF											  */
+/* Description :    Toggle the LED											  */
 /* Input       :	u8LedNum												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus LED_u8Toggle(u8 u8LedNum);
+extern LBTY_tenuErrorStatus LED_u8Toggle(u8 u8LedNum);
 
 #endif /* LED_INT_H_ */
 /*************************** E N D (LED_int.h) ******************************/

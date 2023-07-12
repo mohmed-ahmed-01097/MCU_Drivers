@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : LMD_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -33,18 +33,22 @@ COL0  COL1  COL2  COL3				 <== OUTPUT
 */
 
 #define LMD_MAX_ARRAY_LEN		128u
-#define LMD_REFRESH_RATE		2u
+#define LMD_REFRESH_RATE		1u
+#define LMD_DELAY				5u
+#define LMD_CHAR_DELAY			2u		//25u
+#define LMD_CHAR_RATE			5u		//50u
 
 #define LMD_MAX_ROW_NUM			8u
 #define LMD_MAX_COL_NUM			8u
 
 #define LMD_MUX_TYPE			LMD_COL_MUX
+#define LMD_MAT_LEN				LMD_MAX_COL_NUM
 
 #define LMD_ROW_PORT			C
-#define LMD_ROW_ACTIVE			LMD_ACTIVE_LOW
+#define LMD_ROW_ACTIVE			LMD_ACTIVE_HIGH
 
 #define LMD_COL_PORT			B
-#define LMD_COL_ACTIVE			LMD_ACTIVE_HIGH
+#define LMD_COL_ACTIVE			LMD_ACTIVE_LOW
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -53,7 +57,8 @@ COL0  COL1  COL2  COL3				 <== OUTPUT
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
-
+extern const u8 IMAGES[][LMD_MAT_LEN];
+extern const u8 IMAGES_LEN;
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */

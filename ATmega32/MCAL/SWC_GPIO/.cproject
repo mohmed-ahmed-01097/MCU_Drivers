@@ -36,7 +36,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SWC_MCU}&quot;"/>
 								</option>
 								<option id="de.innot.avreclipse.compiler.option.def.1129857453" name="Define Syms (-D)" superClass="de.innot.avreclipse.compiler.option.def" useByScannerDiscovery="false" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="AMIT_KIT=1"/>
+									<listOptionValue builtIn="false" value="AMIT_KIT"/>
 									<listOptionValue builtIn="false" value="SWC_GPIO"/>
 								</option>
 								<option id="de.innot.avreclipse.compiler.option.debug.type.979478743" superClass="de.innot.avreclipse.compiler.option.debug.type" useByScannerDiscovery="false" value="de.innot.avreclipse.compiler.option.debug.level.dwarf-2" valueType="enumerated"/>

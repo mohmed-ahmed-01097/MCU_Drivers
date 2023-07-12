@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : LCD_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Mar 31, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -20,12 +20,14 @@
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
-#define LCD_DELAY_WAIT		50u
-#define LCD_DELAY_POWER_ON	40u
-
-#if 	AMIT_KIT
-
 #define LCD_DELAY_CMD		1u
+#define LCD_DELAY_CMD_MAX	4u
+#define LCD_DELAY_POWER_ON	40u
+#define LCD_DELAY_WAIT		50u
+#define LCD_DELAY_TOG		500u
+#define LCD_DELAY_PAGE		1000u	//5000u
+
+#if defined(AMIT_KIT)
 
 #define LCD_FUNCTION_SET	LCD_FUNCTION_SET_4Bits
 
@@ -43,9 +45,7 @@
 #define LCD_RW				AMIT_LCD_RW
 #define LCD_EN				AMIT_LCD_EN
 
-#elif	ETA32_KIT
-
-#define LCD_DELAY_CMD		2u
+#elif defined(ETA32_KIT)
 
 #define LCD_FUNCTION_SET	LCD_FUNCTION_SET_4Bits
 
@@ -62,9 +62,24 @@
 #define LCD_RS				Eta32_LCD_RS
 #define LCD_EN				Eta32_LCD_EN
 
-#else
+#elif defined(ETA32_MINI_KIT)
 
-#define LCD_DELAY_CMD		1u
+#define LCD_FUNCTION_SET	LCD_FUNCTION_SET_4Bits
+
+#define LCD_COL_NUM			LCD_COL_NUM_16
+#define LCD_ROW_NUM			LCD_ROW_NUM_2
+
+#define LCD_DATA_PORT		A
+#define LCD_D4				Eta32_mini_LCD4
+#define LCD_D5				Eta32_mini_LCD5
+#define LCD_D6				Eta32_mini_LCD6
+#define LCD_D7				Eta32_mini_LCD7
+
+#define LCD_CONTROL_PORT	A
+#define LCD_RS				Eta32_mini_LCD_RS
+#define LCD_EN				Eta32_mini_LCD_EN
+
+#else
 
 #define LCD_FUNCTION_SET	LCD_FUNCTION_SET_8Bits
 

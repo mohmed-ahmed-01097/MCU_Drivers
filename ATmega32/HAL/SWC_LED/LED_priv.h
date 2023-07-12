@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c														  */
+/* File Name   : LED_priv.h													  */
 /* Author      : MAAM														  */
 /* Version     : v01.2														  */
 /* date        : Apr 8, 2023												  */
@@ -9,9 +9,40 @@
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
+#ifndef LED_PRIV_H_
+#define LED_PRIV_H_
+
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
+
+typedef enum{
+#ifdef LED0
+	LED_0 = (u8)0u
+#endif
+#ifdef LED1
+	,LED_1
+#endif
+#ifdef LED2
+	,LED_2
+#endif
+#ifdef LED3
+	,LED_3
+#endif
+#ifdef LED4
+	,LED_4
+#endif
+#ifdef LED5
+	,LED_5
+#endif
+#ifdef LED6
+	,LED_6
+#endif
+#ifdef LED7
+	,LED_7
+#endif
+	,LED_Num
+}LED_tenuLedNum;
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
@@ -29,48 +60,5 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
-#ifdef	SWC_LED
-
-#include "LBTY_int.h"
-#include "LBIT_int.h"
-#include "LCTY_int.h"
-
-#include "DELAY.h"
-
-#include "GPIO_int.h"
-#include "GPIO_cfg.h"
-
-#include "LED_cfg.h"
-#include "LED_int.h"
-
-
-int main(void){
-
-	LED_vidInit(LED0);
-	LED_vidInit(LED1);
-	LED_vidInit(LED2);
-#ifdef ETA32_KIT
-	LED_vidInit(LED3);
-#endif
-
-   	while(1){
-   		LED_u8SetON(LED0);
-   		LED_u8SetON(LED1);
-   		LED_u8SetON(LED2);
-#ifdef ETA32_KIT
-   		LED_u8Toggle(LED3);
-#endif
-	    vidMyDelay_ms(500);
-	    LED_u8SetOFF(LED0);
-	    LED_u8SetOFF(LED1);
-	    LED_u8SetOFF(LED2);
-#ifdef ETA32_KIT
-	    LED_u8Toggle(LED3);
-#endif
-	    vidMyDelay_ms(500);
-    }
-   	return 0;
-}
-#endif
-
-/*************************** E N D (main.c) ******************************/
+#endif /* LED_PRIV_H_ */
+/*************************** E N D (GPIO_priv.h) ******************************/

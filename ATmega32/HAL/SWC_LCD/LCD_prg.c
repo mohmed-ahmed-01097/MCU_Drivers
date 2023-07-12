@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : LCD_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Mar 31, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -15,8 +15,8 @@
 #include "DELAY.h"
 
 #include "LCD_int.h"
-#include "LCD_priv.h"
 #include "LCD_cfg.h"
+#include "LCD_priv.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -35,7 +35,7 @@
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-extern const u8 LCD_SpecialChar_Array[LCD_CGRAM_SECTIONS_NUM][LCD_CGRAM_LOCATIONS_NUM];
+
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -51,19 +51,68 @@ extern const u8 LCD_SpecialChar_Array[LCD_CGRAM_SECTIONS_NUM][LCD_CGRAM_LOCATION
 /* ************************************************************************** */
 void LCD_vidInit(void){
 	LCD_vidInitPins();
+	LCD_vidInitMode();
 	LCD_u8Home();
 	LCD_u8FunctionSet();
-	LCD_u8ClrDisplay();
 	LCD_u8EntryMode(LCD_Entry_Inc);
+	LCD_u8DisplayMode(LCD_Display_OFF);
+	LCD_u8ClrDisplay();
+	vidMyDelay_ms(LCD_DELAY_CMD_MAX);
 	LCD_u8DisplayMode(LCD_Cursor_OFF);
-	for(u8 i = 0 ; i<LCD_CGRAM_LOCATIONS_NUM ; i++){
-		LCD_u8StoreSpecialChar((u8*)LCD_SpecialChar_Array[i], i);
+}
+
+/* ************************************************************************** */
+/* Description :  	Set Page of LCD Column by Column						  */
+/* Input/Output:	pu8String1, pu8String2									  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus LCD_u8SetPage(const u8 pu8String1[],const u8 pu8String2[]){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+	for(u8 i = 0, j = 0 ; i<LCD_COL_NUM && *pu8String1 && *pu8String2 ; i++){
+		if(*pu8String1 == '@'){
+			if((u8RetErrorState = LCD_u8SetSpecialCharIndex(j++, i, 0))){
+				break;
+			}
+		}else{
+			if((u8RetErrorState = LCD_u8SetChar(*pu8String1, i, 0))){
+				break;
+			}
+		}
+		if(*pu8String2 == '@'){
+			if((u8RetErrorState = LCD_u8SetSpecialCharIndex(j++, i, 1))){
+				break;
+			}
+		}else{
+			if((u8RetErrorState = LCD_u8SetChar(*pu8String2, i, 1))){
+				break;
+			}
+		}
+#if (LCD_ROW_NUM >= LCD_ROW_NUM_4)
+		if(*(pu8String1 + LCD_COL_NUM) == '@'){
+			if((u8RetErrorState = LCD_u8SetSpecialCharIndex(j++, i, 2))){
+				break;
+			}
+		}else{
+			if((u8RetErrorState = LCD_u8SetChar(*(pu8String1 + LCD_COL_NUM), i, 2))){
+				break;
+			}
+		}
+		if(*(pu8String2 + LCD_COL_NUM) == '@'){
+			if((u8RetErrorState = LCD_u8SetSpecialCharIndex(j++, i, 3))){
+				break;
+			}
+		}else{
+			if((u8RetErrorState = LCD_u8SetChar(*(pu8String2 + LCD_COL_NUM), i, 3))){
+				break;
+			}
+		}
+#endif
+		vidMyDelay_ms(LCD_DELAY_WAIT);
+		pu8String1++;
+		pu8String2++;
 	}
-	for(u8 i = 0 ; i<LCD_CGRAM_LOCATIONS_NUM ; i++){
-		LCD_u8SetNum(i, i, 1);
-		LCD_u8SetSpecialChar(i, i, 0);
-		vidMyDelay_ms(500);
-	}
+	vidMyDelay_ms(LCD_DELAY_PAGE);
+	return u8RetErrorState;
 }
 
 /* ************************************************************************** */
@@ -72,7 +121,7 @@ void LCD_vidInit(void){
 /* Input/Output:	pu8String												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus LCD_u8SetString(u8 pu8String[], u8 u8Col, u8 u8Row){
+LBTY_tenuErrorStatus LCD_u8SetString(const u8 pu8String[], u8 u8Col, u8 u8Row){
 	LBTY_tenuErrorStatus u8RetErrorState = LCD_u8GoTo_XY(u8Col, u8Row);
 	while(*pu8String){
 		if(u8RetErrorState)			break;
@@ -174,7 +223,7 @@ LBTY_tenuErrorStatus LCD_u8GetFloat(f32* pf32Num, u8 u8Col, u8 u8Row){
 	s32 s32NumR = LBTY_u32ZERO;
 
 	u8RetErrorState = LCD_u8GetNum(&s32NumL, u8Col, u8Row);
-	if(u8RetErrorState != LBTY_NULL_POINTER){
+	if(u8RetErrorState == LBTY_OK){
 
 		for(u32 i = (u32)((s32NumL >= (s32)LBTY_u32ZERO) ? s32NumL : s32NumL * -1.0) ; i/=10 ; u8Log++);
 		u8Col += u8Log + ((s32NumL >= (s32)LBTY_u32ZERO) ? 1u : 2u);
@@ -209,26 +258,26 @@ LBTY_tenuErrorStatus LCD_u8GetFloat(f32* pf32Num, u8 u8Col, u8 u8Row){
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus LCD_u8SetFloat(f32 f32Num, u8 u8Col, u8 u8Row){
-	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+	LBTY_tenuErrorStatus u8RetErrorState =
+			LCD_u8SetNum((s32)f32Num, u8Col, u8Row);
+	if(u8RetErrorState == LBTY_OK){
+		LCD_u8CHAR_W('.');
 
-	LCD_u8SetNum((s32)f32Num, u8Col, u8Row);
-	LCD_u8CHAR_W('.');
+		if(f32Num < 0.0){
+			f32Num *= -1.0;
+			u8Col++;
+		}
 
-	if(f32Num < 0.0){
-		f32Num *= -1.0;
-		u8Col++;
+		u32 u32Lcd_R = (u32)((u32)(f32Num * LCD_FLOAT_MUL) % LCD_FLOAT_MUL);
+
+		for(u32 u32Factor = LCD_FLOAT_MUL; u32Factor/=10 ; ){
+			LCD_u8CHAR_W(((u32Lcd_R/u32Factor)%10u) + '0');
+		}
+		LCD_u8CHAR_W(' ');
+		LCD_u8CHAR_W(' ');
+		LCD_u8ShiftMode(LCD_Cursor_Shift_Left);
+		LCD_u8ShiftMode(LCD_Cursor_Shift_Left);
 	}
-
-	u32 u32Lcd_R = (u32)((u32)(f32Num * LCD_FLOAT_MUL) % LCD_FLOAT_MUL);
-
-	for(u32 u32Factor = LCD_FLOAT_MUL; u32Factor/=10 ; ){
-		LCD_u8CHAR_W(((u32Lcd_R/u32Factor)%10u) + '0');
-	}
-	LCD_u8CHAR_W(' ');
-	LCD_u8CHAR_W(' ');
-	LCD_u8ShiftMode(LCD_Cursor_Shift_Left);
-	LCD_u8ShiftMode(LCD_Cursor_Shift_Left);
-
 	return u8RetErrorState;
 }
 
@@ -244,55 +293,60 @@ LBTY_tenuErrorStatus LCD_u8SetNum_Rise(s32 s32Num, u8 u8Col, u8 u8Row){
 	u32 u32NumRead = LBTY_u32ZERO;
 
 	s32 s32LcdNum = (s32)LBTY_u32ZERO;
-	LCD_u8GetNum(&s32LcdNum, u8Col, u8Row);
+	u8RetErrorState = LCD_u8GetNum(&s32LcdNum, u8Col, u8Row);
 
-	if(s32Num >= (s32)LBTY_u32ZERO){
-		u32NumNew = (u32)s32Num;
-		u8SignChar = LBTY_RESET;
-		if((s32LcdNum < (s32)LBTY_u32ZERO)){
-			u32NumRead = (u32)(s32LcdNum * -1);
-		}else{
-			u32NumRead = (u32)s32LcdNum;
-		}
-	}else{
-		u32NumNew = (u32)(s32Num * -1);
-		u8SignChar = LBTY_SET;
-		if((s32LcdNum < (s32)LBTY_u32ZERO)){
-			u32NumRead = (u32)(s32LcdNum * -1);
-		}else{
-			u32NumRead = (u32)s32LcdNum;
-			s32LcdNum *= -1;
-		}
-	}
-
-	u32 u32Step = LCD_FLOAT_MUL;
-	if(u32NumRead != u32NumNew){
-		if(u32NumRead < u32NumNew){
-			while(u32Step){
-				if(u32NumNew >= (u32NumRead + u32Step)){
-					u32NumRead += u32Step;
-					break;
-				}
-				u32Step /= 10;
+	if(u8RetErrorState == LBTY_OK){
+		if(s32Num >= (s32)LBTY_u32ZERO){
+			u32NumNew = (u32)s32Num;
+			u8SignChar = LBTY_RESET;
+			if((s32LcdNum < (s32)LBTY_u32ZERO)){
+				u32NumRead = (u32)(s32LcdNum * -1);
+			}else{
+				u32NumRead = (u32)s32LcdNum;
 			}
-		}else if(u32NumRead > u32NumNew){
-			while(u32Step){
-				if(u32NumNew <= (u32NumRead - u32Step)){
-					while(u32Step){
-						if(u32NumRead >= u32Step){
-							u32NumRead -= u32Step;
-							break;
-						}
-						u32Step /= 10;
+		}else{
+			u32NumNew = (u32)(s32Num * -1);
+			u8SignChar = LBTY_SET;
+			if((s32LcdNum < (s32)LBTY_u32ZERO)){
+				u32NumRead = (u32)(s32LcdNum * -1);
+			}else{
+				u32NumRead = (u32)s32LcdNum;
+				s32LcdNum *= -1;
+			}
+		}
+
+		u32 u32Step = LCD_FLOAT_MUL;
+		if(u32NumRead != u32NumNew){
+			if(u32NumRead < u32NumNew){
+				while(u32Step){
+					if(u32NumNew >= (u32NumRead + u32Step)){
+						u32NumRead += u32Step;
+						break;
 					}
-					break;
+					u32Step /= 10;
 				}
-				u32Step /= 10;
+			}else if(u32NumRead > u32NumNew){
+				while(u32Step){
+					if(u32NumNew <= (u32NumRead - u32Step)){
+						while(u32Step){
+							if(u32NumRead >= u32Step){
+								u32NumRead -= u32Step;
+								break;
+							}
+							u32Step /= 10;
+						}
+						break;
+					}
+					u32Step /= 10;
+				}
 			}
+			s32LcdNum = u8SignChar ? (s32)u32NumRead * -1 : (s32)u32NumRead;
+			LCD_u8SetNum(s32LcdNum, u8Col, u8Row);
+			u8RetErrorState = LBTY_NOK;
 		}
-		s32LcdNum = u8SignChar ? (s32)u32NumRead * -1 : (s32)u32NumRead;
-		LCD_u8SetNum(s32LcdNum, u8Col, u8Row);
-		u8RetErrorState = LBTY_NOK;
+
+	}else{
+		u8RetErrorState = LBTY_OK;
 	}
 
 	return u8RetErrorState;
@@ -309,65 +363,70 @@ LBTY_tenuErrorStatus LCD_u8SetFloat_Rise(f32 f32Num, u8 u8Col, u8 u8Row){
 	u32 u32NumRead = LBTY_u32ZERO;
 
 	f32 f32LcdRead = 0.0f;
-	LCD_u8GetFloat(&f32LcdRead, u8Col, u8Row);
+	u8RetErrorState = LCD_u8GetFloat(&f32LcdRead, u8Col, u8Row);
 
-	/** TODO: Redesign this function with float work **/
+	if(u8RetErrorState == LBTY_OK){
 
-	u8RetErrorState = LCD_u8SetNum_Rise((s32)f32Num, u8Col, u8Row);
+		/** TODO: Redesign this function with float work **/
 
-	if(u8RetErrorState){
-		LCD_u8CHAR_W('.');
-	}
+		u8RetErrorState = LCD_u8SetNum_Rise((s32)f32Num, u8Col, u8Row);
 
-	if(f32Num >= (f32)LBTY_u32ZERO){
-		u32NumNew = ((u32)( f32Num * LCD_FLOAT_MUL) % (u32)LCD_FLOAT_MUL);
-	}else{
-		u32NumNew = ((u32)(-f32Num * LCD_FLOAT_MUL) % (u32)LCD_FLOAT_MUL);
-	}
-	if(f32LcdRead >= (f32)LBTY_u32ZERO){
-		u32NumRead = ((u32)( f32LcdRead * LCD_FLOAT_MUL) % (u32)LCD_FLOAT_MUL);
-	}else{
-		u32NumRead = ((u32)(-f32LcdRead * LCD_FLOAT_MUL) % (u32)LCD_FLOAT_MUL);
-	}
+		if(u8RetErrorState){
+			LCD_u8CHAR_W('.');
+		}
 
-	u32 u32Step = LCD_FLOAT_MUL;
-	if(!u8RetErrorState && u32NumRead != u32NumNew){
-		if(u32NumRead < u32NumNew){
-			while(u32Step){
-				if(u32NumNew >= (u32NumRead + u32Step)){
-					u32NumRead += u32Step;
-					u8RetErrorState = LBTY_NOK;
-					break;
-				}
-				u32Step /= 10;
-			}
-		}else if(u32NumRead > u32NumNew){
-			while(u32Step){
-				if(u32NumNew <= (u32NumRead - u32Step)){
-					while(u32Step){
-						if(u32NumRead >= u32Step){
-							u32NumRead -= u32Step;
-							u8RetErrorState = LBTY_NOK;
-							break;
-						}
-						u32Step /= 10;
-					}
-					break;
-				}
-				u32Step /= 10;
-			}
+		if(f32Num >= (f32)LBTY_u32ZERO){
+			u32NumNew = ((u32)( f32Num * LCD_FLOAT_MUL + 0.5f) % (u32)LCD_FLOAT_MUL);
 		}else{
-			u8RetErrorState = LBTY_OK;
+			u32NumNew = ((u32)(-f32Num * LCD_FLOAT_MUL + 0.5f) % (u32)LCD_FLOAT_MUL);
 		}
-	}
-	if(u8RetErrorState){
-		for(u32 u32Factor = LCD_FLOAT_MUL; u32Factor/=10 ; ){
-			LCD_u8CHAR_W(((u32NumRead/u32Factor)%10u) + '0');
+		if(f32LcdRead >= (f32)LBTY_u32ZERO){
+			u32NumRead = ((u32)( f32LcdRead * LCD_FLOAT_MUL + 0.5f) % (u32)LCD_FLOAT_MUL);
+		}else{
+			u32NumRead = ((u32)(-f32LcdRead * LCD_FLOAT_MUL + 0.5f) % (u32)LCD_FLOAT_MUL);
 		}
-		LCD_u8CHAR_W(' ');
-		LCD_u8CHAR_W(' ');
-		LCD_u8ShiftMode(LCD_Cursor_Shift_Left);
-		LCD_u8ShiftMode(LCD_Cursor_Shift_Left);
+
+		u32 u32Step = LCD_FLOAT_MUL;
+		if(!u8RetErrorState && u32NumRead != u32NumNew){
+			if(u32NumRead < u32NumNew){
+				while(u32Step){
+					if(u32NumNew >= (u32NumRead + u32Step)){
+						u32NumRead += u32Step;
+						u8RetErrorState = LBTY_NOK;
+						break;
+					}
+					u32Step /= 10;
+				}
+			}else if(u32NumRead > u32NumNew){
+				while(u32Step){
+					if(u32NumNew <= (u32NumRead - u32Step)){
+						while(u32Step){
+							if(u32NumRead >= u32Step){
+								u32NumRead -= u32Step;
+								u8RetErrorState = LBTY_NOK;
+								break;
+							}
+							u32Step /= 10;
+						}
+						break;
+					}
+					u32Step /= 10;
+				}
+			}else{
+				u8RetErrorState = LBTY_OK;
+			}
+		}
+		if(u8RetErrorState){
+			for(u32 u32Factor = LCD_FLOAT_MUL; u32Factor/=10 ; ){
+				LCD_u8CHAR_W(((u32NumRead/u32Factor)%10u) + '0');
+			}
+			LCD_u8CHAR_W(' ');
+			LCD_u8CHAR_W(' ');
+			LCD_u8ShiftMode(LCD_Cursor_Shift_Left);
+			LCD_u8ShiftMode(LCD_Cursor_Shift_Left);
+		}
+	}else{
+		u8RetErrorState = LBTY_OK;
 	}
 
 	return u8RetErrorState;
@@ -382,25 +441,25 @@ LBTY_tenuErrorStatus LCD_u8GoTo_XY(u8 u8Col, u8 u8Row){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	if((u8Col < LCD_COL_NUM)){
 		switch(u8Row){
-			case LCD_Line_1:	LCD_u8CMD_W(LCD_FIRST_LINE_POSITION_0  + u8Col);	break;
+		case LCD_Line_1:	LCD_u8CMD_W(LCD_FIRST_LINE_POSITION_0  + u8Col);	break;
 #if (LCD_ROW_NUM >= LCD_ROW_NUM_2)
-			case LCD_Line_2:	LCD_u8CMD_W(LCD_SECOND_LINE_POSITION_0 + u8Col);	break;
+		case LCD_Line_2:	LCD_u8CMD_W(LCD_SECOND_LINE_POSITION_0 + u8Col);	break;
 #endif
 #if (LCD_ROW_NUM >= LCD_ROW_NUM_4)
 #if (LCD_COL_NUM == LCD_COL_NUM_16)
-			case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0  + u8Col);	break;
-			case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0 + u8Col);	break;
+		case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0  + u8Col);	break;
+		case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0 + u8Col);	break;
 #endif
 #if (LCD_COL_NUM == LCD_COL_NUM_20)
-			case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0_20  + u8Col);	break;
-			case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0_20 + u8Col);	break;
+		case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0_20  + u8Col);	break;
+		case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0_20 + u8Col);	break;
 #endif
 #if (LCD_COL_NUM == LCD_COL_NUM_32)
-			case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0_32  + u8Col);	break;
-			case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0_32 + u8Col);	break;
+		case LCD_Line_3:	LCD_u8CMD_W(LCD_THIRD_LINE_POSITION_0_32  + u8Col);	break;
+		case LCD_Line_4:	LCD_u8CMD_W(LCD_FOURTH_LINE_POSITION_0_32 + u8Col);	break;
 #endif
 #endif
-			default:			u8RetErrorState = LBTY_NULL_POINTER;;				break;
+		default:			u8RetErrorState = LBTY_NULL_POINTER;;				break;
 		}
 	}else{
 		u8RetErrorState = LBTY_INDEX_OUT_OF_RANGE;
@@ -415,6 +474,25 @@ LBTY_tenuErrorStatus LCD_u8GoTo_XY(u8 u8Col, u8 u8Row){
 /* ************************************************************************** */
 LBTY_tenuErrorStatus LCD_u8ClrDisplay(void){
 	return LCD_u8CMD_W(LCD_CLEAR_DISPLAY);
+}
+
+/* ************************************************************************** */
+/* Description :  	Initialize the LCD Mode									  */
+/* Input       :	void													  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+void LCD_vidInitMode(void){
+#if (LCD_FUNCTION_SET == LCD_FUNCTION_SET_4Bits)
+	LCD_u8CMD_W(LCD_INIT_4BIT);
+	vidMyDelay_ms(LCD_DELAY_CMD_MAX);
+	LCD_u8CMD_W(LCD_INIT_4BIT);
+	LCD_u8CMD_W(LCD_INIT_4BIT);
+#elif (LCD_FUNCTION_SET == LCD_FUNCTION_SET_8Bits)
+	LCD_u8CMD_W(LCD_INIT_8BIT);
+	vidMyDelay_ms(LCD_DELAY_CMD_MAX);
+	LCD_u8CMD_W(LCD_INIT_8BIT);
+	LCD_u8CMD_W(LCD_INIT_8BIT);
+#endif
 }
 
 /* ************************************************************************** */
@@ -435,20 +513,20 @@ LBTY_tenuErrorStatus LCD_u8EntryMode(LCD_tenuEntryMode u8Mode){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
 	switch(u8Mode){
-		case LCD_Entry_Dec:
-			u8RetErrorState = LCD_u8CMD_W(LCD_Entry_DEC);
-			break;
-		case LCD_Entry_Dec_Shift:
-			u8RetErrorState = LCD_u8CMD_W(LCD_Entry_DEC_SHIFT);
-			break;
-		case LCD_Entry_Inc:
-			u8RetErrorState = LCD_u8CMD_W(LCD_Entry_INC);
-			break;
-		case LCD_Entry_Inc_Shift:
-			u8RetErrorState = LCD_u8CMD_W(LCD_Entry_INC_SHIFT);
-			break;
-		default:
-			u8RetErrorState = LBTY_NOK;
+	case LCD_Entry_Dec:
+		u8RetErrorState = LCD_u8CMD_W(LCD_Entry_DEC);
+		break;
+	case LCD_Entry_Dec_Shift:
+		u8RetErrorState = LCD_u8CMD_W(LCD_Entry_DEC_SHIFT);
+		break;
+	case LCD_Entry_Inc:
+		u8RetErrorState = LCD_u8CMD_W(LCD_Entry_INC);
+		break;
+	case LCD_Entry_Inc_Shift:
+		u8RetErrorState = LCD_u8CMD_W(LCD_Entry_INC_SHIFT);
+		break;
+	default:
+		u8RetErrorState = LBTY_NOK;
 	}
 	return u8RetErrorState;
 }
@@ -462,23 +540,23 @@ LBTY_tenuErrorStatus LCD_u8DisplayMode(LCD_tenuDisplayCursorControl u8Mode){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
 	switch(u8Mode){
-		case LCD_Display_OFF:
-			u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_OFF_CURSOR_OFF);
-			break;
-		case LCD_Cursor_OFF:
-			u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_ON_CURSOR_OFF);
-			break;
-		case LCD_Cursor_OFF_Blink:
-			u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_ON_CURSOR_OFF_BLINK);
-			break;
-		case LCD_Cursor_UnderLine:
-			u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_ON_CURSOR_UNDERLINE);
-			break;
-		case LCD_Cursor_UnderLine_Blinking:
-			u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_ON_CURSOR_BLINK);
-			break;
-		default:
-			u8RetErrorState = LBTY_NOK;
+	case LCD_Display_OFF:
+		u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_OFF_CURSOR_OFF);
+		break;
+	case LCD_Cursor_OFF:
+		u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_ON_CURSOR_OFF);
+		break;
+	case LCD_Cursor_OFF_Blink:
+		u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_ON_CURSOR_OFF_BLINK);
+		break;
+	case LCD_Cursor_UnderLine:
+		u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_ON_CURSOR_UNDERLINE);
+		break;
+	case LCD_Cursor_UnderLine_Blinking:
+		u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_ON_CURSOR_BLINK);
+		break;
+	default:
+		u8RetErrorState = LBTY_NOK;
 	}
 	return u8RetErrorState;
 }
@@ -492,20 +570,20 @@ LBTY_tenuErrorStatus LCD_u8ShiftMode(LCD_tenuDisplayCursorShift u8Shift){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
 	switch(u8Shift){
-		case LCD_Cursor_Shift_Left:
-			u8RetErrorState = LCD_u8CMD_W(LCD_CURSOR_SHIFT_LEFT);
-			break;
-		case LCD_Cursor_Shift_Right:
-			u8RetErrorState = LCD_u8CMD_W(LCD_CURSOR_SHIFT_RIGHT);
-			break;
-		case LCD_Display_Shift_Left:
-			u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_SHIFT_LEFT);
-			break;
-		case LCD_Display_Shift_Right:
-			u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_SHIFT_RIGHT);
-			break;
-		default:
-			u8RetErrorState = LBTY_NOK;
+	case LCD_Cursor_Shift_Left:
+		u8RetErrorState = LCD_u8CMD_W(LCD_CURSOR_SHIFT_LEFT);
+		break;
+	case LCD_Cursor_Shift_Right:
+		u8RetErrorState = LCD_u8CMD_W(LCD_CURSOR_SHIFT_RIGHT);
+		break;
+	case LCD_Display_Shift_Left:
+		u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_SHIFT_LEFT);
+		break;
+	case LCD_Display_Shift_Right:
+		u8RetErrorState = LCD_u8CMD_W(LCD_DISPLAY_SHIFT_RIGHT);
+		break;
+	default:
+		u8RetErrorState = LBTY_NOK;
 	}
 	return u8RetErrorState;
 }
@@ -532,11 +610,11 @@ LBTY_tenuErrorStatus LCD_u8StoreSpecialChar(u8* pu8char, u8 u8Index){
 }
 
 /* ************************************************************************** */
-/* Description :  	Set Special Char 										  */
+/* Description :  	Set Special Char with index								  */
 /* Input       :	u8Index, u8Col, u8Row									  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus LCD_u8SetSpecialChar(u8 u8Index, u8 u8Col, u8 u8Row){
+LBTY_tenuErrorStatus LCD_u8SetSpecialCharIndex(u8 u8Index, u8 u8Col, u8 u8Row){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
 	if(LCD_u8GoTo_XY(u8Col, u8Row)){
@@ -549,6 +627,23 @@ LBTY_tenuErrorStatus LCD_u8SetSpecialChar(u8 u8Index, u8 u8Col, u8 u8Row){
 		}
 	}
 
+	return u8RetErrorState;
+}
+
+/* ************************************************************************** */
+/* Description :  	Set Special Char with Array								  */
+/* Input       :	u8Index, u8Col, u8Row									  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+LBTY_tenuErrorStatus LCD_u8SetSpecialCharArray(u8* pu8char, u8 u8Col, u8 u8Row){
+	static u8 u8Index = LBTY_u8ZERO;
+	LBTY_tenuErrorStatus u8RetErrorState =
+			LCD_u8StoreSpecialChar(pu8char,u8Index);
+
+	if(u8RetErrorState ==  LBTY_OK){
+		u8RetErrorState = LCD_u8SetSpecialCharIndex(u8Index++, u8Col, u8Row);
+		u8Index = u8Index % LCD_CGRAM_SECTIONS_NUM;
+	}
 	return u8RetErrorState;
 }
 

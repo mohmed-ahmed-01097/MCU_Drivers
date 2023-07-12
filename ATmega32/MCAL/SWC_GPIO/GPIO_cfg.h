@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : GPIO_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01.2														  */
 /* date        : Mar 23, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -16,7 +16,7 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
-#if 	AMIT_KIT
+#if defined(AMIT_KIT)
 typedef enum {
 	AMIT_LCD0 = (u8)0u,
 	AMIT_LCD1,
@@ -62,7 +62,7 @@ typedef enum {
 
 	AMIT_BUZZER = (u8)4u
 }GPIO_tuenuAMIT_PORTD;
-#elif	ETA32_KIT
+#elif defined(ETA32_KIT)
 typedef enum {
 	Eta32_LDR = (u8)0u,
 	Eta32_LM35,
@@ -131,8 +131,60 @@ typedef enum {
 	Eta32_Keypad_col1,
 	Eta32_Keypad_col0
 }GPIO_tuenuEta32_PORTD;
-#else
+#elif defined(ETA32_MINI_KIT)
+typedef enum {
+	Eta32_mini_VR1 = (u8)0u,
+	Eta32_mini_7Seg_A,
+	Eta32_mini_7Seg_B,
+	Eta32_mini_7Seg_C,
+	Eta32_mini_7Seg_D,
+	Eta32_mini_7Seg_E,
+	Eta32_mini_7Seg_F,
+	Eta32_mini_7Seg_G,
 
+	Eta32_mini_LCD_RS = (u8)1u,
+	Eta32_mini_LCD_EN,
+	Eta32_mini_LCD4,
+	Eta32_mini_LCD5,
+	Eta32_mini_LCD6,
+	Eta32_mini_LCD7,
+}GPIO_tuenuEta32_mini_PORTA;
+
+typedef enum {
+	Eta32_mini_7Seg_Dot = (u8)0u,
+
+	Eta32_mini_Keypad_Row0 = (u8)4u,
+	Eta32_mini_Keypad_Row1,
+	Eta32_mini_Keypad_Row2,
+	Eta32_mini_Keypad_Row3,
+
+	Eta32_mini_ISP_MOSI = (u8)5,
+	Eta32_mini_ISP_MISO,
+	Eta32_mini_ISP_SCK,
+}GPIO_tuenuEta32_mini_PORTB;
+
+typedef enum {
+	Eta32_mini_LED_R = (u8)0u,
+	Eta32_mini_LED_G,
+	Eta32_mini_LED_B,
+	Eta32_mini_RELAY1,
+	Eta32_mini_RELAY0,
+	Eta32_mini_BUZZER,
+	Eta32_mini_7Seg_COM0,
+	Eta32_mini_7Seg_COM1,
+
+	Eta32_mini_I2C_SCL = (u8)0u,
+	Eta32_mini_I2C_SDA
+}GPIO_tuenuEta32_mini_PORTC;
+
+typedef enum {
+	Eta32_mini_UART_RX = (u8)0u,
+	Eta32_mini_UART_TX,
+	Eta32_mini_Keypad_col0,
+	Eta32_mini_Keypad_col1,
+	Eta32_mini_Keypad_col2,
+	Eta32_mini_Keypad_col3,
+}GPIO_tuenuEta32_mini_PORTD;
 #endif
 
 typedef enum {

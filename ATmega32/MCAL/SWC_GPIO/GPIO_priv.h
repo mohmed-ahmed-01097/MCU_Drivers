@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : GPIO_priv.h												  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -16,38 +16,44 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+/** @brief : Type define of Union bit field of Single Byte"byte bits exchange"*/
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_B0 : 1;
-    	__IO u8 m_B1 : 1;
-    	__IO u8 m_B2 : 1;
-    	__IO u8 m_B3 : 1;
-    	__IO u8 m_B4 : 1;
-    	__IO u8 m_B5 : 1;
-    	__IO u8 m_B6 : 1;
-    	__IO u8 m_B7 : 1;
-    }sBits;
-}BYTE_type; // byte bit exchange
+    	__IO u8 m_B0 : 1;			/*!< Bit 0 "LSB" */
+    	__IO u8 m_B1 : 1;			/*!< Bit 1 */
+    	__IO u8 m_B2 : 1;			/*!< Bit 2 */
+    	__IO u8 m_B3 : 1;			/*!< Bit 3 */
+    	__IO u8 m_B4 : 1;			/*!< Bit 4 */
+    	__IO u8 m_B5 : 1;			/*!< Bit 5 */
+    	__IO u8 m_B6 : 1;			/*!< Bit 6 */
+    	__IO u8 m_B7 : 1;			/*!< Bit 7 "MSB" */
+    }sBits;							/*!< All Bits of the Byte */
+}BYTE_type;
 
 /*************************************************************************/
 
+/** @brief : General Purpose Input Output Registers                           */
+/** <b>Type</b> : Struct <b>Unit</b> : None                                   */
 typedef struct{
-    __I  BYTE_type m_PIN;
-    __IO BYTE_type m_DDR;
-    __IO BYTE_type m_PORT;
-}GPIOx_type;    // General Purpose Input Output Registers
+    __I  BYTE_type m_PIN;			/*!< Pins Input Register */
+    __IO BYTE_type m_DDR;			/*!< Data Direction Register */
+    __IO BYTE_type m_PORT;			/*!< Pins Output Register */
+}GPIOx_type;
 
 /*************************************************************************/
 
+/** @brief : Special Function I/O Register                                    */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8        : 2;
-    	__IO u8 m_PUD  : 1;        // Pull-up disable
-    	__IO u8        : 5;
-    }sBits;
-}SFIOR_type;   // Special Function I/O Register
+    	__IO u8        : 2;			/*!< Reversed */
+    	__IO u8 m_PUD  : 1;			/*!< Pull-up disable */
+    	__IO u8        : 5;			/*!< Reversed */
+    }sBits;							/*!< All Bits of the Byte */
+}SFIOR_type;
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
@@ -62,7 +68,7 @@ typedef union{
 #define GPIOB_PORT_INIT_DEF		PORT_Low
 
 #define GPIOC_DDR_INIT_DEF		PORT_OUTPUT
-#define GPIOC_PORT_INIT_DEF		PORT_High
+#define GPIOC_PORT_INIT_DEF		PORT_Low
 
 #define GPIOD_DDR_INIT_DEF		PORT_OUTPUT
 #define GPIOD_PORT_INIT_DEF		PORT_Low

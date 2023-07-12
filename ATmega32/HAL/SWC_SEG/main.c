@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -32,6 +32,9 @@
 #ifdef	SWC_SEG
 
 #include "LBTY_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
 
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
@@ -41,48 +44,53 @@
 
 int main(void){
 
-	GPIO_voidInit();
+	SEG_vidInit();
 
-    SEG_vidInit();
+	u16 u16Value = 0;
+	f32 f32Value = 0.0;
 
-#if defined(AMIT_KIT)
-    GPIO_u8SetPinDirection(D, AMIT_LED0, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (D, AMIT_LED0, PIN_Low);
-#elif defined(ETA32_KIT)
-    GPIO_u8SetPinDirection(A, Eta32_LED_G, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (A, Eta32_LED_G, PIN_Low);
-#else
+	while(1){
 
-#endif
+		while(u16Value<100){
+			SEG_vidSetNum(u16Value++, LBTY_u8MAX);
+			for(u16 i = 40 ; --i ; ){
+				while(!SEG_u8Update());
+				vidMyDelay_ms(SEG_NUM_DELAY);
+			}
+		}
+		u16Value = 0;
+		while(u16Value<100){
+			for(u16 i = 40 ; --i ; ){
+				SEG_vidDisplayNum(u16Value);
+				vidMyDelay_ms(u16Value);
+			}
+			u16Value++;
+		}
+		u16Value = 0;
+		while(u16Value<100){
+			for(u16 i = 40 ; --i ; ){
+				SEG_vidDisplayNum_Blink(u16Value);
+			}
+			u16Value++;
+		}
+		u16Value = 0;
 
-   	u16 u16Value = 0;
-   	f32 f32Value = 0.0;
-
-   	while(1){
-
-#if defined(AMIT_KIT)
-    	for(u16 i = 50 ; --i ; ){
-    		SEG_vidDisplayFloat(f32Value);
-    		//SEG_vidDisplayNum(u16Value);
-    	}
-    GPIO_u8TogglePinValue (D, AMIT_LED0);
-#elif defined(ETA32_KIT)
-    	for(u16 i = 50 ; --i ; ){
-    		SEG_vidDisplayFloat(f32Value);
-    		//SEG_vidDisplayNum(u16Value);
-    	}
-    GPIO_u8TogglePinValue (A, Eta32_LED_G);
-#else
-	for(u16 i = 50 ; --i ; ){
-		SEG_vidDisplayFloat(f32Value);
-		//SEG_vidDisplayNum(u16Value);
+		while(f32Value<10.0){
+			for(u16 i = 40 ; --i ; ){
+				SEG_vidDisplayFloat(f32Value);
+			}
+			f32Value += 0.05;
+		}
+		f32Value = 0.0;
+		while(f32Value<10.0){
+			for(u16 i = 40 ; --i ; ){
+				SEG_vidDisplayFloat_Blink(f32Value);
+			}
+			f32Value += 0.05;
+		}
+		f32Value = 0.0;
 	}
-#endif
-
-    	u16Value++;
-    	f32Value += 0.1;
-    }
-   	return 0;
+	return 0;
 }
 #endif
 

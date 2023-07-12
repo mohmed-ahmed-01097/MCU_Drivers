@@ -3,13 +3,14 @@
 /* ************************************************************************** */
 /* File Name   : GPIO_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 23, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
 #include "LBTY_int.h"
+#include "LCTY_int.h"
 #include "LBIT_int.h"
 
 #include "GPIO_int.h"
@@ -27,26 +28,27 @@
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-static inline GPIOx_type* pu8GPIO_Port(u8 u8PortNum){
+LCTY_INLINE GPIOx_type* pu8GPIO_Port(u8 u8PortNum){
 	GPIOx_type * GPIO = LBTY_NULL;
 	switch(u8PortNum){
-		case A:
-			GPIO = S_GPIOA;
-			break;
-		case B:
-			GPIO = S_GPIOB;
-			break;
-		case C:
-			GPIO = S_GPIOC;
-			break;
-		case D:
-			GPIO = S_GPIOD;
-			break;
-		default:
-			GPIO = (GPIOx_type *)LBTY_NULL;
+	case A:
+		GPIO = S_GPIOA;
+		break;
+	case B:
+		GPIO = S_GPIOB;
+		break;
+	case C:
+		GPIO = S_GPIOC;
+		break;
+	case D:
+		GPIO = S_GPIOD;
+		break;
+	default:
+		GPIO = (GPIOx_type *)LBTY_NULL;
 	}
 	return GPIO;
 }
+
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -60,19 +62,19 @@ static inline GPIOx_type* pu8GPIO_Port(u8 u8PortNum){
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void GPIO_voidInit(void){
+void GPIO_vidInit(void){
 
 #if(~(GPIOA_DDR_INIT_DEF | (~GPIOA_PORT_INIT_DEF)))
-	#warning "there is some pin's in Port A direction is input so it will need to be set to the default value!"
+#warning "there is some pin's in Port A direction is input so it will need to be set to the default value!"
 #endif
 #if(~(GPIOB_DDR_INIT_DEF | ~GPIOB_PORT_INIT_DEF))
-	#warning "there is some pin's in Port B direction is input so it will need to be set to the default value!"
+#warning "there is some pin's in Port B direction is input so it will need to be set to the default value!"
 #endif
 #if(~(GPIOC_DDR_INIT_DEF | ~GPIOC_PORT_INIT_DEF))
-	#warning "there is some pin's in Port C direction is input so it will need to be set to the default value!"
+#warning "there is some pin's in Port C direction is input so it will need to be set to the default value!"
 #endif
 #if(~(GPIOD_DDR_INIT_DEF | ~GPIOD_PORT_INIT_DEF))
-	#warning "there is some pin's in Port D direction is input so it will need to be set to the default value!"
+#warning "there is some pin's in Port D direction is input so it will need to be set to the default value!"
 #endif
 
 	S_SFIOR->sBits.m_PUD  = PULL_UP_DISABLE;		// PUD: Pull-up disable
@@ -97,17 +99,15 @@ void GPIO_voidInit(void){
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus GPIO_u8PinInit(GPIO_tstrPinConfig u8PinConfig){
-	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
-	do{
-		if((u8RetErrorState = GPIO_u8SetPinDirection(u8PinConfig.m_Port, u8PinConfig.m_Pin, u8PinConfig.m_Dir)))
-			break;
-		if((u8RetErrorState = GPIO_u8SetPinValue(u8PinConfig.m_Port, u8PinConfig.m_Pin, u8PinConfig.m_Value)))
-			break;
+	LBTY_tenuErrorStatus u8RetErrorState =
+			GPIO_u8SetPinDirection(u8PinConfig.m_Port, u8PinConfig.m_Pin, u8PinConfig.m_Dir);
+	if(u8RetErrorState == LBTY_OK){
 		if(u8PinConfig.m_Dir == PIN_INPUT){
-			if((u8RetErrorState = GPIO_u8SetPinPullUp(u8PinConfig.m_Port, u8PinConfig.m_Pin, u8PinConfig.m_Res)))
-				break;
-		}
-	}while(0);
+			u8RetErrorState = GPIO_u8SetPinPullUp(u8PinConfig.m_Port, u8PinConfig.m_Pin, u8PinConfig.m_Res);
+		}else if(u8PinConfig.m_Dir == PIN_OUTPUT){
+			u8RetErrorState = GPIO_u8SetPinValue(u8PinConfig.m_Port, u8PinConfig.m_Pin, u8PinConfig.m_Value);
+		}else{}
+	}
 	return u8RetErrorState;
 }
 
@@ -176,7 +176,7 @@ LBTY_tenuErrorStatus GPIO_u8SetRangeDirection(GPIO_tenuPortNum u8PortNum,
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus GPIO_u8SetMaskDirection(GPIO_tenuPortNum u8PortNum, u8 u8PortMask,
-											GPIO_tenuDataDirection u8PortDir){
+		GPIO_tenuDataDirection u8PortDir){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	GPIOx_type * GPIO = pu8GPIO_Port(u8PortNum);
 
@@ -198,7 +198,7 @@ LBTY_tenuErrorStatus GPIO_u8SetMaskDirection(GPIO_tenuPortNum u8PortNum, u8 u8Po
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus GPIO_u8SetPortDirection(GPIO_tenuPortNum u8PortNum,
-											 GPIO_tenuDataDirection u8PortDir){
+		GPIO_tenuDataDirection u8PortDir){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	GPIOx_type * GPIO = pu8GPIO_Port(u8PortNum);
 
@@ -243,12 +243,12 @@ LBTY_tenuErrorStatus GPIO_u8SetPinValue(GPIO_tenuPortNum u8PortNum,
 }
 
 /* ************************************************************************** */
-/* Description :  	Set the pin direction									  */
+/* Description :  	Set the pin value										  */
 /* Input       :	u8PortNumm, u8StartPin, u8EndPin, u8PinValue			  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus GPIO_u8SetRangeValue(GPIO_tenuPortNum u8PortNum,
-		GPIO_tenuPinNum u8StartPin, GPIO_tenuPinNum u8EndPin, GPIO_tenuDataDirection u8PinValue){
+		GPIO_tenuPinNum u8StartPin, GPIO_tenuPinNum u8EndPin, GPIO_tenuDataStatus u8PinValue){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	GPIOx_type * GPIO = pu8GPIO_Port(u8PortNum);
 
@@ -273,12 +273,12 @@ LBTY_tenuErrorStatus GPIO_u8SetRangeValue(GPIO_tenuPortNum u8PortNum,
 }
 
 /* ************************************************************************** */
-/* Description :  	Set the pin direction									  */
+/* Description :  	Set the pin value										  */
 /* Input       :	u8PortNumm, u8PortMask, u8PortValue						  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus GPIO_u8SetMaskValue(GPIO_tenuPortNum u8PortNum, u8 u8PortMask,
-											GPIO_tenuDataDirection u8PortValue){
+		GPIO_tenuDataStatus u8PortValue){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	GPIOx_type * GPIO = pu8GPIO_Port(u8PortNum);
 
@@ -295,12 +295,12 @@ LBTY_tenuErrorStatus GPIO_u8SetMaskValue(GPIO_tenuPortNum u8PortNum, u8 u8PortMa
 }
 
 /* ************************************************************************** */
-/* Description :    Set the port direction 									  */
+/* Description :    Set the port value	 									  */
 /* Input       :	u8PortNum, u8PortValue									  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus GPIO_u8SetPortValue(GPIO_tenuPortNum u8PortNum,
-										 GPIO_tenuDataStatus u8PortValue){
+		GPIO_tenuDataStatus u8PortValue){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	GPIOx_type * GPIO = pu8GPIO_Port(u8PortNum);
 
@@ -372,7 +372,7 @@ LBTY_tenuErrorStatus GPIO_u8GetRangeValue(GPIO_tenuPortNum u8PortNum,
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
 LBTY_tenuErrorStatus GPIO_u8GetMaskValue(GPIO_tenuPortNum u8PortNum,
-										u8 u8PortMask, pu8 pu8Value){
+		u8 u8PortMask, pu8 pu8Value){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 	if(!(u8RetErrorState = GPIO_u8GetPortValue(u8PortNum, pu8Value))){
 		*pu8Value &= u8PortMask;

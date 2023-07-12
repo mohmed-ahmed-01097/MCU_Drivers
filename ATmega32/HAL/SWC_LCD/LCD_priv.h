@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : LCD_priv.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 31, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -22,7 +22,10 @@
 
 /** Clear and Return Home **/
 #define LCD_CLEAR_DISPLAY 				0x01u	// Clear Display (also clear DDRAM content)
-#define LCD_CURSOR_HOME					0x02u    // Cursor Home
+#define LCD_CURSOR_HOME					0x02u	// Cursor Home
+
+#define LCD_INIT_4BIT					0x03u	// LCD Initialize Command
+#define LCD_INIT_8BIT					0x30u	// LCD Initialize Command
 
 /** Entry Mode Set **/
 #define LCD_Entry_DEC					0x04u	// Entry Decrement Cursor
@@ -112,18 +115,7 @@
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
 
-extern const u8 UnFilledHeart[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 FilledHeart[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Mobile[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Bell[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Silent[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Music[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Plug[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Face[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Human[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 YogaHuman[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Cat[LCD_CGRAM_LOCATIONS_NUM];
-extern const u8 Paw[LCD_CGRAM_LOCATIONS_NUM];
+extern const u8 ETA32[][LCD_CGRAM_LOCATIONS_NUM];
 
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
@@ -136,11 +128,11 @@ extern const u8 Paw[LCD_CGRAM_LOCATIONS_NUM];
 extern LBTY_tenuErrorStatus LCD_u8FunctionSet(void);
 extern void LCD_vidInitPins(void);
 
-void LCD_vidDirection(u8 u8PinDir);
-void LCD_vidTriger(void);
+extern void LCD_vidDirection(u8 u8PinDir);
+extern void LCD_vidTriger(void);
 
-LBTY_tenuErrorStatus LCD_u8Write(u8 u8Byte);
-LBTY_tenuErrorStatus LCD_u8Read(u8* pu8Byte);
+extern LBTY_tenuErrorStatus LCD_u8Write(u8 u8Byte);
+extern LBTY_tenuErrorStatus LCD_u8Read(u8* pu8Byte);
 
 extern LBTY_tenuErrorStatus LCD_u8CMD_W(u8 u8CMD);
 extern LBTY_tenuErrorStatus LCD_u8CMD_R(u8* pu8CMD);
