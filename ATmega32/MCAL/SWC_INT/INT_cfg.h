@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : INT_cfg.h												  */
+/* File Name   : INT_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01.2														  */
 /* date        : Mar 26, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -20,13 +20,17 @@
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
-#if 	AMIT_KIT
+#if defined(AMIT_KIT)
 
-#define INT_AMIT_PUSH2		INT0
+#define INT_PUSH			INT0
 
-#elif	ETA32_KIT
+#elif defined(ETA32_KIT)
 
 #define INT_IR_RECEIVER		INT0
+
+#elif defined(ETA32_MINI_KIT)
+
+#define INT_PUSH			INT0
 
 #else
 

@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : INT_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 26, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -37,9 +37,9 @@
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
 
-static void (*INT0_pvidCallback)(void);
-static void (*INT1_pvidCallback)(void);
-static void (*INT2_pvidCallback)(void);
+static void (*INT0_pvidCallback)(void) = INTP_vidCallBack;
+static void (*INT1_pvidCallback)(void) = INTP_vidCallBack;
+static void (*INT2_pvidCallback)(void) = INTP_vidCallBack;
 
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
@@ -151,6 +151,7 @@ void INT_vidResetFlag(u8 u8INT_Num){
 /* Return      :	void													  */
 /* ************************************************************************** */
 void INT_vidSetCallBack(u8 u8INT_Num, void (*pvidCallback)(void)){
+	if(*pvidCallback == LBTY_NULL)		return;
 	switch(u8INT_Num){
 		case INT0:			INT0_pvidCallback = pvidCallback;			break;
 		case INT1:			INT1_pvidCallback = pvidCallback;			break;

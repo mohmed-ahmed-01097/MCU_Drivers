@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : PUSH_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -17,26 +17,27 @@
 /* ************************************************************************** */
 
 typedef enum{
-	PUSH_PULL_UP = (u8)0u,
-	PUSH_PULL_DOWN
-}PUSH_tenuConnection;
+	PUSH_Active_Low = (u8)0u,
+	PUSH_Active_High
+}PUSH_tenuActive;
 
 typedef enum{
 	PUSH_RELEASED = (u8)0u,
 	PUSH_PRESSED
 }PUSH_tenuStatus;
 
+/********************************************************************************************************************/
+
+/** @brief : type define of structure for GPIO Push Configuration             */
+/** <b>Type</b> : struct <b>Unit</b> : None                                   */
+typedef struct{
+	PUSH_tenuActive     m_Active;		/*!< Push Active */
+	GPIO_tstrPinConfig  m_PinCfg;		/*!< Pin Configuration */
+}PUSH_tstrConfig;
+
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
-
-#if 	AMIT_KIT
-#define PUSH_NUM		3u
-#elif	ETA32_KIT
-#define PUSH_NUM		4u
-#else
-#define PUSH_NUM		3u
-#endif
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -55,7 +56,14 @@ typedef enum{
 /* Input       :	u8PushNum												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void PUSH_vidInit(u8 u8PushNum);
+extern void PUSH_vidInit(u8 u8PushNum);
+
+/* ************************************************************************** */
+/* Description : Initialize the All Push Button with Configurations			  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+extern void PUSH_vidInitAll(void);
 
 /* ************************************************************************** */
 /* Description :    Get the Push Button DeBouncing							  */
@@ -63,7 +71,7 @@ void PUSH_vidInit(u8 u8PushNum);
 /* Input/Output:    pu8State												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus PUSH_u8GetDebounce(u8 u8PushNum, u8* pu8State);
+extern LBTY_tenuErrorStatus PUSH_u8GetDebounce(u8 u8PushNum, u8* pu8State);
 
 /* ************************************************************************** */
 /* Description :    Get the Push Button value								  */
@@ -71,7 +79,7 @@ LBTY_tenuErrorStatus PUSH_u8GetDebounce(u8 u8PushNum, u8* pu8State);
 /* Input/Output:    pu8State												  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus PUSH_u8GetPushState(u8 u8PushNum, u8* pu8State);
+extern LBTY_tenuErrorStatus PUSH_u8GetPushState(u8 u8PushNum, u8* pu8State);
 
 #endif /* PUSH_INT_H_ */
 /*************************** E N D (PUSH_int.h) ******************************/

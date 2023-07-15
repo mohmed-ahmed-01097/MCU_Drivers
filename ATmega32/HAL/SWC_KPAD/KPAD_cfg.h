@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : KEYPAD_cfg.h												  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -34,12 +34,11 @@
 |     |     |     |
 COL0  COL1  COL2  COL3				 <== INPUT
 */
-#if 	AMIT_KIT
 
-#define KPAD_ROW_DIR_OUTPUT
-//#define KPAD_COL_DIR_OUTPUT
+#if defined(AMIT_KIT)
 
-#define KPAD_KEY_RES			PUSH_PULL_DOWN
+#define KPAD_MUX_TYPE			KPAD_COL_MUX
+#define KPAD_MUX_ACTIVE			KPAD_ACTIVE_HIGH
 
 #define KPAD_ROW_NUM			3u
 #define KPAD_ROW_PORT			D
@@ -56,12 +55,10 @@ COL0  COL1  COL2  COL3				 <== INPUT
 #define KPAD_ROW_MASK			(1<<KPAD_ROW0)|(1<<KPAD_ROW1)|(1<<KPAD_ROW2)
 #define KPAD_COL_MASK			(1<<KPAD_COL0)|(1<<KPAD_COL1)|(1<<KPAD_COL2)
 
-#elif	ETA32_KIT
+#elif defined(ETA32_KIT)
 
-#define KPAD_ROW_DIR_OUTPUT
-//#define KPAD_COL_DIR_OUTPUT
-
-#define KPAD_KEY_RES			PUSH_PULL_UP
+#define KPAD_MUX_TYPE			KPAD_ROW_MUX
+#define KPAD_MUX_ACTIVE			KPAD_ACTIVE_LOW
 
 #define KPAD_ROW_NUM			4u
 #define KPAD_ROW_PORT			C
@@ -80,10 +77,32 @@ COL0  COL1  COL2  COL3				 <== INPUT
 #define KPAD_ROW_MASK			(1<<KPAD_ROW0)|(1<<KPAD_ROW1)|(1<<KPAD_ROW2)|(1<<KPAD_ROW3)
 #define KPAD_COL_MASK			(1<<KPAD_COL0)|(1<<KPAD_COL1)|(1<<KPAD_COL2)|(1<<KPAD_COL3)
 
+#elif defined(ETA32_MINI_KIT)
+
+#define KPAD_MUX_TYPE			KPAD_ROW_MUX
+#define KPAD_MUX_ACTIVE			KPAD_ACTIVE_LOW
+
+#define KPAD_ROW_NUM			4u
+#define KPAD_ROW_PORT			B
+#define KPAD_ROW0				Eta32_mini_Keypad_Row0
+#define KPAD_ROW1				Eta32_mini_Keypad_Row1
+#define KPAD_ROW2				Eta32_mini_Keypad_Row2
+#define KPAD_ROW3				Eta32_mini_Keypad_Row3
+
+#define KPAD_COL_NUM			4u
+#define KPAD_COL_PORT			D
+#define KPAD_COL0				Eta32_mini_Keypad_col0
+#define KPAD_COL1				Eta32_mini_Keypad_col1
+#define KPAD_COL2				Eta32_mini_Keypad_col2
+#define KPAD_COL3				Eta32_mini_Keypad_col3
+
+#define KPAD_ROW_MASK			(1<<KPAD_ROW0)|(1<<KPAD_ROW1)|(1<<KPAD_ROW2)|(1<<KPAD_ROW3)
+#define KPAD_COL_MASK			(1<<KPAD_COL0)|(1<<KPAD_COL1)|(1<<KPAD_COL2)|(1<<KPAD_COL3)
+
 #else
 
-#define KPAD_ROW_DIR_OUTPUT
-//#define KPAD_COL_DIR_OUTPUT
+#define KPAD_MUX_TYPE			KPAD_ROW_MUX
+#define KPAD_MUX_ACTIVE			KPAD_ACTIVE_LOW
 
 #define KPAD_ROW_NUM			4u
 #define KPAD_COL_NUM			4u
@@ -106,7 +125,8 @@ COL0  COL1  COL2  COL3				 <== INPUT
 
 #endif
 
-#define DEBOUNCING_CYCLES_NUM	5u
+#define DEBOUNCING_CYCLES_NUM	2u
+#define DEBOUNCING_DELAY		2u
 
 #define KPAD_MAX_COL			4u
 #define KPAD_MAX_ROW			4u
@@ -134,6 +154,8 @@ COL0  COL1  COL2  COL3				 <== INPUT
 #define KPAD_KEY31				'0'
 #define KPAD_KEY32				'#'
 #define KPAD_KEY33				'D'
+
+#define KPAD_RELEASE			'\0'
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */

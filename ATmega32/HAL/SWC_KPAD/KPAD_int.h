@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : KEYPAD_int.h												  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 25, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -37,21 +37,21 @@
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void KPAD_vidInit(void);
+extern void KPAD_vidInit(void);
 
 /* ************************************************************************** */
 /* Description :    Keypad Get Push Press Number							  */
 /* Input       :	void													  */
 /* Return      :	u8														  */
 /* ************************************************************************** */
-u8 KPAD_u8GetKeyNum(void);
+extern u8 KPAD_u8GetKeyNum(void);
 
 /* ************************************************************************** */
 /* Description :    Keypad Get Input Char Value								  */
 /* Input       :	void													  */
 /* Return      :	u8														  */
 /* ************************************************************************** */
-u8 KPAD_u8GetKeysPressed(void);
+extern u8 KPAD_u8GetKeyChar(void);
 
 #endif /* KPAD_INT_H_ */
 /*************************** E N D (KEYPAD_int.h) ******************************/
