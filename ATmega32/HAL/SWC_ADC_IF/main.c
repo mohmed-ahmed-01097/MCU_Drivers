@@ -1,16 +1,13 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : ANA_cfg.h													  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
 /* Version     : v01.2														  */
-/* date        : May 3, 2023												  */
+/* date        : Jul 19, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#ifndef ANA_CFG_H_
-#define ANA_CFG_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -19,12 +16,6 @@
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
-
-#define ANA_INTERRUPT_STATE			LBTY_RESET
-#define ANA_INTERRUPT_MODE			ANA_OutputToggle
-
-#define ANA_NEG_INPUT				ANA_ADC0
-#define ANA_POS_INPUT				ANA_AIN0
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -38,6 +29,49 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+#ifdef	SWC_ADC_IF
 
-#endif /* ANA_CFG_H_ */
-/*************************** E N D (ANA_cfg.h) ******************************/
+#include "LBTY_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+#include "INTP.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "LCD_int.h"
+#include "LCD_cfg.h"
+#include "LCD_priv.h"
+
+#include "ADC_int.h"
+
+#include "ADCIF_int.h"
+#include "ADCIF_cfg.h"
+
+int main(void){
+
+	LCD_vidInit();
+
+	SENSOR_vidInit();
+
+	f32 f32SensorsRead[SENSOR_NUM];
+
+   	while(1){
+
+   		SENSOR_u8GetData(f32SensorsRead);
+
+   		for(u8 i = SENSOR_NUM ; i-- ; ){
+   			LBTY_tenuErrorStatus u8RetErrorState = LCD_u8SetFloat(f32SensorsRead[i], 0, i);
+   			if(u8RetErrorState == LBTY_OK)
+   				LCD_u8CHAR_W(katstrSensorConfig_GLB[i].m_Unit);
+   		}
+
+    }
+   	return 0;
+}
+
+#endif
+
+
+/*************************** E N D (main.c) ******************************/

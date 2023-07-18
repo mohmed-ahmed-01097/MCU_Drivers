@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : ADC_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 26, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -37,12 +37,12 @@
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
 
-static u8 au8ChannelValue_LGB [ADC_CHANNELS_NUM];
+static u8 au8ChannelValue_LGB [ADC_Num];
 
 static u8 u8ConvDone_GLB = LBTY_SET;
 static f32 f32V_REF = ADC_V_REF;
 
-static void (*pvidFunctionCallBack)(void);
+static void (*pvidFunctionCallBack)(void) = INTP_vidCallBack;
 
 /* ************************************************************************** */
 /* **************************** FUNCTION SECTION **************************** */
@@ -51,7 +51,7 @@ static void (*pvidFunctionCallBack)(void);
 static void vid_AdcSyncRead(void){
 	static u8 u8Channel = LBTY_u8ZERO;
 
-	if (u8Channel < ADC_CHANNELS_NUM){
+	if (u8Channel < ADC_Num){
 
 		u8ConvDone_GLB = LBTY_RESET;
 
@@ -74,7 +74,7 @@ static void vid_AdcSyncRead(void){
 /* ************************************************************************** */
 void ADC_vidInit(void){
 
-	for(u8 i = ADC_CHANNELS_NUM; i-- ; ){
+	for(u8 i = ADC_Num; i-- ; ){
 		ADC_u8CofigChannel(kau8ActiveChannel_LGB[i]);
 	}
 
@@ -290,7 +290,7 @@ u16 ADC_u16GetData(void){
 /* Return      :	f32														  */
 /* ************************************************************************** */
 f32 ADC_f32GetVoltage(void){
-	return (f32)ADC_u16GetData() * f32V_REF / ADC_MAX;
+	return (f32)((u16)S_ADC->m_ADC * f32V_REF) / ADC_MAX;
 }
 
 /********************************************************************************************************************/
@@ -357,7 +357,7 @@ LBTY_tenuErrorStatus ADC_u8ReadConvValue(u8 u8Channel, u16* pu16ADC_Value){
 	if(pu16ADC_Value == LBTY_NULL){
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
-		for(u8 i = 0 ; i<ADC_CHANNELS_NUM ; i++){
+		for(u8 i = 0 ; i<ADC_Num ; i++){
 			if(u8Channel == kau8ActiveChannel_LGB[i]){
 				*pu16ADC_Value = au8ChannelValue_LGB[i];
 				break;
@@ -393,13 +393,13 @@ LBTY_tenuErrorStatus ADC_u16RefreshADC(void){
 /* Input       :	pu16ADC_Value											  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ADC_u16GetAll(u16 pu16ADC_Value[ADC_CHANNELS_NUM]){
+LBTY_tenuErrorStatus ADC_u16GetAll(u16 pu16ADC_Value[]){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
 	if(u8ConvDone_GLB == LBTY_SET){
 		S_ADC->m_ADCSRA.sBits.m_ADIE  = LBTY_RESET;
 		S_ADC->m_ADCSRA.sBits.m_ADIF  = LBTY_SET;		/** Clear complete flag by writing logic one **/
-		for(u8 i = 0 ; i<ADC_CHANNELS_NUM ; i++){
+		for(u8 i = 0 ; i<ADC_Num ; i++){
 			pu16ADC_Value[i] = au8ChannelValue_LGB[i];
 		}
 	}else{

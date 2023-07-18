@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Mar 24, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -40,6 +40,9 @@
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
 
+#include "LCD_int.h"
+#include "LCD_cfg.h"
+
 #include "INTP.h"
 
 #include "ADC_int.h"
@@ -47,75 +50,56 @@
 
 int main(void){
 
-#ifdef AMIT_KIT
-    GPIO_u8SetPinDirection(D, AMIT_LED0, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (D, AMIT_LED0, PIN_Low);
-    GPIO_u8SetPinDirection(D, AMIT_LED1, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (D, AMIT_LED1, PIN_Low);
-    GPIO_u8SetPinDirection(D, AMIT_LED2, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (D, AMIT_LED2, PIN_Low);
+	LCD_vidInit();
 
     //MCU_vidEnableGlobalInterrupt();
 
     ADC_vidInit();
-    ADC_u8CofigChannel(ADC_CH1);
-    u16 u16AdcReadValue = 0;
+    ADC_u8CofigChannel(ADC_CH0);
 
+    u16 u16AdcReadValue = 0;
+    f32 f32Volt = 0.0f;
+    f32 f32LcdRead = 0.0f;
    	while(1){
 
 //   		ADC_vidSetChannel(ADC_CH1);
 //   		ADC_vidStartConversion();
 //   		ADC_vidWaitConversion();
-//   		u16AdcReadValue = (u8)(ADC_u16GetData() * 7u / 1023.0);
+   		while(1){
+   			ADC_u8ReadChannel(ADC_CH0, &u16AdcReadValue);
+   			f32Volt = ADC_f32GetVoltage() * 100;
 
-   		ADC_u8ReadChannel(ADC_CH1, &u16AdcReadValue);
-  		u16AdcReadValue = (u8)(u16AdcReadValue * 7u / 1023.0);
+   			LCD_u8SetFloat(f32Volt, 0, 0);
+   			LCD_u8SetNum(u16AdcReadValue, 8, 0);
 
-	    GPIO_u8SetPinValue(D, AMIT_LED0, GET_BIT(u16AdcReadValue, 0));
-	    GPIO_u8SetPinValue(D, AMIT_LED1, GET_BIT(u16AdcReadValue, 1));
-	    GPIO_u8SetPinValue(D, AMIT_LED2, GET_BIT(u16AdcReadValue, 2));
-		vidMyDelay_ms(500);
-	    GPIO_u8SetPinValue(D, AMIT_LED0, PIN_Low);
-	    GPIO_u8SetPinValue(D, AMIT_LED1, PIN_Low);
-	    GPIO_u8SetPinValue(D, AMIT_LED2, PIN_Low);
-		vidMyDelay_ms(500);
+   			while(LCD_u8SetFloat_Rise(f32Volt, 0, 1)){
+   				LCD_u8GetFloat(&f32LcdRead, 0, 1);
+   				LCD_u8SetFloat(f32LcdRead, 8, 1);
+   			}
+   			vidMyDelay_ms(LCD_DELAY_WAIT);
+   			if(f32Volt == 0.0f)			break;
+   		}
+   		LCD_u8ClrDisplay();
+   		while(1){
+   			ADC_u8SetChannel(ADC0_ADC1_1X);
+   			ADC_vidStartConversion();
+   			ADC_vidWaitConversion();
+   			f32Volt = ADC_f32GetVoltage();
+
+   			LCD_u8SetFloat(f32Volt, 0, 0);
+
+   			ADC_u8ReadChannel(ADC0, &u16AdcReadValue);
+   			LCD_u8SetNum(u16AdcReadValue, 0, 1);
+
+   			ADC_u8ReadChannel(ADC1, &u16AdcReadValue);
+   			LCD_u8SetNum(u16AdcReadValue, 8, 1);
+
+   			vidMyDelay_ms(LCD_DELAY_WAIT);
+   			if(f32Volt == 0.0f)			break;
+   		}
+   		LCD_u8ClrDisplay();
+
     }
-#endif
-#ifdef ETA32_KIT
-    GPIO_u8SetPinDirection(A, Eta32_LED_G, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (A, Eta32_LED_G, PIN_Low);
-    GPIO_u8SetPinDirection(A, Eta32_LED_B, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (A, Eta32_LED_B, PIN_Low);
-    GPIO_u8SetPinDirection(A, Eta32_LED_Y, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (A, Eta32_LED_Y, PIN_Low);
-
-    //MCU_vidEnableGlobalInterrupt();
-
-    ADC_vidInit();
-    ADC_u8CofigChannel(ADC_CH1);
-    u16 u16AdcReadValue = 0;
-
-   	while(1){
-
-//   		ADC_vidSetChannel(ADC_CH1);
-//   		ADC_vidStartConversion();
-//   		ADC_vidWaitConversion();
-//   		u16AdcReadValue = (u8)(ADC_u16GetData() * 7u / 1023.0);
-
-   		ADC_u8ReadChannel(ADC_CH1, &u16AdcReadValue);
-  		u16AdcReadValue = (u8)(u16AdcReadValue * 7u / 1023.0);
-
-	    GPIO_u8SetPinValue(A, Eta32_LED_G, GET_BIT(u16AdcReadValue, 0));
-	    GPIO_u8SetPinValue(A, Eta32_LED_B, GET_BIT(u16AdcReadValue, 1));
-	    GPIO_u8SetPinValue(A, Eta32_LED_Y, GET_BIT(u16AdcReadValue, 2));
-		vidMyDelay_ms(500);
-	    GPIO_u8SetPinValue(A, Eta32_LED_G, PIN_Low);
-	    GPIO_u8SetPinValue(A, Eta32_LED_B, PIN_Low);
-	    GPIO_u8SetPinValue(A, Eta32_LED_Y, PIN_Low);
-		vidMyDelay_ms(500);
-    }
-#endif
-
    	return 0;
 }
 

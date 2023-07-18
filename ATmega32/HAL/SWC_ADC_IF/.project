@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>SWC_ADC</name>
+	<name>SWC_ADC_IF</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -26,14 +26,19 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>SWC_ADC</name>
+			<type>2</type>
+			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/MCAL/SWC_ADC</locationURI>
+		</link>
+		<link>
 			<name>SWC_GPIO</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/SWC_GPIO</locationURI>
+			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/MCAL/SWC_GPIO</locationURI>
 		</link>
 		<link>
 			<name>SWC_LCD</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/HAL/SWC_LCD</locationURI>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/SWC_LCD</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

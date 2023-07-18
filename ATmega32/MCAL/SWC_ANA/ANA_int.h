@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : ANA_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : May 3, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -61,35 +61,79 @@ typedef enum{
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void ANA_vidInit(void);
+extern void ANA_vidInit(void);
+
+/* ************************************************************************** */
+/* Description :  	Enable ANA to be ready for conversion					  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void ANA_vidEnable(void);
+
+/* ************************************************************************** */
+/* Description :  	Disable ANA to be wont make further conversions			  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+void ANA_vidDisable(void);
 
 /* ************************************************************************** */
 /* Description :  	Get the Output of Comparator							  */
 /* Input       :	pu8Output												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void ANA_vidGetOutput(u8* pu8Output);
+extern void ANA_vidGetOutput(u8* pu8Output);
 
 /* ************************************************************************** */
 /* Description :  	Set negative Input										  */
 /* Input       :	u8Input													  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ANA_u8SetNegativeInput(ANA_tenuNegativeInput u8Input);
+extern LBTY_tenuErrorStatus ANA_u8SetNegativeInput(ANA_tenuNegativeInput u8Input);
 
 /* ************************************************************************** */
 /* Description :  	Set positive Input										  */
 /* Input       :	u8Input													  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-LBTY_tenuErrorStatus ANA_u8SetPositiveInput(ANA_tenuPositiveInput u8Input);
+extern LBTY_tenuErrorStatus ANA_u8SetPositiveInput(ANA_tenuPositiveInput u8Input);
+
+/* ************************************************************************** */
+/* Description :  	Set Interrupt Mode										  */
+/* Input       :	u8Mode													  */
+/* Return      :	LBTY_tenuErrorStatus									  */
+/* ************************************************************************** */
+extern LBTY_tenuErrorStatus ANA_u8SetMode(ANA_tenuModeSelect u8Mode);
+
+/********************************************************************************************************************/
+
+/* ************************************************************************** */
+/* Description :  	Enable ANA Interrupt									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+extern void ANA_vidEnableINT(void);
+
+/* ************************************************************************** */
+/* Description :  	Disable ANA Interrupt									  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+extern void ANA_vidDisableINT(void);
+
+/* ************************************************************************** */
+/* Description :  	Clear ANA interrupt Flag								  */
+/* Input       :	void													  */
+/* Return      :	void													  */
+/* ************************************************************************** */
+extern void ANA_vidClrFlagINT(void);
 
 /* ************************************************************************** */
 /* Description :  	Pass the CallBack function to ANA ISR to execute		  */
 /* Input       :	void													  */
 /* Return      :	LBTY_tenuErrorStatus									  */
 /* ************************************************************************** */
-void ANA_vidSetCallBack(void (*pvidCallBack)(void));
+extern void ANA_vidSetCallBack(void (*pvidCallBack)(void));
 
 #endif /* ANA_INT_H_ */
 /*************************** E N D (ANA_int.h) ******************************/

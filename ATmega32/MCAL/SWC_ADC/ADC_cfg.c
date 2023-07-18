@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : ADC_cfg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Mar 27, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -26,29 +26,29 @@
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
 
-const  u8 kau8ActiveChannel_LGB[ADC_CHANNELS_NUM] = {
-#if (ADC_CHANNELS_NUM >= 1)
+const  u8 kau8ActiveChannel_LGB[] = {
+#ifdef ADC_CH0
 		ADC_CH0
 #endif
-#if (ADC_CHANNELS_NUM >= 2)
+#ifdef ADC_CH1
 		, ADC_CH1
 #endif
-#if (ADC_CHANNELS_NUM >= 3)
+#ifdef ADC_CH2
 		, ADC_CH2
 #endif
-#if (ADC_CHANNELS_NUM >= 4)
+#ifdef ADC_CH3
 		, ADC_CH3
 #endif
-#if (ADC_CHANNELS_NUM >= 5)
+#ifdef ADC_CH4
 		, ADC_CH4
 #endif
-#if (ADC_CHANNELS_NUM >= 6)
+#ifdef ADC_CH5
 		, ADC_CH5
 #endif
-#if (ADC_CHANNELS_NUM >= 7)
+#ifdef ADC_CH6
 		, ADC_CH6
 #endif
-#if (ADC_CHANNELS_NUM >= 8)
+#ifdef ADC_CH7
 		, ADC_CH7
 #endif
 };

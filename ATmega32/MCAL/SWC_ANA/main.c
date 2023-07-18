@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : May 3, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -34,7 +34,7 @@
 #include "LBTY_int.h"
 #include "LCTY_int.h"
 
-#include "INTP.h"
+#include "DELAY.h"
 
 #include "GPIO_int.h"
 #include "GPIO_cfg.h"
@@ -42,31 +42,45 @@
 #include "ANA_int.h"
 #include "ANA_cfg.h"
 
+#if defined(AMIT_KIT)
+
+#define PORT_BUZZER			D
+#define PIN_BUZZER			AMIT_BUZZER
+
+#define PORT_LED0			D
+#define PIN_LED0			AMIT_LED0
+
+#elif defined(ETA32_KIT)
+
+#define PORT_BUZZER			C
+#define PIN_BUZZER			Eta32_BUZZER
+
+#define PORT_LED0			B
+#define PIN_LED0			Eta32_LED_R
+
+#elif defined(ETA32_MINI_KIT)
+
+#define PORT_BUZZER			C
+#define PIN_BUZZER			Eta32_mini_BUZZER
+
+#define PORT_LED0			C
+#define PIN_LED0			Eta32_mini_LED_R
+
+#endif
+
 int main(void){
 
-    //MCU_vidEnableGlobalInterrupt();
+    GPIO_u8SetPinDirection(PORT_LED0, PIN_LED0, PIN_OUTPUT);
+    GPIO_u8SetPinValue	  (PORT_LED0, PIN_LED0, PIN_Low);
 
-	u8 u8Output;
     ANA_vidInit();
 
-#ifdef AMIT_KIT
-    GPIO_u8SetPinDirection(D, AMIT_LED0, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (D, AMIT_LED0, PIN_Low);
-
+	u8 u8Output;
    	while(1){
    	    ANA_vidGetOutput(&u8Output);
-	    GPIO_u8SetPinValue(D, AMIT_LED0, u8Output);
+	    GPIO_u8SetPinValue(PORT_LED0, PIN_LED0, u8Output);
+		vidMyDelay_ms(100);
     }
-#endif
-#ifdef ETA32_KIT
-    GPIO_u8SetPinDirection(A, Eta32_LED_G, PIN_OUTPUT);
-    GPIO_u8SetPinValue	  (A, Eta32_LED_G, PIN_Low);
-
-   	while(1){
-   	    ANA_vidGetOutput(&u8Output);
-	    GPIO_u8SetPinValue(A, Eta32_LED_G, u8Output);
-    }
-#endif
 
    	return 0;
 }
