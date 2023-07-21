@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : WDT_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 8, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -44,10 +44,9 @@
 /* Return      :	void													  */
 /* ************************************************************************** */
 void WDT_vidInit(void){
-	S_WDTCR->sBits.m_WDTOE = LBTY_RESET;
 	S_WDTCR->sBits.m_WDE   = LBTY_SET;
+	S_WDTCR->sBits.m_WDTOE = LBTY_RESET;
 	S_WDTCR->sBits.m_WDP   = WDT_TIME_OUT;
-	WDT_vidReset();
 }
 
 /* ************************************************************************** */
@@ -68,6 +67,8 @@ void WDT_vidReset(void){
 	wdr();	/* reset WDT */
 //	while(!S_MCUCSR->sBits.m_WDRF);
 //	S_MCUCSR->sBits.m_WDRF = LBTY_RESET;
+	WDT_vidDisable();
+	WDT_vidInit();
 }
 
 /* ************************************************************************** */
@@ -76,7 +77,7 @@ void WDT_vidReset(void){
 /* Return      :	void													  */
 /* ************************************************************************** */
 void WDT_vidEnable(void){
-	S_WDTCR->sBits.m_WDTOE = LBTY_RESET;
+	S_WDTCR->sBits.m_WDE = LBTY_SET;
 }
 
 /* ************************************************************************** */
@@ -85,9 +86,12 @@ void WDT_vidEnable(void){
 /* Return      :	void													  */
 /* ************************************************************************** */
 void WDT_vidDisable(void){
-	S_WDTCR->sBits.m_WDE   = LBTY_SET;
-	S_WDTCR->sBits.m_WDTOE = LBTY_SET;
-	S_WDTCR->sBits.m_WDE   = LBTY_RESET;
+//	S_WDTCR->sBits.m_WDE   = LBTY_SET;
+//	S_WDTCR->sBits.m_WDTOE = LBTY_SET;
+	/* Write logical one to WDTOE and WDE */
+	S_WDTCR->sOFF.m_OFF = 3u;
+	/* Turn off WDT */
+	S_WDTCR->u_Reg  = LBTY_RESET;
 }
 
 /*************************** E N D (WDT_prg.c) ******************************/

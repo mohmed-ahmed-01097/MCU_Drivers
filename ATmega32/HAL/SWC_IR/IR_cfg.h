@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : IR_cfg.h													  */
 /* Author      : MAAM														  */
-/* Version     : v00														  */
+/* Version     : v01.2														  */
 /* date        : May 3, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -40,16 +40,16 @@ Sensor: TSOP1738 IR receiver module must be connected to INT0 Pin.
 /* ************************************************************************** */
 
 #define IR_INT_PIN					INT0
-#define IR_TMR_10US_COMPARE			(F_CPU / 100000u)
+#define IR_TMR_10US_COMPARE			((F_CPU / 100000u) - 1u)
 
-#define IR_TIME_TOL					0.4f	//0.2f
+#define IR_TIME_TOL					0.25f	//0.2f
 #define IR_CHECK_TIME(temp, time)	(temp>(time-(time*IR_TIME_TOL)) && temp<(time+(time*IR_TIME_TOL)))
 
 #define IR_HIGH_LEAD_TIME			900
 #define IR_LOW0_LEAD_TIME			450
 #define IR_LOW1_LEAD_TIME			225
 #define IR_LOW_BIT_TIME 			169
-#define IR_HIGH_BIT_TIME 			36		//56
+#define IR_HIGH_BIT_TIME 			56
 
 #define IR_REPEAT_MAX				4u
 #define IR_FRAM_LENGTH				4u

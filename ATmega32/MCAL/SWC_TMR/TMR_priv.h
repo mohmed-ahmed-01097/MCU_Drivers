@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : TMR_priv.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01.1														  */
+/* Version     : v01.2														  */
 /* date        : Apr 5, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -16,174 +16,198 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+/** @brief : Type define of Union bit field "Asynchronous Status Register"    */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-        __I  u8 m_TCR2UB : 1;        // Timer/Counter Control Register2 Update Busy
-        __I  u8 m_OCR2UB : 1;        // Output Compare Register2 Update Busy
-        __I  u8 m_TCN2UB : 1;        // Timer/Counter2 Update Busy
-        __IO u8 m_AS2    : 1;        // Asynchronous Timer/Counter2
-        __IO u8          : 4;
+        __I  u8 m_TCR2UB : 1;			/*!< Timer/Counter Control Register2 Update Busy */
+        __I  u8 m_OCR2UB : 1;			/*!< Output Compare Register2 Update Busy */
+        __I  u8 m_TCN2UB : 1;			/*!< Timer/Counter2 Update Busy */
+        __IO u8 m_AS2    : 1;			/*!< Asynchronous Timer/Counter2 */
+        __IO u8          : 4;			/*!< Reversed */
     }sBits;
-}ASSR_type;   // Asynchronous Status Register
+}ASSR_type;
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field "Timer/Counter Control Register"  */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_CSx  : 3;        // Clock Select
-    	__IO u8 m_WGMx1: 1;        // Waveform Generation Mode
-    	__IO u8 m_COMx : 2;        // Compare Match Output Mode
-    	__IO u8 m_WGMx0: 1;        // Waveform Generation Mode
-    	__IO u8 m_FOCx : 1;        // Force Output Compare
+    	__IO u8 m_CSx  : 3;			/*!< Clock Select */
+    	__IO u8 m_WGMx1: 1;			/*!< Waveform Generation Mode */
+    	__IO u8 m_COMx : 2;			/*!< Compare Match Output Mode */
+    	__IO u8 m_WGMx0: 1;			/*!< Waveform Generation Mode */
+    	__IO u8 m_FOCx : 1;			/*!< Force Output Compare */
     }sBits;
-}TCCRx_type;   // Timer/Counter Control Register
+}TCCRx_type;
 
 /*************************************************************************/
 
+/** @brief : General Purpose Input Output Registers                           */
+/** <b>Type</b> : Struct <b>Unit</b> : None                                   */
 typedef struct{
-    __IO ASSR_type  m_ASSR;     // Asynchronous Status Register
-    __IO u8         m_OCR2;     // Output Compare Register
-    __IO u8         m_TCNT2;    // Timer/Counter Register
-    __IO TCCRx_type m_TCCR2;    // Timer/Counter Control Register
-}GPTMR2_type;    // General Purpose Input Output Registers
+    __IO ASSR_type  m_ASSR;			/*!< Asynchronous Status Register */
+    __IO u8         m_OCR2;			/*!< Output Compare Register */
+    __IO u8         m_TCNT2;		/*!< Timer/Counter Register */
+    __IO TCCRx_type m_TCCR2;		/*!< Timer/Counter Control Register */
+}GPTMR2_type;
 
 /*************************************************************************/
 
+/** @brief : General Purpose Input Output Registers                           */
+/** <b>Type</b> : Struct <b>Unit</b> : None                                   */
 typedef struct{
-    __IO u8         m_TCNT0;    // Timer/Counter Register
-    __IO TCCRx_type m_TCCR0;    // Timer/Counter Control Register
-    __I  u8         REVERSE[8];
-    __IO u8         m_OCR0;     // Output Compare Register
-}GPTMR0_type;    // General Purpose Input Output Registers
+    __IO u8         m_TCNT0;			/*!< Timer/Counter Register */
+    __IO TCCRx_type m_TCCR0;			/*!< Timer/Counter Control Register */
+    __I  u8         REVERSE[8];			/*!< Reversed */
+    __IO u8         m_OCR0; 			/*!< Output Compare Register */
+}GPTMR0_type;
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field "Timer/Counter Control Register B"*/
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_CS1  : 3;        // Clock Select
-    	__IO u8 m_WGM12: 1;        // Waveform Generation Mode
-    	__IO u8 m_WGM13: 1;        // Waveform Generation Mode
-    	__IO u8        : 1;
-    	__IO u8 m_ICES1: 1;        // Input Capture Edge Select
-    	__IO u8 m_ICNC1: 1;        // Input Capture Noise Canceler
+    	__IO u8 m_CS1  : 3;			/*!< Clock Select */
+    	__IO u8 m_WGM12: 1;			/*!< Waveform Generation Mode */
+    	__IO u8 m_WGM13: 1;			/*!< Waveform Generation Mode */
+    	__IO u8        : 1;			/*!< Reversed */
+    	__IO u8 m_ICES1: 1;			/*!< Input Capture Edge Select */
+    	__IO u8 m_ICNC1: 1;			/*!< Input Capture Noise Canceler */
     }sBits;
-}TCCR1B_type;   // Timer/Counter Control Register
+}TCCR1B_type;
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field "Timer/Counter Control Register A"*/
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_WGM10: 1;        // Waveform Generation Mode
-    	__IO u8 m_WGM11: 1;        // Waveform Generation Mode
-    	__IO u8 m_FOC1B: 1;        // Force Output Compare
-    	__IO u8 m_FOC1A: 1;        // Force Output Compare
-    	__IO u8 m_COM1B: 2;        // Compare Match Output Mode
-    	__IO u8 m_COM1A: 2;        // Compare Match Output Mode
+    	__IO u8 m_WGM10: 1;			/*!< Waveform Generation Mode */
+    	__IO u8 m_WGM11: 1;			/*!< Waveform Generation Mode */
+    	__IO u8 m_FOC1B: 1;			/*!< Force Output Compare */
+    	__IO u8 m_FOC1A: 1;			/*!< Force Output Compare */
+    	__IO u8 m_COM1B: 2;			/*!< Compare Match Output Mode */
+    	__IO u8 m_COM1A: 2;			/*!< Compare Match Output Mode */
     }sBits;
-}TCCR1A_type;   // Timer/Counter Control Register
+}TCCR1A_type;
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field of Single Byte"byte bits exchange"*/
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_B0 : 1;
-    	__IO u8 m_B1 : 1;
-    	__IO u8 m_B2 : 1;
-    	__IO u8 m_B3 : 1;
-    	__IO u8 m_B4 : 1;
-    	__IO u8 m_B5 : 1;
-    	__IO u8 m_B6 : 1;
-    	__IO u8 m_B7 : 1;
+    	__IO u8 m_B0 : 1;			/*!< Bit 0 "LSB" */
+        __IO u8 m_B1 : 1;			/*!< Bit 1 */
+        __IO u8 m_B2 : 1;			/*!< Bit 2 */
+        __IO u8 m_B3 : 1;			/*!< Bit 3 */
+        __IO u8 m_B4 : 1;			/*!< Bit 4 */
+        __IO u8 m_B5 : 1;			/*!< Bit 5 */
+        __IO u8 m_B6 : 1;			/*!< Bit 6 */
+    	__IO u8 m_B7 : 1;			/*!< Bit 7 "MSB" */
     }sBits;
 }BYTE_type; // byte bit exchange
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field of Half Word "bits exchange"      */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u16 u16Reg;
+    u16 u16Reg;						/*!< half Word */
     struct {
-    	BYTE_type m_u8Low;
-    	BYTE_type m_u8High;
+    	BYTE_type m_u8Low;			/*!< Low Byte */
+    	BYTE_type m_u8High;			/*!< High Byte */
     }sBytes;
     struct {
-        u8 m_B0 : 1;
-        u8 m_B1 : 1;
-        u8 m_B2 : 1;
-        u8 m_B3 : 1;
-        u8 m_B4 : 1;
-        u8 m_B5 : 1;
-        u8 m_B6 : 1;
-        u8 m_B7 : 1;
-        u8 m_B8 : 1;
-        u8 m_B9 : 1;
-        u8 m_B10: 1;
-        u8 m_B11: 1;
-        u8 m_B12: 1;
-        u8 m_B13: 1;
-        u8 m_B14: 1;
-        u8 m_B15: 1;
+        __IO u8 m_B0 : 1;			/*!< Bit 0 "LSB" */
+        __IO u8 m_B1 : 1;			/*!< Bit 1 */
+        __IO u8 m_B2 : 1;			/*!< Bit 2 */
+        __IO u8 m_B3 : 1;			/*!< Bit 3 */
+        __IO u8 m_B4 : 1;			/*!< Bit 4 */
+        __IO u8 m_B5 : 1;			/*!< Bit 5 */
+        __IO u8 m_B6 : 1;			/*!< Bit 6 */
+        __IO u8 m_B7 : 1;			/*!< Bit 7 */
+        __IO u8 m_B8 : 1;			/*!< Bit 8 */
+        __IO u8 m_B9 : 1;			/*!< Bit 9 */
+        __IO u8 m_B10: 1;			/*!< Bit 10 */
+        __IO u8 m_B11: 1;			/*!< Bit 11 */
+        __IO u8 m_B12: 1;			/*!< Bit 12 */
+        __IO u8 m_B13: 1;			/*!< Bit 13 */
+        __IO u8 m_B14: 1;			/*!< Bit 14 */
+        __IO u8 m_B15: 1;			/*!< Bit 15 "MSB" */
     }sBits;
 }Word_type;
 
 /*************************************************************************/
 
+/** @brief : General Purpose Input Output Registers                           */
+/** <b>Type</b> : Struct <b>Unit</b> : None                                   */
 typedef struct{
-    __IO Word_type   m_ICR1;	 // Output Compare Register
-    __IO Word_type   m_OCR1B;	 // Output Compare Register
-    __IO Word_type   m_OCR1A;	 // Output Compare Register
-    __IO Word_type   m_TCNT1;	 // Output Compare Register
-    __IO TCCR1B_type m_TCCR1B;   // Timer/Counter Control Register
-    __IO TCCR1A_type m_TCCR1A;   // Timer/Counter Control Register
-}GPTMR1_type;    // General Purpose Input Output Registers
+    __IO Word_type   m_ICR1;		/*!< Input Compare Register */
+    __IO Word_type   m_OCR1B;		/*!< Output Compare Register */
+    __IO Word_type   m_OCR1A;		/*!< Output Compare Register */
+    __IO Word_type   m_TCNT1;		/*!< Output Compare Register */
+    __IO TCCR1B_type m_TCCR1B;		/*!< Timer/Counter Control Register */
+    __IO TCCR1A_type m_TCCR1A;		/*!< Timer/Counter Control Register */
+}GPTMR1_type;
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field "Special Function I/O Register"   */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_PSR10: 1;        // Prescaler Reset Timer/Counter1 and Timer/Counter0
-    	__IO u8 m_PSR2 : 1;        // Prescaler Reset Timer/Counter2
-    	__IO u8 m_PUD  : 1;        // Pull-up disable
-    	__IO u8 m_ACME : 1;        // Analog Comparator Multiplexer Enable
-    	__IO u8        : 1;
-    	__IO u8 m_ADTS : 3;        // ADC Auto Trigger Source
+    	__IO u8 m_PSR10: 1;			/*!< Prescaler Reset Timer/Counter1 and Timer/Counter0 */
+    	__IO u8 m_PSR2 : 1;			/*!< Prescaler Reset Timer/Counter2 */
+    	__IO u8 m_PUD  : 1;			/*!< Pull-up disable */
+    	__IO u8 m_ACME : 1;			/*!< Analog Comparator Multiplexer Enable */
+    	__IO u8        : 1;			/*!< Reversed */
+    	__IO u8 m_ADTS : 3;			/*!< ADC Auto Trigger Source */
     }sBits;
-}SFIOR_type;   // Special Function I/O Register
+}SFIOR_type;
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field "Timer/Counter Interrupt Flag Register Reg"  */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_TOV0 : 1;        // Timer/Counter1 Overflow Flag
-    	__IO u8 m_OCF0 : 1;        // Timer/Counter1 Output Compare Match Flag
-    	__IO u8 m_TOV1 : 1;        // Timer/Counter1 Overflow Flag
-    	__IO u8 m_OCF1B: 1;        // Timer/Counter1 Output Compare Match Flag
-    	__IO u8 m_OCF1A: 1;        // Timer/Counter1 Output Compare Match Flag
-    	__IO u8 m_ICF1 : 1;        // Timer/Counter1, Input Capture Flag
-    	__IO u8 m_TOV2 : 1;        // Timer/Counter2 Overflow Flag
-    	__IO u8 m_OCF2 : 1;        // Timer/Counter2 Output Compare Match Flag
+    	__IO u8 m_TOV0 : 1;			/*!< Timer/Counter1 Overflow Flag */
+    	__IO u8 m_OCF0 : 1;			/*!< Timer/Counter1 Output Compare Match Flag */
+    	__IO u8 m_TOV1 : 1;			/*!< Timer/Counter1 Overflow Flag */
+    	__IO u8 m_OCF1B: 1;			/*!< Timer/Counter1 Output Compare Match Flag */
+    	__IO u8 m_OCF1A: 1;			/*!< Timer/Counter1 Output Compare Match Flag */
+    	__IO u8 m_ICF1 : 1;			/*!< Timer/Counter1, Input Capture Flag */
+    	__IO u8 m_TOV2 : 1;			/*!< Timer/Counter2 Overflow Flag */
+    	__IO u8 m_OCF2 : 1;			/*!< Timer/Counter2 Output Compare Match Flag */
     }sBits;
-}TIFR_type;   // Timer/Counter Interrupt Flag Register Register
+}TIFR_type;
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field "Timer/Counter Control Register"  */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_TOIE0 : 1;        // Timer/Counter1 Overflow Interrupt Enable
-    	__IO u8 m_OCIE0 : 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
-    	__IO u8 m_TOIE1 : 1;        // Timer/Counter1 Overflow Interrupt Enable
-    	__IO u8 m_OCIE1B: 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
-    	__IO u8 m_OCIE1A: 1;        // Timer/Counter1 Output Compare Match Interrupt Enable
-    	__IO u8 m_TICIE1: 1;        // Timer/Counter1, Input Capture Interrupt Enable
-    	__IO u8 m_TOIE2 : 1;        // Timer/Counter2 Overflow Interrupt Enable
-    	__IO u8 m_OCIE2 : 1;        // Timer/Counter2 Output Compare Match Interrupt Enable
+    	__IO u8 m_TOIE0 : 1;			/*!< Timer/Counter1 Overflow Interrupt Enable */
+    	__IO u8 m_OCIE0 : 1;			/*!< Timer/Counter1 Output Compare Match Interrupt Enable */
+    	__IO u8 m_TOIE1 : 1;			/*!< Timer/Counter1 Overflow Interrupt Enable */
+    	__IO u8 m_OCIE1B: 1;			/*!< Timer/Counter1 Output Compare Match Interrupt Enable */
+    	__IO u8 m_OCIE1A: 1;			/*!< Timer/Counter1 Output Compare Match Interrupt Enable */
+    	__IO u8 m_TICIE1: 1;			/*!< Timer/Counter1, Input Capture Interrupt Enable */
+    	__IO u8 m_TOIE2 : 1;			/*!< Timer/Counter2 Overflow Interrupt Enable */
+    	__IO u8 m_OCIE2 : 1;			/*!< Timer/Counter2 Output Compare Match Interrupt Enable */
     }sBits;
 }TIMSK_type;   // Timer/Counter Interrupt Mask Register
 
@@ -260,8 +284,10 @@ typedef union{
 #define TMR_OC1B_PORT		D
 #define TMR_OC1B_PIN		GPIO_TMR_OC1B
 
-#define TMR_u8MAX			(LBTY_u8MAX + 1u)
-#define TMR_u16MAX			(LBTY_u16MAX + 1u)
+#define TMR_u8MAX			(0x00FF + 1u)
+#define TMR_u9MAX			(0x01FF + 1u)
+#define TMR_u10MAX			(0x03FF + 1u)
+#define TMR_u16MAX			(0xFFFF + 1u)
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */

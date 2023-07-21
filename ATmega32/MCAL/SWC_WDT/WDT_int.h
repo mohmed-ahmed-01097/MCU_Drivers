@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : WDT_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : May 1, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -59,35 +59,35 @@ typedef enum{
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidInit(void);
+extern void WDT_vidInit(void);
 
 /* ************************************************************************** */
 /* Description :  	WDT Sleep												  */
 /* Input       :	u8Period												  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidSleep(u8 u8Period);
+extern void WDT_vidSleep(u8 u8Period);
 
 /* ************************************************************************** */
 /* Description :  	WDT Reset												  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidReset(void);
+extern void WDT_vidReset(void);
 
 /* ************************************************************************** */
 /* Description :  	WDT Enable												  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidEnable(void);
+extern void WDT_vidEnable(void);
 
 /* ************************************************************************** */
 /* Description :  	WDT Disable												  */
 /* Input       :	void													  */
 /* Return      :	void													  */
 /* ************************************************************************** */
-void WDT_vidDisable(void);
+extern void WDT_vidDisable(void);
 
 
 #endif /* WDT_INT_H_ */

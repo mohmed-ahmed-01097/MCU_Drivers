@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : IR_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 11, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -66,7 +66,6 @@ void IR_vidInit(void){
     INT_vidSetCallBack(IR_INT_PIN, IR_INT_ISR);
 
     TMR0_vidInit();
-    TMR0_vidSetCallBack_CompareMatch(IR_TMR_ISR);
 
     vid_IrResetPrevPacket();
 	strReceiveFram_GLB.m_u8Repeat     = LBTY_u8ZERO;
@@ -95,15 +94,11 @@ LBTY_tenuErrorStatus IR_GetPacket(IR_tstrPacket* pstrPacket){
 }
 
 void IR_INT_ISR(void){
-
-    u16 u16TempTime = strReceiveFram_GLB.m_u16Time * 2u;
-    strReceiveFram_GLB.m_u16Time = LBTY_u16ZERO;
-    TMR0_u8SetCounter(LBTY_u8ZERO);
+    static u16 u16TempTime;
+	u16TempTime = strReceiveFram_GLB.m_u16Time;
+	strReceiveFram_GLB.m_u16Time = 20u;
 
 	INT_vidDisable  (IR_INT_PIN);
-	INT_vidResetFlag(IR_INT_PIN);
-
-	INTP_vidEnable();
 	//if(strReceiveFram_GLB.m_u8StopState) return;
 
 	switch(strReceiveFram_GLB.m_u8State){
@@ -119,7 +114,7 @@ void IR_INT_ISR(void){
 	INT_vidEnable   (IR_INT_PIN);
 }
 
-void IR_TMR_ISR(void){
+ISR(TIMER0_COMP_vect){
 	strReceiveFram_GLB.m_u16Time++;
 }
 

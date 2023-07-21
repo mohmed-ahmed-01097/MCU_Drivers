@@ -59,7 +59,7 @@ LCTY_INLINE void DelayM(u16 count){
 	__asm__ __volatile__("1: sbiw %0,1" "\n\t" "brne 1b" : "=w" (count) : "0" (count));
 }
 LCTY_INLINE void DELAY_LOOP_US(u16 u16DelayNum){
-	volatile u16 __tick = u16DelayNum;
+	volatile u16 __tick = u16DelayNum / 2.8565f;
 	while(--__tick){
 		DelayU(F_CPU/3000000u);
 	}

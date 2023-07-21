@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : WDT_priv.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : May 17, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -16,15 +16,22 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+/** @brief : Type define of Union bit field of "Watchdog Control Register"    */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+    u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_WDP  : 3;        // Watchdog Timer Prescaler
-    	__IO u8 m_WDE  : 1;        // Watchdog Enable
-    	__IO u8 m_WDTOE: 1;        // Watchdog Turn-off Enable
-    	__IO u8        : 3;
+    	__IO u8 m_WDP  : 3;			/*!< Watchdog Timer Prescaler */
+    	__IO u8 m_WDE  : 1;			/*!< Watchdog Enable */
+    	__IO u8 m_WDTOE: 1;			/*!< Watchdog Turn-off Enable */
+    	__IO u8        : 3;			/*!< Reversed */
     }sBits;
-}WDTCR_type;   // Watchdog Control Register
+    struct {
+    	__IO u8        : 3;			/*!< Reversed */
+    	__IO u8 m_OFF  : 2;			/*!< Watchdog Turn-off */
+    	__IO u8        : 3;			/*!< Reversed */
+    }sOFF;
+}WDTCR_type;
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */

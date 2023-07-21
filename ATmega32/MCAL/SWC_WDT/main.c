@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : main.c												  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : May 1, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -51,24 +51,14 @@ int main(void){
 
     WDT_vidInit();
 
-    u8 u8Num0 = LBTY_u8ZERO;
-    u8 u8Num1 = LBTY_u8ZERO;
-
-    LCD_u8SetChar(':', 3, 0);
+    volatile u16 u16Num0 = 0;
 
    	while(1){
-   		LCD_u8SetNum(u8Num0, 5, 0);
-   	   	LCD_u8SetNum(u8Num1, 0, 0);
-   		vidMyDelay_ms(700);
+   	   	LCD_u8SetNum(u16Num0, 0, 0);
+   		vidMyDelay_ms(u16Num0);
+   		u16Num0 += 10;
    		WDT_vidReset();
-
-   		if(u8Num0++>=59){
-   	   		u8Num0 = LBTY_u8ZERO;
-   	   		if(u8Num1++>=59)	u8Num1 = LBTY_u8ZERO;
-
-   		}
     }
-
    	return 0;
 }
 
