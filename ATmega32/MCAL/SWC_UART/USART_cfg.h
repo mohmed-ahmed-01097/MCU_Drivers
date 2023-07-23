@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : USART_cfg.h												  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 10, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -28,11 +28,11 @@
 
 #define USART_BUAD_RATE_INIT				USART_BuadRate_9600
 #define USART_CHAR_SIZE_INIT				USART_8_bit
-#define USART_PARITY_MODE_INIT				USART_Parity_Even
+#define USART_PARITY_BIT_INIT				USART_Parity_Even
 #define USART_STOP_BIT_INIT					USART_Stop_1_bit
 
-#define USART_TRANSMIT_INT					LBTY_SET
-#define USART_RECEIVE_INT					LBTY_SET
+#define USART_TRANSMIT_INIT					LBTY_SET
+#define USART_RECEIVE_INIT					LBTY_SET
 
 #define USART_TRANSMIT_COMPLETE_INT			LBTY_RESET
 #define USART_RECEIVE_COMPLETE_INT			LBTY_RESET

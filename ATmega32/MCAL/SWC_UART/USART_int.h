@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : USART_int.h												  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 10, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -41,7 +41,7 @@ typedef enum{
 
 typedef enum{
 	USART_Parity_Disable = (u8)0u,
-	Reserved,
+	USART_Parity_Reserved,
 	USART_Parity_Even,
 	USART_Parity_Odd,
 }USART_tenumParityMode;
@@ -69,22 +69,27 @@ typedef enum{
 	USART_BuadRate_1000000	= 1000000u,
 }USART_tenumBuadRate;
 
-typedef struct{
-//	USART_tenumModeSelect	m_Mode;
-//	USART_tenumSpeed		m_Speed;
-//	USART_tenumClockPolarity m_Polarity;
-/** frame **/
-	USART_tenumBuadRate		m_BuadRate;
-	USART_tenumCharSize		m_Size;
-	USART_tenumParityMode	m_Parity;
-	USART_tenumStopBit		m_Stop;
-/** TX/RX Status **/
-	LBTY_tenuFlagStatus		m_TXEN;
-	LBTY_tenuFlagStatus		m_RXEN;
+/********************************************************************************************************************/
 
-	LBTY_tenuFlagStatus		m_TXIE;
-	LBTY_tenuFlagStatus		m_RXIE;
-	LBTY_tenuFlagStatus		m_Empty;
+/** @brief : type define of structure for UART/USART Configuration            */
+/** <b>Type</b> : struct <b>Unit</b> : None                                   */
+typedef struct{
+/* HW Config */
+	USART_tenumModeSelect	 m_Mode;				/*!< Sync or Async Mode */
+	USART_tenumClockPolarity m_Polarity;			/*!< Clock Polarity */
+	USART_tenumSpeed		 m_Speed;				/*!< Speed Gain */
+/* frame */
+	USART_tenumBuadRate		 m_BuadRate;			/*!< BaudRate Register Value */
+	USART_tenumCharSize		 m_Size;				/*!< Data Register Size */
+	USART_tenumParityMode	 m_Parity;				/*!< Parity Bit */
+	USART_tenumStopBit		 m_Stop;				/*!< Stop Bit */
+/* TX/RX Status */
+	LBTY_tenuFlagStatus		 m_TXEN;				/*!< TX Enable Flag */
+	LBTY_tenuFlagStatus		 m_RXEN;				/*!< RX Enable Flag */
+/* TX/RX Interrupt */
+	LBTY_tenuFlagStatus		 m_TXIE;				/*!< TX Interrupt Enable Flag */
+	LBTY_tenuFlagStatus		 m_RXIE;				/*!< RX Interrupt Enable Flag */
+	LBTY_tenuFlagStatus		 m_Empty;			/*!< EmptyInterrupt Enable Flag */
 }USART_tstrConfiguration;
 
 /* ************************************************************************** */
@@ -106,54 +111,52 @@ typedef struct{
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
-void USART_vidSetConfig(USART_tstrConfiguration const* const pstrConfig);
-void USART_vidResetConfig(USART_tstrConfiguration* const pstrConfig);
+extern void USART_vidSetConfig(USART_tstrConfiguration const* const pstrConfig);
+extern void USART_vidResetConfig(USART_tstrConfiguration* const pstrConfig);
 
-void UART_vidInit(void);
+extern void UART_vidInit(void);
 
-void USART_vidTransmitterEnable(void);
-void USART_vidTransmitterDisable(void);
-void USART_vidReceiverEnable(void);
-void USART_vidReceiverDisable(void);
+extern void USART_vidTransmitterEnable(void);
+extern void USART_vidTransmitterDisable(void);
+extern void USART_vidReceiverEnable(void);
+extern void USART_vidReceiverDisable(void);
 
-u8 USART_u8Get_UBRRH(void);
-u8 USART_u8Get_UCSRC(void);
-
-LBTY_tenuErrorStatus USART_u8SetStopBit(USART_tenumStopBit u8Stop);
-LBTY_tenuErrorStatus USART_u8SetParityMode(USART_tenumParityMode u8Parity);
-LBTY_tenuErrorStatus USART_u8SetCharSize(USART_tenumCharSize u8CharSize);
-LBTY_tenuErrorStatus USART_u8SetBuadRate(USART_tenumBuadRate u32BuadRate);
+extern LBTY_tenuErrorStatus USART_u8SetBuadRate(USART_tenumBuadRate u32BuadRate);
+extern LBTY_tenuErrorStatus USART_u8SetCharSize(USART_tenumCharSize u8CharSize);
+extern LBTY_tenuErrorStatus USART_u8SetParityMode(USART_tenumParityMode u8Parity);
+extern LBTY_tenuErrorStatus USART_u8SetStopBit(USART_tenumStopBit u8Stop);
 
 /********************************************************************************************************************/
 
-u8 USART_u8Available(void);
-void USART_vidFlush(void);
+extern u8 USART_u8Available(void);
+extern void USART_vidFlush(void);
 
-LBTY_tenuErrorStatus USART_u8SetTransmit(u16* pu16Transmit);
-LBTY_tenuErrorStatus USART_u8GetTransmit(u16* pu16Receive);
+extern LBTY_tenuErrorStatus USART_u8SetTransmit(void* pvidTransmit);
+extern LBTY_tenuErrorStatus USART_u8GetTransmit(void* pvidTransmit);
 
-void USART_vidSetChar(u8 u8Char);
-void USART_vidGetChar(u8* pu8Char);
+extern void USART_vidSetChar(u8 u8Char);
+extern void USART_vidGetChar(u8* pu8Char);
 
-void USART_vidSetStr(u8* pu8Transmit);
-void USART_vidGetStr(u8* pu8Receive);
+extern void USART_vidSetStrLine(u8* pu8Transmit);
+extern void USART_vidSetStr(u8* pu8Transmit);
+extern void USART_vidGetStr(u8* pu8Receive);
 
-LBTY_tenuErrorStatus USART_u8SendBuffer(u8* pu8Data, u8 u8Size);
-LBTY_tenuErrorStatus USART_u8ReceiveBuffer(u8* pu8Data, u8 u8Size);
+extern LBTY_tenuErrorStatus USART_u8SendBuffer(u8* pu8Data, u8 u8Size);
+extern LBTY_tenuErrorStatus USART_u8ReceiveBuffer(u8* pu8Data, u8 u8Size);
 
 /********************************************************************************************************************/
 
-void USART_vidEnableReceiveCompleteINT(void);
-void USART_vidEnableTransmitCompleteINT(void);
-void USART_vidEnableDataRegEmptyINT(void);
+extern void USART_vidEnableReceiveCompleteINT(void);
+extern void USART_vidEnableTransmitCompleteINT(void);
+extern void USART_vidEnableDataRegEmptyINT(void);
 
-void USART_vidDisableReceiveCompleteINT(void);
-void USART_vidDisableTransmitCompleteINT(void);
-void USART_vidDisableDataRegEmptyINT(void);
+extern void USART_vidDisableReceiveCompleteINT(void);
+extern void USART_vidDisableTransmitCompleteINT(void);
+extern void USART_vidDisableDataRegEmptyINT(void);
 
-void USART_vidSetCallBack_Empty(void (*pCallBack)(void));
-void USART_vidSetCallBack_TX   (void (*pCallBack)(void));
-void USART_vidSetCallBack_RX   (void (*pCallBack)(void));
+extern void USART_vidSetCallBack_Empty(void (*pCallBack)(void));
+extern void USART_vidSetCallBack_TX   (void (*pCallBack)(void));
+extern void USART_vidSetCallBack_RX   (void (*pCallBack)(void));
 
 #endif /* USART_INT_H_ */
 /*************************** E N D (USART_int.h) ******************************/

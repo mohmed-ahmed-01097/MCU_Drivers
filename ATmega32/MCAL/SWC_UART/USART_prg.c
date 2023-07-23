@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : UART_prg.c												  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 9, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -34,37 +34,39 @@
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
 
-static USART_tstrBuffer strTX_GLB = {
+/* ************************************************************************** */
+/* ***************************** VARIABLE SECTION *************************** */
+/* ************************************************************************** */
+
+static volatile UCSRC_type strUCSRC;
+
+static void (*pvidfunc_Empty_CallBak)(void) = INTP_vidCallBack;
+static void (*pvidfunc_Tx_CallBak)(void)    = INTP_vidCallBack;
+static void (*pvidfunc_Rx_CallBak)(void)    = INTP_vidCallBack;
+
+static USART_tstrBuffer strTX_GLB = {								/*!< TX Buffer */
 	.m_pu8Data 	= LBTY_NULL,
 	.m_u8Size	= LBTY_u8ZERO,
 	.m_u8Idx 	= LBTY_u8ZERO,
 	.m_u8Status	= TX_IDLE,
 };
-static USART_tstrBuffer strRX_GLB = {
+static USART_tstrBuffer strRX_GLB = {								/*!< RX Buffer */
 	.m_pu8Data 	= LBTY_NULL,
 	.m_u8Size	= LBTY_u8ZERO,
 	.m_u8Idx 	= LBTY_u8ZERO,
 	.m_u8Status	= RX_IDLE,
 };
 
-/* ************************************************************************** */
-/* ***************************** VARIABLE SECTION *************************** */
-/* ************************************************************************** */
-
-static void (*pvidfunc_Empty_CallBak)(void);
-static void (*pvidfunc_Tx_CallBak)(void);
-static void (*pvidfunc_Rx_CallBak)(void);
-
-static volatile USART_tstrConfiguration strUSART_Config_GLB = {
-//	.m_Mode 	= USART_OPERATION_MODE,
-//	.m_Speed 	= USART_OPERATION_SPEED,
-//	.m_Polarity	= USART_OPERATION_POLARITY,
+static volatile USART_tstrConfiguration strUSART_Config_GLB = {		/*!< General Config */
+	.m_Mode 	= USART_OPERATION_MODE,
+	.m_Polarity	= USART_OPERATION_POLARITY,
+	.m_Speed 	= USART_OPERATION_SPEED,
 	.m_BuadRate = USART_BUAD_RATE_INIT,
 	.m_Size 	= USART_CHAR_SIZE_INIT,
-	.m_Parity 	= USART_PARITY_MODE_INIT,
+	.m_Parity 	= USART_PARITY_BIT_INIT,
 	.m_Stop 	= USART_STOP_BIT_INIT,
-	.m_TXEN 	= USART_TRANSMIT_INT,
-	.m_RXEN 	= USART_RECEIVE_INT,
+	.m_TXEN 	= USART_TRANSMIT_INIT,
+	.m_RXEN 	= USART_RECEIVE_INIT,
 	.m_TXIE		= USART_TRANSMIT_COMPLETE_INT,
 	.m_RXIE 	= USART_RECEIVE_COMPLETE_INT,
 	.m_Empty 	= USART_DATA_REG_EMPTY_INT,
@@ -82,15 +84,15 @@ void USART_vidSetConfig(USART_tstrConfiguration const* const pstrConfig){
 }
 
 void USART_vidResetConfig(USART_tstrConfiguration* const pstrConfig){
-//	strUSART_Config_GLB.m_Mode 		= USART_OPERATION_MODE;
-//	strUSART_Config_GLB.m_Speed 	= USART_OPERATION_SPEED;
-//	strUSART_Config_GLB.m_Polarity 	= USART_OPERATION_POLARITY;
+	strUSART_Config_GLB.m_Mode 		= USART_OPERATION_MODE;
+	strUSART_Config_GLB.m_Polarity 	= USART_OPERATION_POLARITY;
+	strUSART_Config_GLB.m_Speed 	= USART_OPERATION_SPEED;
 	strUSART_Config_GLB.m_BuadRate 	= USART_BUAD_RATE_INIT;
 	strUSART_Config_GLB.m_Size 		= USART_CHAR_SIZE_INIT;
-	strUSART_Config_GLB.m_Parity 	= USART_PARITY_MODE_INIT;
+	strUSART_Config_GLB.m_Parity 	= USART_PARITY_BIT_INIT;
 	strUSART_Config_GLB.m_Stop 		= USART_STOP_BIT_INIT;
-	strUSART_Config_GLB.m_TXEN 		= USART_TRANSMIT_INT;
-	strUSART_Config_GLB.m_RXEN 		= USART_RECEIVE_INT;
+	strUSART_Config_GLB.m_TXEN 		= USART_TRANSMIT_INIT;
+	strUSART_Config_GLB.m_RXEN 		= USART_RECEIVE_INIT;
 	strUSART_Config_GLB.m_TXIE		= USART_TRANSMIT_COMPLETE_INT;
 	strUSART_Config_GLB.m_RXIE 		= USART_RECEIVE_COMPLETE_INT;
 	strUSART_Config_GLB.m_Empty 	= USART_DATA_REG_EMPTY_INT;
@@ -103,20 +105,21 @@ void USART_vidResetConfig(USART_tstrConfiguration* const pstrConfig){
 
 void UART_vidInit(void){
 
-	S_USART->m_UCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
-	S_USART->m_UCSRC.sUCSRC.m_UCPOL = USART_OPERATION_POLARITY;
-	S_USART->m_UCSRC.sUCSRC.m_UMSEL = USART_OPERATION_MODE;
+	strUCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
+	strUCSRC.sUCSRC.m_UMSEL = strUSART_Config_GLB.m_Mode;
+	strUCSRC.sUCSRC.m_UCPOL = strUSART_Config_GLB.m_Polarity;
+	S_USART->m_UCSRC = strUCSRC.u_Reg;
 
 	S_USART->m_UCSRA.sBits.m_MPCM = USART_OPERATION_MULTI_PROCESSOR;
-	S_USART->m_UCSRA.sBits.m_U2X  = USART_OPERATION_SPEED;
+	S_USART->m_UCSRA.sBits.m_U2X  = strUSART_Config_GLB.m_Speed;
 
 	USART_u8SetBuadRate  (strUSART_Config_GLB.m_BuadRate);
 	USART_u8SetCharSize  (strUSART_Config_GLB.m_Size);
 	USART_u8SetParityMode(strUSART_Config_GLB.m_Parity);
 	USART_u8SetStopBit   (strUSART_Config_GLB.m_Stop);
 
-	S_USART->m_UCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
-	if(S_USART->m_UCSRC.sUCSRC.m_UMSEL == USART_Synchronous){
+	strUCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
+	if(strUCSRC.sUCSRC.m_UMSEL == USART_Synchronous){
 		GPIO_u8SetPinDirection(USART_XCK_PORT, USART_XCK_PIN, PIN_OUTPUT);
 	}
 	GPIO_u8SetPinDirection(USART_PORT    , USART_TX_PIN , PIN_OUTPUT);
@@ -143,38 +146,38 @@ void USART_vidReceiverDisable(void){
 	S_USART->m_UCSRB.sBits.m_RXEN = strUSART_Config_GLB.m_RXEN = LBTY_RESET;
 }
 
-u8 USART_u8Get_UBRRH(void){
-	return S_USART->m_UCSRC.u_Reg;
-}
-u8 USART_u8Get_UCSRC(void){
-	S_USART->m_UCSRC.u_Reg;
-	return S_USART->m_UCSRC.u_Reg;
-}
-
-LBTY_tenuErrorStatus USART_u8SetStopBit(USART_tenumStopBit u8Stop){
+LBTY_tenuErrorStatus USART_u8SetBuadRate(USART_tenumBuadRate u32BuadRate){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+	u16 u16UBRR = LBTY_u16ZERO;
 
-	S_USART->m_UCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
-	switch(u8Stop){
-		case USART_Stop_1_bit: S_USART->m_UCSRC.sUCSRC.m_USBS = strUSART_Config_GLB.m_Stop = u8Stop;	break;
-		case USART_Stop_2_bit: S_USART->m_UCSRC.sUCSRC.m_USBS = strUSART_Config_GLB.m_Stop = u8Stop;	break;
-		default: u8RetErrorState = LBTY_NOK;
+	switch(strUCSRC.sUCSRC.m_UMSEL){
+		case USART_Asynchronous:
+			switch(S_USART->m_UCSRA.sBits.m_U2X){
+				case USART_Speed_x1:
+					u16UBRR = (u16)(F_CPU / (16.0f * (u32)u32BuadRate)) - 1;
+					break;
+				case USART_Speed_x2:
+					u16UBRR = (u16)(F_CPU / (8.0f  * (u32)u32BuadRate)) - 1;
+					break;
+				default:
+					u8RetErrorState = LBTY_NOK;
+			}
+			break;
+		case USART_Synchronous:
+			u16UBRR = (u16)(USART_OPERATION_FREQ / (2.0f * (u32)u32BuadRate)) - 1;
+			break;
+		default:
+			u8RetErrorState = LBTY_NOK;
 	}
+	if(u8RetErrorState == LBTY_OK){
+		strUSART_Config_GLB.m_BuadRate = u32BuadRate;
 
-	return u8RetErrorState;
-}
+		strUCSRC.sUBRRH.m_URSEL = USART_UBRRH_Reg;
+		strUCSRC.sUBRRH.m_UBRR = GET_NIB(u16UBRR, 8);
 
-LBTY_tenuErrorStatus USART_u8SetParityMode(USART_tenumParityMode u8Parity){
-	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
-
-	S_USART->m_UCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
-	switch(u8Parity){
-		case USART_Parity_Disable: S_USART->m_UCSRC.sUCSRC.m_UPM = strUSART_Config_GLB.m_Parity = u8Parity;	break;
-		case USART_Parity_Even   : S_USART->m_UCSRC.sUCSRC.m_UPM = strUSART_Config_GLB.m_Parity = u8Parity;	break;
-		case USART_Parity_Odd    : S_USART->m_UCSRC.sUCSRC.m_UPM = strUSART_Config_GLB.m_Parity = u8Parity;	break;
-		default: u8RetErrorState = LBTY_NOK;
+		S_USART->m_UCSRC = strUCSRC.u_Reg;
+		S_USART->m_UBRRL = GET_BYTE(u16UBRR, 0);
 	}
-
 	return u8RetErrorState;
 }
 
@@ -187,10 +190,12 @@ LBTY_tenuErrorStatus USART_u8SetCharSize(USART_tenumCharSize u8CharSize){
 		case USART_7_bit:
 		case USART_8_bit:
 		case USART_9_bit:
-			S_USART->m_UCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
-			S_USART->m_UCSRC.sUCSRC.m_UCSZ0 = GET_BIT(u8CharSize, USART_UCSZ0_BIT);
-			S_USART->m_UCSRC.sUCSRC.m_UCSZ1 = GET_BIT(u8CharSize, USART_UCSZ1_BIT);
+			strUCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
+			strUCSRC.sUCSRC.m_UCSZ0 = GET_BIT(u8CharSize, USART_UCSZ0_BIT);
+			strUCSRC.sUCSRC.m_UCSZ1 = GET_BIT(u8CharSize, USART_UCSZ1_BIT);
 			S_USART->m_UCSRB.sBits.m_UCSZ2  = GET_BIT(u8CharSize, USART_UCSZ2_BIT);
+
+			S_USART->m_UCSRC = strUCSRC.u_Reg;
 			strUSART_Config_GLB.m_Size = u8CharSize;
 			break;
 		default:
@@ -200,37 +205,36 @@ LBTY_tenuErrorStatus USART_u8SetCharSize(USART_tenumCharSize u8CharSize){
 	return u8RetErrorState;
 }
 
-LBTY_tenuErrorStatus USART_u8SetBuadRate(USART_tenumBuadRate u32BuadRate){
+LBTY_tenuErrorStatus USART_u8SetParityMode(USART_tenumParityMode u8Parity){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
-	u16 u16UBRR = LBTY_u16ZERO;
 
-	S_USART->m_UCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
-	switch(S_USART->m_UCSRC.sUCSRC.m_UMSEL){
-		case USART_Asynchronous:
-			switch(S_USART->m_UCSRA.sBits.m_U2X){
-				case USART_Speed_x1:
-					u16UBRR = (u16)(F_CPU / (16.0 * (u32)u32BuadRate)) - 1;
-					break;
-				case USART_Speed_x2:
-					u16UBRR = (u16)(F_CPU / (8.0  * (u32)u32BuadRate)) - 1;
-					break;
-				default:
-					u8RetErrorState = LBTY_NOK;
-			}
+	switch(u8Parity){
+		case USART_Parity_Disable:
+		case USART_Parity_Even:
+		case USART_Parity_Odd:
+			strUCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
+			strUCSRC.sUCSRC.m_UPM = strUSART_Config_GLB.m_Parity = u8Parity;
+			S_USART->m_UCSRC = strUCSRC.u_Reg;
 			break;
-		case USART_Synchronous:
-			u16UBRR = (u16)(USART_OPERATION_FREQ / (2.0 * (u32)u32BuadRate)) - 1;
-			break;
-		default:
-			u8RetErrorState = LBTY_NOK;
+		default: u8RetErrorState = LBTY_NOK;
 	}
-	if(u8RetErrorState == LBTY_OK){
-		strUSART_Config_GLB.m_BuadRate = u32BuadRate;
 
-		S_USART->m_UCSRC.sUBRRH.m_URSEL = USART_UBRRH_Reg;
-		S_USART->m_UCSRC.sUBRRH.m_UBRR = GET_NIB(u16UBRR, 8);
-		S_USART->m_UBRRL = GET_BYTE(u16UBRR, 0);
+	return u8RetErrorState;
+}
+
+LBTY_tenuErrorStatus USART_u8SetStopBit(USART_tenumStopBit u8Stop){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+
+	switch(u8Stop){
+		case USART_Stop_1_bit:
+		case USART_Stop_2_bit:
+			strUCSRC.sUCSRC.m_URSEL = USART_UCSRC_Reg;
+			strUCSRC.sUCSRC.m_USBS  = strUSART_Config_GLB.m_Stop = u8Stop;
+			S_USART->m_UCSRC = strUCSRC.u_Reg;
+			break;
+		default: u8RetErrorState = LBTY_NOK;
 	}
+
 	return u8RetErrorState;
 }
 
@@ -255,32 +259,39 @@ void USART_vidFlush(void){
 	}
 }
 
-LBTY_tenuErrorStatus USART_u8SetTransmit(u16* pu16Transmit){
+LBTY_tenuErrorStatus USART_u8SetTransmit(void* pvidTransmit){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
-	if(pu16Transmit == LBTY_NULL){
+	if(pvidTransmit == LBTY_NULL){
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
-		S_USART->m_UDR = (u8)(*pu16Transmit);
+		USART_vidWaitDataRegEmpty();
+		S_USART->m_UDR = *((u8*)pvidTransmit);
 		if(strUSART_Config_GLB.m_Size == USART_9_bit){
-			S_USART->m_UCSRB.sBits.m_TXB8 = GET_BIT(*pu16Transmit, 8);
+			S_USART->m_UCSRB.sBits.m_TXB8 = GET_BIT(*((u16*)pvidTransmit), 8);
 		}
 	}
 	return u8RetErrorState;
 }
-LBTY_tenuErrorStatus USART_u8GetTransmit(u16* pu16Receive){
+LBTY_tenuErrorStatus USART_u8GetTransmit(void* pvidTransmit){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
-	if(pu16Receive == LBTY_NULL){
+	if(pvidTransmit == LBTY_NULL){
 		u8RetErrorState = LBTY_NULL_POINTER;
 	}else{
+		USART_vidWaitReceiveComplete();
 		if(USART_u8GetFrameError() || USART_u8GetDataOverRun() || USART_u8GetParityError()){
-			*pu16Receive = LBTY_u16MAX;
+			if(strUSART_Config_GLB.m_Size == USART_9_bit){
+				*((u16*)pvidTransmit) = LBTY_u16MAX;
+			}else{
+				*((u8*)pvidTransmit)  = LBTY_u8MAX;
+			}
 			u8RetErrorState = LBTY_NOK;
 		}else{
-			*pu16Receive = (u16)S_USART->m_UDR;
 			if(strUSART_Config_GLB.m_Size == USART_9_bit){
-				*pu16Receive |= (S_USART->m_UCSRB.sBits.m_TXB8 << 8) ;
+				*((u16*)pvidTransmit) = (u16)S_USART->m_UDR | (u16)(S_USART->m_UCSRB.sBits.m_TXB8 << 8) ;
+			}else{
+				*((u8*)pvidTransmit)  = S_USART->m_UDR;
 			}
 		}
 	}
@@ -296,6 +307,10 @@ void USART_vidGetChar(u8* pu8Char){
 	*pu8Char = S_USART->m_UDR;
 }
 
+void USART_vidSetStrLine(u8* pu8Transmit){
+	USART_vidSetStr((u8*)pu8Transmit);
+	USART_vidSetStr((u8*)"\r\n");
+}
 void USART_vidSetStr(u8* pu8Transmit){
 	while(*pu8Transmit){
 		USART_vidSetChar(*(pu8Transmit++));
@@ -304,9 +319,8 @@ void USART_vidSetStr(u8* pu8Transmit){
 }
 void USART_vidGetStr(u8* pu8Receive){
 	do{
-		USART_vidGetChar(pu8Receive++);
-		USART_vidSetChar('\0');
-	}while(USART_u8Available());
+		USART_vidGetChar(pu8Receive);
+	}while(*pu8Receive++ != '\r');
 	*pu8Receive = '\0';
 }
 
@@ -325,7 +339,6 @@ LBTY_tenuErrorStatus USART_u8SendBuffer(u8* pu8Data, u8 u8Size){
 			if(S_USART->m_UCSRA.sBits.m_UDRE){
 				S_USART->m_UDR = strTX_GLB.m_pu8Data[strTX_GLB.m_u8Idx++];
 			}
-			//USART_vidEnableTransmitCompleteINT();
 			USART_vidEnableDataRegEmptyINT();
 		}else{
 			u8RetErrorState = LBTY_NOK;

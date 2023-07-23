@@ -169,7 +169,7 @@ typedef struct{
     __IO UCSRB_type m_UCSRB;
     __IO UCSRA_type m_UCSRA;
     __IO u8         m_UDR;
-    __I  u8         REVERSE[13];
+    __I  u8         REVERSE[19];
     __IO UCSRC_type m_UCSRC;
 }USART_type;
 
