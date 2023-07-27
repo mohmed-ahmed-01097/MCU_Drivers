@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : SPI_prg.c													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 12, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -38,18 +38,19 @@
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
 
-static void (*pFuncCallBack_SPI)(void);
+static volatile u8 SPI_u8Flag_GLB;
+
+static void (*pFuncCallBack_SPI)(void) = INTP_vidCallBack;
 
 static SPI_tstrConfig strSPI_Config_GLB = {
-//		.m_Mode 		= SPI_MODE,
-//		.m_Speed 		= SPI_CLOCK_SPEED,
+		.m_Mode 		= SPI_MODE,
 		.m_Prescaler	= SPI_CLOCK_PRESCALER,
 		.m_Phase		= SPI_CLOCK_PHASE,
 		.m_Polarity		= SPI_CLOCK_POLARITY,
 		.m_Order 		= SPI_DATA_ORDER,
 
-		.m_SPIEN 		= SPI_INTI_STATE,
-		.m_SPIIE 		= SPI_INTI_IRQ_STATE,
+		.m_SPIEN 		= SPI_INIT,
+		.m_SPIIE 		= SPI_INT,
 };
 
 /* ************************************************************************** */
@@ -64,14 +65,13 @@ void SPI_vidSetConfig(SPI_tstrConfig const* const pstrConfig){
 }
 
 void SPI_vidSRestConfig(SPI_tstrConfig* const pstrConfig){
-//	strSPI_Config_GLB.m_Mode 		= SPI_MODE;
-//	strSPI_Config_GLB.m_Speed 		= SPI_CLOCK_SPEED;
+	strSPI_Config_GLB.m_Mode 		= SPI_MODE;
 	strSPI_Config_GLB.m_Prescaler	= SPI_CLOCK_PRESCALER;
 	strSPI_Config_GLB.m_Phase		= SPI_CLOCK_PHASE;
 	strSPI_Config_GLB.m_Polarity	= SPI_CLOCK_POLARITY;
 	strSPI_Config_GLB.m_Order 		= SPI_DATA_ORDER;
-	strSPI_Config_GLB.m_SPIEN 		= SPI_INTI_STATE;
-	strSPI_Config_GLB.m_SPIIE 		= SPI_INTI_IRQ_STATE;
+	strSPI_Config_GLB.m_SPIEN 		= SPI_INIT;
+	strSPI_Config_GLB.m_SPIIE 		= SPI_INT;
 
 	if(pstrConfig != LBTY_NULL){
 		*pstrConfig = strSPI_Config_GLB;
@@ -80,17 +80,29 @@ void SPI_vidSRestConfig(SPI_tstrConfig* const pstrConfig){
 }
 
 void SPI_vidInit(void){
+
+	S_SPI->m_SPCR.sBits.m_MSTR = strSPI_Config_GLB.m_Mode;
+	if(strSPI_Config_GLB.m_Mode == SPI_Master){
+		GPIO_u8SetMaskDirection(SPI_PORT, SPI_MODE_MASK, PORT_OUTPUT);
+		GPIO_u8SetPinDirection (SPI_PORT, SPI_MISO_PIN , PIN_INPUT  );
+		for(u8 i = SPI_SS_NUM ; i-- ; ){
+			GPIO_u8SetPinDirection(kastrSSConfiguration_GLB[i].m_Port, kastrSSConfiguration_GLB[i].m_Pin, PIN_OUTPUT);
+			GPIO_u8SetPinValue    (kastrSSConfiguration_GLB[i].m_Port, kastrSSConfiguration_GLB[i].m_Pin, SPI_SS_DISABLE);
+		}
+	}else if(strSPI_Config_GLB.m_Mode == SPI_Slave){
+		GPIO_u8SetMaskDirection(SPI_PORT, SPI_MODE_MASK, PORT_INPUT);
+		GPIO_u8SetPinDirection (SPI_PORT, SPI_MISO_PIN , PIN_OUTPUT);
+	}
+
+	//SPI_vidSetPrescaler(strSPI_Config_GLB.m_Prescaler);
 	S_SPI->m_SPSR.sBits.m_SPI2X= GET_BIT(strSPI_Config_GLB.m_Prescaler, SPI_SPI2X_BIT);
 	S_SPI->m_SPCR.sBits.m_SPR  = GET_MASK(strSPI_Config_GLB.m_Prescaler, SPI_SPR_MASK);
+	//SPI_vidSetClockPhase(strSPI_Config_GLB.m_Phase);
 	S_SPI->m_SPCR.sBits.m_CPHA = strSPI_Config_GLB.m_Phase;
+	//SPI_vidSetClockPolarity(strSPI_Config_GLB.m_Polarity);
 	S_SPI->m_SPCR.sBits.m_CPOL = strSPI_Config_GLB.m_Polarity;
+	//SPI_vidSetDataOrder(strSPI_Config_GLB.m_Order);
 	S_SPI->m_SPCR.sBits.m_DORD = strSPI_Config_GLB.m_Order;
-
-	S_SPI->m_SPCR.sBits.m_MSTR = SPI_MODE;
-	GPIO_u8SetPinDirection(SPI_PORT, SPI_MOSI_PIN, SPI_MOSI_CONFIG);
-	GPIO_u8SetPinDirection(SPI_PORT, SPI_MISO_PIN, SPI_MISO_CONFIG);
-	GPIO_u8SetPinDirection(SPI_PORT, SPI_SCK_PIN , SPI_SCK_CONFIG );
-	GPIO_u8SetPinDirection(SPI_PORT, SPI_SS_PIN  , SPI_SS_CONFIG  );
 
 	S_SPI->m_SPCR.sBits.m_SPIE = strSPI_Config_GLB.m_SPIIE;
 	S_SPI->m_SPCR.sBits.m_SPE  = strSPI_Config_GLB.m_SPIEN;
@@ -179,82 +191,95 @@ LBTY_tenuErrorStatus SPI_vidSetDataOrder(SPI_tenuDataOrder u8Order){
 
 /********************************************************************************************************************/
 
-LCTY_INLINE u8 SPI_u8CollisionFlag(void){return S_SPI->m_SPSR.sBits.m_WCOL;}
-LCTY_INLINE u8 SPI_u8TransmitFlag(void) {return S_SPI->m_SPSR.sBits.m_SPIF;}
-
-LBTY_tenuErrorStatus SPI_u8SetChar(u8 u8Char){
+LBTY_tenuErrorStatus SPI_u8SetTransmit(u8 u8Char){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
-#if (SPI_MODE == SPI_MASTER)
-
-	if(!SPI_u8CollisionFlag()){
-		GPIO_u8SetPinValue(SPI_PORT, SPI_SS_PIN, PIN_High);
+	if(!(S_SPI->m_SPSR.sBits.m_WCOL)){
 		S_SPI->m_SPDR = u8Char;
-		while(!SPI_u8TransmitFlag());
-		GPIO_u8SetPinValue(SPI_PORT, SPI_SS_PIN, PIN_Low);
+		while((!S_SPI->m_SPSR.sBits.m_SPIF) && (!SPI_u8Flag_GLB));
+		SPI_u8Flag_GLB = LBTY_RESET;
 	}else{
 		u8RetErrorState = LBTY_NOK;
 	}
-
-#elif(SPI_MODE == SPI_SLAVE)
-
-	u8 u8State = LBTY_u8ZERO;
-	GPIO_u8GetPinValue(SPI_PORT, SPI_SS_PIN, &u8State);
-	if((!SPI_u8CollisionFlag()) && (!u8State)){
-		S_SPI->m_SPDR = u8Char;
-		while(!SPI_u8TransmitFlag());
-	}else{
-		u8RetErrorState = LBTY_NOK;
-	}
-
-#endif
 
 	return u8RetErrorState;
 }
-
-LBTY_tenuErrorStatus SPI_u8GetChar(u8* pu8Char){
+LBTY_tenuErrorStatus SPI_u8GetTransmit(u8* pu8Char){
 	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
 
-#if (SPI_MODE == SPI_MASTER)
-
-	if(!SPI_u8CollisionFlag()){
-		GPIO_u8SetPinValue(SPI_PORT, SPI_SS_PIN, PIN_High);
-		while(!SPI_u8TransmitFlag());
-		*pu8Char = S_SPI->m_SPDR;
-		GPIO_u8SetPinValue(SPI_PORT, SPI_SS_PIN, PIN_Low);
-	}else{
-		u8RetErrorState = LBTY_NOK;
-	}
-
-#elif(SPI_MODE == SPI_SLAVE)
-
-	u8 u8State = LBTY_u8ZERO;
-	GPIO_u8GetPinValue(SPI_PORT, SPI_SS_PIN, &u8State);
-	if((!SPI_u8CollisionFlag()) && (!u8State)){
-		while(!SPI_u8TransmitFlag());
+	if(!(S_SPI->m_SPSR.sBits.m_WCOL)){
+		while((!S_SPI->m_SPSR.sBits.m_SPIF) && (!SPI_u8Flag_GLB));
+		SPI_u8Flag_GLB = LBTY_RESET;
 		*pu8Char = S_SPI->m_SPDR;
 	}else{
 		u8RetErrorState = LBTY_NOK;
 	}
 
-#endif
+	return u8RetErrorState;
+}
+
+LBTY_tenuErrorStatus SPI_u8SetChar(u8 u8Char, u8 u8Index){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+
+	if(strSPI_Config_GLB.m_Mode == SPI_Master){
+
+		GPIO_u8SetPinValue(kastrSSConfiguration_GLB[u8Index].m_Port, kastrSSConfiguration_GLB[u8Index].m_Pin,  SPI_SS_ENABLE);
+		u8RetErrorState = SPI_u8SetTransmit(u8Char);
+		GPIO_u8SetPinValue(kastrSSConfiguration_GLB[u8Index].m_Port, kastrSSConfiguration_GLB[u8Index].m_Pin, SPI_SS_DISABLE);
+
+	}else if(strSPI_Config_GLB.m_Mode == SPI_Slave){
+
+		u8 u8State = SPI_SS_DISABLE;
+		GPIO_u8GetPinValue(SPI_PORT, SPI_SS_PIN, &u8State);
+
+		if(u8State == SPI_SS_ENABLE){
+			u8RetErrorState = SPI_u8SetTransmit(u8Char);
+		}
+
+	}else{
+		while(1);
+	}
+
+	return u8RetErrorState;
+}
+LBTY_tenuErrorStatus SPI_u8GetChar(u8* pu8Char, u8 u8Index){
+	LBTY_tenuErrorStatus u8RetErrorState = LBTY_OK;
+
+	if(strSPI_Config_GLB.m_Mode == SPI_Master){
+
+		GPIO_u8SetPinValue(kastrSSConfiguration_GLB[u8Index].m_Port, kastrSSConfiguration_GLB[u8Index].m_Pin,  SPI_SS_ENABLE);
+		u8RetErrorState = SPI_u8GetTransmit(pu8Char);
+		GPIO_u8SetPinValue(kastrSSConfiguration_GLB[u8Index].m_Port, kastrSSConfiguration_GLB[u8Index].m_Pin, SPI_SS_DISABLE);
+
+	}else if(strSPI_Config_GLB.m_Mode == SPI_Slave){
+
+		u8 u8State = SPI_SS_DISABLE;
+		GPIO_u8GetPinValue(SPI_PORT, SPI_SS_PIN, &u8State);
+
+		if(u8State == SPI_SS_ENABLE){
+			u8RetErrorState = SPI_u8GetTransmit(pu8Char);
+		}
+
+	}else{
+		while(1);
+	}
 
 	return u8RetErrorState;
 }
 
-void SPI_vidSetStr(u8* pu8Transmit){
+void SPI_vidSetStr(u8* pu8Transmit, u8 u8Index){
 	while(*pu8Transmit){
-		if(SPI_u8SetChar(*(pu8Transmit++))){
+		if(SPI_u8SetChar(*(pu8Transmit++), u8Index)){
 			break;
 		}
 	}
 }
-void SPI_vidGetStr(u8* pu8Receive){
+void SPI_vidGetStr(u8* pu8Receive, u8 u8Index){
 	do{
-		if(SPI_u8GetChar(pu8Receive++) || SPI_u8SetChar('\0')){
+		if(SPI_u8GetChar(pu8Receive, u8Index)){
 			break;
 		}
-	}while(*(pu8Receive-1) != '\0');
+	}while(*(pu8Receive++) != '\0');
 }
 
 /********************************************************************************************************************/
@@ -265,6 +290,7 @@ void SPI_vidSetCallBack_OverFlow(void (*pCallBack)(void)){
 
 ISR(SPI_STC_vect){
 	pFuncCallBack_SPI();
+	SPI_u8Flag_GLB = LBTY_SET;
 }
 
 /*************************** E N D (SPI_prg.c) ******************************/

@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : main.c														  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : May 19, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -45,17 +45,39 @@
 #include "SPI_int.h"
 #include "SPI_cfg.h"
 
+void SPI_vidINT(void);
+static u8 u8char = '0';
+static volatile u8 u8Flag;
 int main(void){
 
-    GPIO_voidInit();
-
+	SPI_vidInit();
+	SPI_vidSetCallBack_OverFlow(SPI_vidINT);
+	
+	GPIO_u8SetPortDirection(D, PORT_OUTPUT);
 
     INTP_vidEnable();
+    
+    if(SPI_MODE == SPI_Master)
+    	SPI_vidSetStr( (u8*)"Hello MAAM\n\r", 0);
 
    	while(1){
-
+   	    if(SPI_MODE == SPI_Master && u8Flag){
+   			u8Flag = LBTY_RESET;
+   	    	SPI_u8SetChar(u8char, 0);
+   	    	vidMyDelay_ms(500);
+   	    }
+   		GPIO_u8SetPortValue(D, u8char);
    	}
    	return 0;
+}
+
+void SPI_vidINT(void){
+	if(SPI_MODE == SPI_Master){
+		u8Flag = LBTY_SET;
+		u8char++;
+	}
+	if(SPI_MODE == SPI_Slave)
+		SPI_u8GetChar(&u8char, 0);
 }
 
 #endif

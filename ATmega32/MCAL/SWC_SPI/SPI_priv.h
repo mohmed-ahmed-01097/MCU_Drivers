@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : SPI_priv.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 12, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -16,37 +16,43 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+/** @brief : Type define of Union bit field of "SPI Control Register"         */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+	u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_SPR : 2;   // SPI Clock Rate Select 1 and 0
-    	__IO u8 m_CPHA: 1;   // Clock Phase
-    	__IO u8 m_CPOL: 1;   // Clock Polarity
-    	__IO u8 m_MSTR: 1;   // Master/Slave Select
-    	__IO u8 m_DORD: 1;   // Data Order
-    	__IO u8 m_SPE : 1;   // SPI Enable
-    	__IO u8 m_SPIE: 1;   // SPI Interrupt Enable
+    	__IO u8 m_SPR : 2;			/*!< SPI Clock Rate Select 1 and 0 */
+    	__IO u8 m_CPHA: 1;			/*!< Clock Phase */
+    	__IO u8 m_CPOL: 1;			/*!< Clock Polarity */
+    	__IO u8 m_MSTR: 1;			/*!< Master/Slave Select */
+    	__IO u8 m_DORD: 1;			/*!< Data Order */
+    	__IO u8 m_SPE : 1;			/*!< SPI Enable */
+    	__IO u8 m_SPIE: 1;			/*!< SPI Interrupt Enable */
     }sBits;
-}SPCR_type; // SPI Control Register
+}SPCR_type;
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field of "SPI Status Register"          */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
-    u8 u_Reg;
+	u8 u_Reg;						/*!< Byte */
     struct {
-    	__IO u8 m_SPI2X: 1;   // Double SPI Speed Bit
-        __I  u8        : 5;
-        __I  u8 m_WCOL : 1;   // Write Collision Flag
-        __I  u8 m_SPIF : 1;   // SPI Interrupt Flag
+    	__IO u8 m_SPI2X: 1;			/*!< Double SPI Speed Bit */
+        __I  u8        : 5;			/*!< Reversed */
+        __I  u8 m_WCOL : 1;			/*!< Write Collision Flag */
+        __I  u8 m_SPIF : 1;			/*!< SPI Interrupt Flag */
     }sBits;
-}SPSR_type; // SPI Status Register
+}SPSR_type;
 
 /*************************************************************************/
 
+/** @brief : SPI Registers                                                    */
+/** <b>Type</b> : Struct <b>Unit</b> : None                                   */
 typedef struct{
-    __IO SPCR_type m_SPCR;
-    __IO SPSR_type m_SPSR;
-    __IO u8        m_SPDR;
+    __IO SPCR_type m_SPCR;			/*!< SPI Control Reg */
+    __IO SPSR_type m_SPSR;			/*!< SPI Status Reg */
+    __IO u8        m_SPDR;			/*!< SPI Data Reg */
 }SPI_type;
 
 /* ************************************************************************** */
@@ -61,9 +67,6 @@ typedef struct{
 
 /* ************************************************************************** */
 
-#define SPI_SLAVE				0u
-#define SPI_MASTER				1u
-
 #define SPI_SPR_MASK			3u
 #define SPI_SPI2X_BIT			2u
 
@@ -75,21 +78,10 @@ typedef struct{
 #define SPI_SCK_PIN				GPIO_SPI_SCK
 #define SPI_SS_PIN				GPIO_SPI_SS
 
-#if (SPI_MODE == SPI_MASTER)
+#define SPI_MODE_MASK			(1<<SPI_SS_PIN) | (1<<SPI_SCK_PIN) | (1<<SPI_MOSI_PIN)
 
-#define SPI_MOSI_CONFIG			PIN_OUTPUT
-#define SPI_MISO_CONFIG			PIN_INPUT
-#define SPI_SCK_CONFIG			PIN_OUTPUT
-#define SPI_SS_CONFIG			PIN_OUTPUT
-
-#elif(SPI_MODE == SPI_SLAVE)
-
-#define SPI_MOSI_CONFIG			PIN_INPUT
-#define SPI_MISO_CONFIG			PIN_OUTPUT
-#define SPI_SCK_CONFIG			PIN_INPUT
-#define SPI_SS_CONFIG			PIN_INPUT
-
-#endif
+#define SPI_SS_ENABLE			PIN_Low
+#define SPI_SS_DISABLE			PIN_High
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */

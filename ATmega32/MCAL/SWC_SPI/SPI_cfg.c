@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : SPI_cfg.h													  */
+/* File Name   : SPI_cfg.c													  */
 /* Author      : MAAM														  */
 /* Version     : v01.2														  */
 /* date        : Apr 12, 2023												  */
@@ -9,8 +9,14 @@
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
-#ifndef SPI_CFG_H_
-#define SPI_CFG_H_
+#include "LBTY_int.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "SPI_int.h"
+#include "SPI_cfg.h"
+#include "SPI_priv.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -20,23 +26,30 @@
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
 
-#define SPI_MODE				SPI_Master
-#define SPI_SS_NUM				1u
-
-#define SPI_CLOCK_PRESCALER		SPI_Prescaler_8
-#define SPI_CLOCK_POLARITY		SPI_Leading_Rising
-#define SPI_CLOCK_PHASE			SPI_Leading_Setup
-#define SPI_DATA_ORDER			SPI_LSB_Frist
-
-#define SPI_INIT				LBTY_SET
-#define SPI_INT					LBTY_SET
-
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
 /* ************************************************************************** */
-
-extern const SPI_tstrSS_Config kastrSSConfiguration_GLB[SPI_SS_NUM];
-
+const SPI_tstrSS_Config kastrSSConfiguration_GLB[SPI_SS_NUM] = {
+	 {.m_Port = SPI_PORT, .m_Pin = SPI_SS_PIN}
+#if(SPI_SS_NUM >= 2)
+	,{.m_Port = SPI_PORT, .m_Pin = SPI_SS_PIN}
+#endif
+#if(SPI_SS_NUM >= 3)
+	,{.m_Port = SPI_PORT, .m_Pin = SPI_SS_PIN}
+#endif
+#if(SPI_SS_NUM >= 4)
+	,{.m_Port = SPI_PORT, .m_Pin = SPI_SS_PIN}
+#endif
+#if(SPI_SS_NUM >= 5)
+	,{.m_Port = SPI_PORT, .m_Pin = SPI_SS_PIN}
+#endif
+#if(SPI_SS_NUM >= 6)
+	,{.m_Port = SPI_PORT, .m_Pin = SPI_SS_PIN}
+#endif
+#if(SPI_SS_NUM >= 7)
+	,{.m_Port = SPI_PORT, .m_Pin = SPI_SS_PIN}
+#endif
+};
 /* ************************************************************************** */
 /* ***************************** VARIABLE SECTION *************************** */
 /* ************************************************************************** */
@@ -46,5 +59,4 @@ extern const SPI_tstrSS_Config kastrSSConfiguration_GLB[SPI_SS_NUM];
 /* ************************************************************************** */
 
 
-#endif /* SPI_CFG_H_ */
-/*************************** E N D (SPI_cfg.h) ******************************/
+/*************************** E N D (SPI_cfg.c) ******************************/
