@@ -1,16 +1,29 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : I2C_cfg.h													  */
+/* File Name   : EEI2C_prg.c												  */
 /* Author      : MAAM														  */
 /* Version     : v01.2														  */
-/* date        : Apr 13, 2023												  */
+/* date        : Apr 12, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
 
-#ifndef I2C_CFG_H_
-#define I2C_CFG_H_
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "INTP.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "I2C_cfg.h"
+#include "I2C_int.h"
+
+#include "EEI2C_cfg.h"
+#include "EEI2C_int.h"
+#include "EEI2C_priv.h"
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -19,17 +32,6 @@
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
-
-#define I2C_MODE					I2C_Master
-
-#define I2C_SLAVE_ADDRESS			0x7A
-#define I2C_SCL_FREQ				400000u
-#define I2C_CLOCK_PRESCALER			I2C_Prescaler_1
-
-#define I2C_INIT_STATE				LBTY_SET
-#define I2C_INT_STATE				LBTY_RESET
-
-#define I2C_SLAVE_WAIT				10	//5
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -43,6 +45,27 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+void EEI2C_vidInit(void){
+	I2C_vidInit();
+}
 
-#endif /* I2C_CFG_H_ */
-/*************************** E N D (I2C_cfg.h) ******************************/
+void EEI2C_u8SetChar(u8 u8char, u8 u8Address){
+	while(I2C_u8GetINTF());
+	I2C_u8SetSTART();
+	I2C_u8SetAddress(EE_SLAVE_ADDRESS, I2C_WRITE);
+	I2C_u8SetData(u8Address);
+	I2C_u8SetData(u8char);
+	I2C_u8SetSTOP();
+}
+void EEI2C_u8GetChar(u8* pu8char, u8 u8Address){
+	while(I2C_u8GetINTF());
+	I2C_u8SetSTART();
+	I2C_u8SetAddress(EE_SLAVE_ADDRESS, I2C_WRITE);
+	I2C_u8SetData(u8Address);
+	I2C_u8SetRepeatSTART();
+	I2C_u8SetAddress(EE_SLAVE_ADDRESS, I2C_READ);
+	I2C_u8GetData(pu8char, LBTY_RESET);
+	I2C_u8SetSTOP();
+}
+
+/*************************** E N D (I2C_prg.c) ******************************/

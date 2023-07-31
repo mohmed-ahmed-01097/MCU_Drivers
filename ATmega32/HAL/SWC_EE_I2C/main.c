@@ -1,16 +1,13 @@
 /* ************************************************************************** */
 /* ********************** FILE DEFINITION SECTION *************************** */
 /* ************************************************************************** */
-/* File Name   : I2C_cfg.h													  */
+/* File Name   : main.c														  */
 /* Author      : MAAM														  */
 /* Version     : v01.2														  */
-/* date        : Apr 13, 2023												  */
+/* date        : May 19, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
 /* ************************************************************************** */
-
-#ifndef I2C_CFG_H_
-#define I2C_CFG_H_
 
 /* ************************************************************************** */
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
@@ -19,17 +16,6 @@
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */
 /* ************************************************************************** */
-
-#define I2C_MODE					I2C_Master
-
-#define I2C_SLAVE_ADDRESS			0x7A
-#define I2C_SCL_FREQ				400000u
-#define I2C_CLOCK_PRESCALER			I2C_Prescaler_1
-
-#define I2C_INIT_STATE				LBTY_SET
-#define I2C_INT_STATE				LBTY_RESET
-
-#define I2C_SLAVE_WAIT				10	//5
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
@@ -43,6 +29,49 @@
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
+#ifdef	SWC_EE_I2C
 
-#endif /* I2C_CFG_H_ */
-/*************************** E N D (I2C_cfg.h) ******************************/
+#include "LBTY_int.h"
+#include "LBIT_int.h"
+#include "LCTY_int.h"
+
+#include "DELAY.h"
+
+#include "GPIO_int.h"
+#include "GPIO_cfg.h"
+
+#include "INTP.h"
+
+#include "EEI2C_int.h"
+#include "EEI2C_cfg.h"
+
+void EEI2C_vidErease(u8 u8Start, u8 u8End);
+static u8 u8char = '0';
+int main(void){
+
+	EEI2C_vidInit();
+
+	GPIO_u8SetPortDirection(D, PORT_OUTPUT);
+
+    INTP_vidEnable();
+
+    EEI2C_vidErease(0x00 , 0x0F);
+
+   	while(1){
+    	EEI2C_u8GetChar(&u8char, 0x50);
+   		GPIO_u8SetPortValue(D, u8char);
+   		EEI2C_u8SetChar(++u8char, 0x50);
+    	vidMyDelay_ms(500);
+   	}
+   	return 0;
+}
+void EEI2C_vidErease(u8 u8Start, u8 u8End){
+	for(u8 i = u8Start ; i<=u8End ; i++){
+		EEI2C_u8SetChar(LBTY_u8MAX, i);
+    	vidMyDelay_ms(4);
+	}
+}
+#endif
+
+
+/*************************** E N D (main.c) ******************************/

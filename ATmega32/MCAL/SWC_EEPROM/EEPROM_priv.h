@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : EEPROM_priv.h												  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 30, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -16,19 +16,23 @@
 /* ********************** TYPE_DEF/STRUCT/ENUM SECTION ********************** */
 /* ************************************************************************** */
 
+/** @brief : Type define of Union bit field of "EEPROM Control Register"      */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
     u8 u_Reg;
     struct {
-    	__IO u8 m_EERE : 1;   // EEPROM Read Enable
-    	__IO u8 m_EEWE : 1;   // EEPROM Write Enable
-    	__IO u8 m_EEMWE: 1;   // EEPROM Master Write Enable
-    	__IO u8 m_EERIE: 1;   // EEPROM Ready Interrupt Enable
+    	__IO u8 m_EERE : 1;			/*!< EEPROM Read Enable */
+    	__IO u8 m_EEWE : 1;			/*!< EEPROM Write Enable */
+    	__IO u8 m_EEMWE: 1;			/*!< EEPROM Master Write Enable */
+    	__IO u8 m_EERIE: 1;			/*!< EEPROM Ready Interrupt Enable */
     	__IO u8        : 4;
     }sBits;
-}EECR_type; // EEPROM Control Register
+}EECR_type;
 
 /*************************************************************************/
 
+/** @brief : EEPROM Registers                                                 */
+/** <b>Type</b> : Struct <b>Unit</b> : None                                   */
 typedef struct{
     __IO EECR_type  m_EECR ;
     __IO u8         m_EEDR ;
@@ -38,13 +42,15 @@ typedef struct{
 
 /*************************************************************************/
 
+/** @brief : Type define of Union bit field of "MCU Control Register"         */
+/** <b>Type</b> : Union <b>Unit</b> : None                                    */
 typedef union{
     u8 u_Reg;
     struct {
-    	__IO u8 m_SPMEN : 1;        // Store Program Memory Enable
+    	__IO u8 m_SPMEN : 1;     		/*!<  Store Program Memory Enable */
         __I  u8         : 7;
     }sBits;
-}SPMCR_type;   // MCU Control Register
+}SPMCR_type;
 
 /* ************************************************************************** */
 /* ************************** MACRO/DEFINE SECTION ************************** */

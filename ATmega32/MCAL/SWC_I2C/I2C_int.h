@@ -3,7 +3,7 @@
 /* ************************************************************************** */
 /* File Name   : I2C_int.h													  */
 /* Author      : MAAM														  */
-/* Version     : v01														  */
+/* Version     : v01.2														  */
 /* date        : Apr 13, 2023												  */
 /* ************************************************************************** */
 /* ************************ HEADER FILES INCLUDES **************************  */
@@ -22,24 +22,9 @@ typedef enum{
 }USART_tstrRW;
 
 typedef enum{
-	I2C_Master_IDLE,
-	I2C_Master_Transmit,
-	I2C_Master_Receive,
-	I2C_Slave_IDLE,
-	I2C_Slave_Transmit,
-	I2C_Slave_Receive,
+	I2C_Master = (u8)0u,
+	I2C_Slave
 }I2C_tenuMode;
-
-typedef enum{
-	I2C_IDLE = (u8)0u,
-	I2C_START,
-	I2C_ADDRESS,
-	I2C_RW,
-	I2C_ACK,
-	I2C_DATA,
-	I2C_STOP,
-	I2C_ERROR
-}I2C_tenuStatus;
 
 typedef enum{
 	I2C_Prescaler_1 = (u8)0u,
@@ -48,6 +33,7 @@ typedef enum{
 	I2C_Prescaler_64
 }I2C_tenuPrescaler;
 
+/** SLA+W = SLave Address + Write bit \n SLA+R = SLave Address + Read bit **/
 typedef enum{
 	I2C_Bus_Error    			= (u8)0x00,	// illegal start or stop condition
 	I2C_Start        			= (u8)0x08,	// start condition transmitted
@@ -73,7 +59,7 @@ typedef enum{
 	I2C_SR_DATA_ACK    		  	= (u8)0x80,	// data received, ACK returned
 	I2C_SR_DATA_NACK     		= (u8)0x88,	// data received, NACK returned
 	I2C_SR_GCALL_Data_ACK		= (u8)0x90,	// general call data received, ACK returned
-	I2C_SR_GCALL_Data_ARB_LOST	= (u8)0x98,	// general call data received, NACK returned
+	I2C_SR_GCALL_Data_NACK		= (u8)0x98,	// general call data received, NACK returned
 
 	I2C_Stop         			= (u8)0xA0,	// stop or repeated start condition received while selected
 
@@ -90,13 +76,8 @@ typedef enum{
 
 typedef struct{
 	I2C_tenuMode			m_Mode;
-	I2C_tenuStatus			m_Status;
-	I2C_tenuPrescaler		m_Prescaler;
-//	LBTY_tenuFlagStatus		m_Start;
-//	LBTY_tenuFlagStatus		m_Stop;
-//	LBTY_tenuFlagStatus		m_ACK;
-
 	u8						m_Address;
+	I2C_tenuPrescaler		m_Prescaler;
 
 	LBTY_tenuFlagStatus		m_I2CEN;
 	LBTY_tenuFlagStatus		m_I2CIE;
@@ -118,40 +99,42 @@ typedef struct{
 /* **************************** FUNCTION SECTION **************************** */
 /* ************************************************************************** */
 
-void I2C_vidSetConfig(I2C_tstrConfiguration const* const pstrConfig);
-void I2C_vidResetConfig(I2C_tstrConfiguration* const pstrConfig);
+extern void I2C_vidSetConfig(I2C_tstrConfiguration const* const pstrConfig);
+extern void I2C_vidResetConfig(I2C_tstrConfiguration* const pstrConfig);
 
-void I2C_vidInit(void);
+extern void I2C_vidInit(void);
 
-void I2C_vidEnable(void);
-void I2C_vidDisable(void);
+extern void I2C_vidEnable(void);
+extern void I2C_vidDisable(void);
 
-u8 I2C_u8GetStatus(void);
-
-/********************************************************************************************************************/
-
-LBTY_tenuErrorStatus I2C_u8SetSTART(void);
-LBTY_tenuErrorStatus I2C_u8SetRepeatSTART(void);
-LBTY_tenuErrorStatus I2C_u8SetAddress(u8 u8Address, u8 Operation);
-LBTY_tenuErrorStatus I2C_u8SetData(u8 u8Data);
-LBTY_tenuErrorStatus I2C_u8GetDataNACK(u8* pu8Data);
-LBTY_tenuErrorStatus I2C_u8GetDataACK(u8* pu8Data);
-LBTY_tenuErrorStatus I2C_u8SetSTOP(void);
-
-LBTY_tenuErrorStatus I2C_u8SendBuffer(u8* pu8Data, u8 u8Size);
-LBTY_tenuErrorStatus I2C_u8ReceiveBuffer(u8* pu8Data, u8 u8Size);
+extern u8 I2C_u8GetStatus(void);
+extern u8 I2C_u8GetINTF(void);
 
 /********************************************************************************************************************/
 
-void I2C_vidEnableINT(void);
-void I2C_vidDisableINT(void);
+extern LBTY_tenuErrorStatus I2C_u8SetSTART(void);
+extern LBTY_tenuErrorStatus I2C_u8SetRepeatSTART(void);
+extern LBTY_tenuErrorStatus I2C_u8SetAddress(u8 u8Address, u8 Operation);
+extern LBTY_tenuErrorStatus I2C_u8GetRequest(u8* Operation);
+extern LBTY_tenuErrorStatus I2C_u8SetData(u8 u8Data);
+extern LBTY_tenuErrorStatus I2C_u8GetData(u8* pu8Data, u8 u8ACK);
+extern LBTY_tenuErrorStatus I2C_u8SetSTOP(void);
 
-void I2C_vidResetINT_Flag(void);
+extern void I2C_u8SetChar(u8 u8char, u8 u8Address);
+extern void I2C_u8GetChar(u8* pu8char, u8 u8Address);
+extern void I2C_SlaveListen(u8* pu8char, u8 u8Address);
 
-void I2C_vidSetCallBack_OverFlow(void (*pCallBack)(void));
+extern LBTY_tenuErrorStatus I2C_u8SendBuffer   (u8* pu8Data, u8 u8Size, u8 u8Address);
+extern LBTY_tenuErrorStatus I2C_u8ReceiveBuffer(u8* pu8Data, u8 u8Size, u8 u8Address);
 
-void I2C_vidTX_Step(void);
-void I2C_vidRX_Step(void);
+/********************************************************************************************************************/
+
+extern void I2C_vidEnableINT(void);
+extern void I2C_vidDisableINT(void);
+
+extern void I2C_vidResetINT_Flag(void);
+
+extern void I2C_vidSetCallBack_OverFlow(void (*pCallBack)(void));
 
 #endif /* I2C_INT_H_ */
 /*************************** E N D (I2C_int.h) ******************************/

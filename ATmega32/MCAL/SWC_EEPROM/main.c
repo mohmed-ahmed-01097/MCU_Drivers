@@ -47,7 +47,7 @@
 #include "EEPROM_int.h"
 #include "EEPROM_cfg.h"
 
-volatile u8 u8INT_Flag = LBTY_RESET, u8EEPROM_Flag = LBTY_SET;
+volatile u8 u8INT_Flag = LBTY_RESET, u8EEPROM_Flag = LBTY_RESET;
 u8 u8Num = LBTY_u8ZERO;
 
 void Push_ISR(void);
@@ -59,35 +59,38 @@ int main(void){
 	LCD_u8ClrDisplay();
 	LCD_u8Home();
 
-	LCD_u8SetNum(u8Num, 0, 0);
-	vidMyDelay_ms(1000);
-
-    INT_vidInit(INT_AMIT_PUSH2);
-    INT_vidSetCallBack(INT_AMIT_PUSH2, Push_ISR);
+    INT_vidInit(INT_PUSH);
+    INT_vidSetCallBack(INT_PUSH, Push_ISR);
 
     INTP_vidEnable();
 
 	EEPROM_vidInit();
-//	EEPROM_vidSetCallBack(EEPROM_ISR);
+	EEPROM_vidSetCallBack(EEPROM_ISR);
 
-	EEPROM_u8Erase(0,100);
-	EEPROM_u8ReadChar(u8Num, &u8Num);
-	u8EEPROM_Flag = LBTY_SET;
+	while(EEPROM_u8ReadChar(0x3FF, &u8Num));
+	if(u8Num == 0xFF){
+		EEPROM_u8Erase(0,0x4000);
+	}
+	while(EEPROM_u8ReadChar(2, &u8Num));
 
-	LCD_u8SetNum(u8Num, 0, 0);
-	vidMyDelay_ms(1000);
+	LCD_u8ClrDisplay();
+	LCD_u8SetChar('R', 0, 0);
+	LCD_u8SetNum(u8Num, 2, 0);
+	LCD_u8SetChar('W', 0, 1);
+	LCD_u8SetNum(u8Num, 2, 1);
 
    	while(1){
    		if(u8INT_Flag){
    			u8INT_Flag = LBTY_RESET;
-   			while(EEPROM_u8WriteChar(u8Num, u8Num));
-   			vidMyDelay_ms(10);
-   			u8Num = LBTY_u8ZERO;
-   			while(EEPROM_u8ReadChar(u8Num, &u8Num));
+
+   			while(EEPROM_u8ReadChar(2, &u8Num));
    			LCD_u8ClrDisplay();
-   			LCD_u8Home();
+   			LCD_u8SetChar('R', 0, 0);
+   			LCD_u8SetNum(u8Num, 2, 0);
+   			while(EEPROM_u8WriteChar(2, ++u8Num));
+   			LCD_u8SetChar('W', 0, 1);
+   			LCD_u8SetNum(u8Num, 2, 1);
    			vidMyDelay_ms(1000);
-   			LCD_u8SetNum(u8Num, 0, 0);
    		}
     }
 
@@ -100,7 +103,7 @@ void Push_ISR(void){
 }
 
 void EEPROM_ISR(void){
-	u8EEPROM_Flag = LBTY_RESET;
+	u8EEPROM_Flag = LBTY_SET;
 }
 
 #endif
