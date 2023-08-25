@@ -115,7 +115,7 @@
 
 #define SEG_DELAY			5u
 #define SEG_NUM_DELAY		25u
-#define SEG_NUM_RATE		40u
+#define SEG_NUM_RATE		20u	//40u
 
 /* ************************************************************************** */
 /* ***************************** CONST SECTION ****************************** */
