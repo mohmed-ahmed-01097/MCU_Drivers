@@ -36,10 +36,12 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SWC_BSW}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SWC_MCU}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SWC_GPIO}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SWC_TMR}&quot;"/>
 								</option>
 								<option id="de.innot.avreclipse.compiler.option.debug.type.1431495171" name="Debug Info Format" superClass="de.innot.avreclipse.compiler.option.debug.type" useByScannerDiscovery="false" value="de.innot.avreclipse.compiler.option.debug.level.dwarf-2" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.compiler.option.def.194123073" name="Define Syms (-D)" superClass="de.innot.avreclipse.compiler.option.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="SWC_BUZ"/>
+									<listOptionValue builtIn="false" value="PWM1"/>
 								</option>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.1359499858" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
@@ -63,8 +65,9 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="SWC_GPIO" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="SWC_TMR|SWC_GPIO" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="SWC_GPIO"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="SWC_TMR"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
